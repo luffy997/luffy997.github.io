@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>随笔02</title>
+      <link href="2021/04/16/%E9%9A%8F%E7%AC%9402/"/>
+      <url>2021/04/16/%E9%9A%8F%E7%AC%9402/</url>
+      
+        <content type="html"><![CDATA[<h1 id="https实现原理"><a href="#https实现原理" class="headerlink" title="https实现原理"></a>https实现原理</h1><p>最近看的一篇面试总结，原作者写的有一丢丢问题，下面这篇讲的很清楚</p><p><a href="https://blog.csdn.net/u014756827/article/details/102851812?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_baidulandingword-0&spm=1001.2101.3001.4242">深入理解https</a></p><p>在此之前，需要了解对称加密和非对称加密的原理和效率对比</p><p>对称加密，就是加密和解密用的<strong>同一把密钥</strong>，加密和解密速度快</p><p>非对称加密，加密用公钥，<strong>解密用密钥，公钥是公开的</strong>，但在解密的时候只有用相应的密钥才能解密，加密和解密速度慢。</p><p>https解决的http的三大问题：</p><ol><li>明文传输，裸奔</li><li>消息的完整性无法判断</li><li>通信身份可能被伪造</li></ol><p>基于以上三大问题，讲下https在进行传输的时候是如何解决的：</p><ol><li><p>C请求https域名，443端口，携带浏览器支持的hash算法和加密算法</p></li><li><p>S是有CA一对私钥和公钥，私钥是一定不能在网上直接传输的，所以把公钥和返回浏览器支持的hash算法和加密算法</p></li><li><p>C就要校验公钥的合法性，这个过程是浏览器内部的TSL完成，主要校验证数是否与域名匹配，是否到期，校验通过的话，就进入下一个步骤，没通过就会在C提示相应的信息</p></li></ol><ol start="4"><li>C随机生成一个X，通过公钥加密，传输给S，S进行私钥解密——<strong>唯一一次非对称加密</strong></li></ol><ol start="5"><li><p>后面的信息传输都是对称加密，因为X这个就是对称加密的密钥，巧妙的通过CA认证，<strong>实现非对称加密来传输对称加密密钥</strong></p><p>如上1，3已经被解决，对于消息完整性，是通过数字签名实现，S通过浏览器支持的Hash算法和用私钥加密摘要信息发送给C，C通过公钥解析获得相应信息，对收到的原文进行在摘要信息匹配，一样则说明消息具有完整性。</p></li></ol><h1 id="常见的网络攻击"><a href="#常见的网络攻击" class="headerlink" title="常见的网络攻击"></a>常见的网络攻击</h1><h2 id="XSS"><a href="#XSS" class="headerlink" title="XSS"></a>XSS</h2><p>跨站脚本攻击，指的是攻击者通过页面输入恶意执行代码，比如嵌入JavaScript执行代码，发送到服务端，服务端没有进行过滤操作，就可能直接保存到数据库，页面刷新的内容直接从数据库里拿到，就会执行这段JavaScript代码，比如alert(“”)函数等等</p><p>原因：没有对用户输入的数据进行一个过滤和转义操作</p><p>解决方案：</p><ol><li><p>对重要的cookie设置httpOnly，防止用户直接通过document.cookie修改cookie</p></li><li><p>对用户的输入进行过滤和转移操作，取出恶意的执行代码</p><p> ​</p></li></ol><h2 id="CSRF"><a href="#CSRF" class="headerlink" title="CSRF"></a>CSRF</h2><p>跨站请求伪造，当用户成功登录信任的A系统，在未退出的情况下去请求未信任的B系统，假如B没有做CSRF攻击防御，B系统就会直接获取A系统里的cookie，然后直接去请求A系统的接口，达到未登录A系统而实现操作A系统的目的，从而进行破坏。</p><p>比如一个转账系统，用户在未关闭转装系统的同时去开启一个危险网站，网站自带获取cookie然后携带cookie向自己的账户进行转账。</p><p>解决方案：</p><ol><li><p>在A系统在请求头中假如Reference字段进行限制，对请求的IP进行限制</p></li><li><p>尽量使用POST，而不是GET</p></li><li><p>加入验证码</p><p>4.使用Token进行校验</p></li></ol><h2 id="XSRF"><a href="#XSRF" class="headerlink" title="XSRF"></a>XSRF</h2><p>服务端请求伪造，很多网站因为出于安全的考虑是通过放在公网的服务器去访问内网服务器，但如果没有增加安全措施，就会达到直接通过服务端实现访问公网服务器资源的功能。</p><p>原因：内网在接收请求的时候没有进行过滤和限制操作</p><p>解决方案：</p><ol><li><p>统一异常处理，攻击者无法通过状态码得知服务器的状态</p></li><li><p>禁用其他端口，只提供80，443，8080端口等</p></li><li><p>限制协议，只支持http,https协议</p></li><li><p>设置IP黑名单</p><p>​</p></li></ol><h2 id="SQL注入"><a href="#SQL注入" class="headerlink" title="SQL注入"></a>SQL注入</h2><p>SQL注入也是常见的网络攻击，比如在登录的时候输入用户名时用or 1 = 1这种恒等的条件进行拼接，若服务器没有进行预编译操作，那就直接拼接在登录的SQL上，从而绕过登录请求实现登录。</p><p>解决方案：</p><ol><li>数据库使用预编译，比如采用Mybatis的#进行就拼接操作，而不是$这种直接进行字符串拼接的操作</li><li>对前端传来的数据进行数据类型判断</li><li>存储过程，在数据库级别进行登录验证</li></ol>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 随笔 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>随笔01</title>
       <link href="2021/04/13/%E9%9A%8F%E7%AC%9401/"/>
       <url>2021/04/13/%E9%9A%8F%E7%AC%9401/</url>
