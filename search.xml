@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>百度提前批一面</title>
+      <link href="2021/08/05/%E7%99%BE%E5%BA%A6%E6%8F%90%E5%89%8D%E6%89%B9%E4%B8%80%E9%9D%A2/"/>
+      <url>2021/08/05/%E7%99%BE%E5%BA%A6%E6%8F%90%E5%89%8D%E6%89%B9%E4%B8%80%E9%9D%A2/</url>
+      
+        <content type="html"><![CDATA[<h1 id="百度MEG提前批一面-base-上海"><a href="#百度MEG提前批一面-base-上海" class="headerlink" title="百度MEG提前批一面 base 上海"></a>百度MEG提前批一面 base 上海</h1><blockquote><p>08.05  14:50-15:50  面试官提前加的我微信，商量了面试时间，面试用的百度的自研的Web视频会议网站</p></blockquote><ol><li><p>自我介绍，项目介绍</p></li><li><p>算法题：</p><ul><li>根号三的小数点后10位 —&gt;没整出来 </li><li>快排</li><li>线程安全的单例（懒汉和饿汉式）</li></ul></li><li><p>hashmap八股 1.7-&gt;1.8  寻址算法  <strong>get的过程</strong></p></li><li><p>hashmap是线程安全的?怎么用线程安全map？—&gt;hashtable hashmap加锁 concurentHashmap(首选)</p></li><li><p>concurentHashmap底层实现 1.7—&gt;1.8  <strong>讲讲分段锁吧</strong></p></li><li><p>sql的优化  —&gt;前一篇面经已经说了，这里就再赘述</p></li><li><p>Spring的Aop？底层实现？ 底层实现当时紧张答成了反射？？？wc</p></li><li><p>Spring的作用域？只说了原型，单例，还有几个忘了</p></li><li><p>Redis基本数据类型，底层实现，简单说下应用场景，你常用的是什么，项目中怎么用到的？</p></li><li><p>Redis常用命令，没说几个，因为都是用的Spring的RedisTemplate，要恶补下啊</p></li><li><p>Redis的缓存击穿，缓存穿透，缓存雪崩是什么？怎么解决？</p></li><li><p>DockerFile常用命令 —&gt;项目中提到DockerFile打包成镜像，刚好面试官就是在MEG做容器的，淦！！！</p><p>有点晚了，害，这段时间的复习都没看这个</p></li><li><p>反问：</p><ul><li>部门的技术栈？ SpringBoot+Mybatis+Redis+ES+Docker，有时候会用到微服务</li><li>今天的面试怎么样？我自己都觉得自己没答好！！ 面试官说简历上写的起码还是能说一些，有很多虽然看着是原理性的东西，但实际开发是经常用到的，比如AOP，呜呜呜</li><li>因为知道面试官是做容器的了，就没问是干嘛的，就直接问K8s和Docker的区别</li></ul></li></ol><p>反思：两次提前批应该都是凉了，但也在我预期内，我就是拿来练练手，能发现自己的不足是最好的，就目前看来我的目的是完全达到了，知道自己的薄弱处和复习的应该注意的点了！！！秋招，继续冲！</p>]]></content>
+      
+      
+      
+        <tags>
+            
+            <tag> 面经 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>二叉搜索树、平衡二叉树、红黑树、B+树性能对比</title>
       <link href="2021/07/29/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E7%BA%A2%E9%BB%91%E6%A0%91%E3%80%81B-%E6%A0%91%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/"/>
       <url>2021/07/29/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E7%BA%A2%E9%BB%91%E6%A0%91%E3%80%81B-%E6%A0%91%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/</url>
