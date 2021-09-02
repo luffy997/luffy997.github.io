@@ -1,0 +1,344 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>绿盟研发一二三面 已OC | Luffy's Blog</title><meta name="keywords" content="面经"><meta name="author" content="Luffy"><meta name="copyright" content="Luffy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="绿盟科技一面 2021年8月19日 10:00-10:42  HR电话提前约了面试时间，通过邮箱发了腾讯会议ID，面试官很准时，而且是个姐姐 哈哈哈   自我介绍+项目，这里讲了很久，讲了自己在每个项目的角色和任务分工，提到了数据库设计  就讲了下自己在开发中遇到的数据库设计，以及自己开发中遇到数据库设计遇到的坑  SQL优化，面试必问—&gt;查询字段，数据库设计，走索引，索引失效，创建索引，单">
+<meta property="og:type" content="article">
+<meta property="og:title" content="绿盟研发一二三面 已OC">
+<meta property="og:url" content="http://example.com/2021/09/02/%E7%BB%BF%E7%9B%9F%E7%A0%94%E5%8F%91%E4%B8%80%E4%BA%8C%E4%B8%89%E9%9D%A2-%E5%B7%B2OC/index.html">
+<meta property="og:site_name" content="Luffy&#39;s Blog">
+<meta property="og:description" content="绿盟科技一面 2021年8月19日 10:00-10:42  HR电话提前约了面试时间，通过邮箱发了腾讯会议ID，面试官很准时，而且是个姐姐 哈哈哈   自我介绍+项目，这里讲了很久，讲了自己在每个项目的角色和任务分工，提到了数据库设计  就讲了下自己在开发中遇到的数据库设计，以及自己开发中遇到数据库设计遇到的坑  SQL优化，面试必问—&gt;查询字段，数据库设计，走索引，索引失效，创建索引，单">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg">
+<meta property="article:published_time" content="2021-09-02T02:24:50.000Z">
+<meta property="article:modified_time" content="2021-09-02T02:26:41.253Z">
+<meta property="article:author" content="Luffy">
+<meta property="article:tag" content="面经">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2021/09/02/%E7%BB%BF%E7%9B%9F%E7%A0%94%E5%8F%91%E4%B8%80%E4%BA%8C%E4%B8%89%E9%9D%A2-%E5%B7%B2OC/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?f12e359ae2c4466b9a839d06622143d0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Luffy","link":"链接: ","source":"来源: Luffy's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: true,
+  islazyload: true,
+  isanchor: true
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-09-02 10:26:41'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="web_bg"></div><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">41</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">18</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Luffy's Blog</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">绿盟研发一二三面 已OC</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-09-02T02:24:50.000Z" title="发表于 2021-09-02 10:24:50">2021-09-02</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-09-02T02:26:41.253Z" title="更新于 2021-09-02 10:26:41">2021-09-02</time></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="绿盟科技"><a href="#绿盟科技" class="headerlink" title="绿盟科技"></a>绿盟科技</h1><h2 id="一面"><a href="#一面" class="headerlink" title="一面"></a>一面</h2><blockquote>
+<p>2021年8月19日 10:00-10:42  HR电话提前约了面试时间，通过邮箱发了腾讯会议ID，面试官很准时，而且是个姐姐 哈哈哈</p>
+</blockquote>
+<ol>
+<li><p>自我介绍+项目，这里讲了很久，讲了自己在每个项目的角色和任务分工，提到了数据库设计</p>
+</li>
+<li><p>就讲了下自己在开发中遇到的数据库设计，以及自己开发中遇到数据库设计遇到的坑</p>
+</li>
+<li><p>SQL优化，面试必问—&gt;查询字段，数据库设计，走索引，索引失效，创建索引，单表数据过大要分表</p>
+</li>
+<li><p>绿盟主要业务？卧槽，这个真不知道，海投的，后面查了下是和阿里云，奇安信，深信服并列的网络安全公司</p>
+</li>
+<li><p>都是SpringBoot项目对吧，如何考虑一个SpringBoot项目的安全？（绿盟就是国内数一数二的做安全的企业），我就说了下平时注意的：</p>
+<ul>
+<li>server.port 不用常用端口</li>
+<li>数据库角色，不直接使用root</li>
+<li>密码，用网站随机生成</li>
+<li>token+拦截器</li>
+<li>统一异常返回</li>
+<li>假如有富文本编辑器输入，要转义，防止XSS</li>
+</ul>
+</li>
+<li><p>SpringBoot如何解决跨域？平时开发常常用，讲了下跨域就是对源地址和端口的限定，一般解决方案是在Controller的接口那加上@CorssOrigin（自己试过，没成功），自己一直是写的WebCorsConfig，配置全局跨域请求，就是设置源地址，请求头和方法的配置</p>
+</li>
+<li><p>那说说CSRF吧 ？解决方案?  跨站请求伪造</p>
+</li>
+<li><p>Mybatis分页插件用过吗？底层实现看过没？ PageHelper嘛，用过，不过没看过底层，不过知道Mysql如何分页：</p>
+<ul>
+<li>select * from table limit pageSize offset PageNo</li>
+<li>表的数据过多，借助id分页，select * from table where id &gt; pageNo * pageSize limit pageSize</li>
+</ul>
+<p>PageHelper底层应该也是这样的</p>
+</li>
+<li><p>存储过程是什么？我说了下，这个东西说实话应该是不会用了吧，所以复习的时候都没看，但自己写过存储过程，还是知道一点，下面详细解释下：</p>
+<p>一组为了完成特定功能的SOL语句集，存储在数据库中，经过一次编译后不需要再次编译。用户通过指定存储过程的名字并给出参数来执行它。存储过程是数据库中的对象。</p>
+<p>可以通过一个命令对象来调用存储过程；也可以供外部调用，比如java程序。</p>
+<p>其优点是：经过预编译，执行效率高；代码直接存在数据库，通过存储过程名调用，减少网络通信；安全性高，执行存储过程需要有一定权限的用户；可重复使用，减少开发人员工作量。</p>
+<p>其缺点是移植性差。</p>
+<p>存储过程中的优化思路有：</p>
+<ul>
+<li>尽量利用sql语句替代小循环</li>
+<li>中间结果存放于临时表，加索引</li>
+<li>少使用游标</li>
+<li>事务越短越好，事务过长或隔离级别过高会造成并发操作阻塞。死锁，导致查询及慢、CPU占用率极低</li>
+<li>使用trycatch处理错误异常</li>
+<li>查询语句尽量不要放在循环内</li>
+</ul>
+</li>
+<li><p>Redis缓存雪崩？解决方案？</p>
+</li>
+<li><p>考虑转语言？ 啥意思，面试官说看自愿，写了几年Java了，暂时不考虑转，但公司需要可以考虑</p>
+</li>
+<li><p>平时开发环境？ 代码是windows下编写，假如只是自己的demo，那就只是idea运行了，假如要让大家访问那就部署服务器了。什么服务器？最开始没学Linux的时候是Windows服务器，但一段时间就很卡，后面自学了Linux就买了阿里云的服务器。说说Liunx常用命令？新建文件，文件负责等等，其实部署主要是Docker？Docker用到什么地步？会DockerFile吗？ 这个还是没问题，之前实习就是DockerFile打包的。</p>
+</li>
+<li><p>现在需要把在一台服务器的应用镜像，运行在另一台服务器上，这么做？自己没试过，不过应该是把镜像下载下载下来，然后传到另外一台服务器上，docker load即可，感觉Docker还是需要多看看</p>
+</li>
+<li><p>讲讲自己运用专业知识解决的实际问题？讲了未开始的设置数据库连接编码UTF-8，然后再将最近抢红包的一个项目</p>
+</li>
+</ol>
+<p><strong>反问</strong></p>
+<ol>
+<li>面试官是什么部门的，什么业务？</li>
+<li>还是谈到转语言，说Java Python都有，其实想全栈，但这对校招生要求太高了，所以可以只管后台开发</li>
+<li>要是转会给时间吗？那肯定，Java转Python的，面试官说没见过没转成功的，我就说了自己的毕业设计是基于深度学习的TF开发的推荐系统</li>
+<li>然后面试官是后面会有二面，好好准备下，我说好，继续聊了会</li>
+<li>一共几面？1-2轮技术面，一轮总监面</li>
+<li>又聊了会，面试预定的是半小时，实际42分钟，面试体验非常好！</li>
+</ol>
+<blockquote>
+<p>PageHelper原理</p>
+</blockquote>
+<ol>
+<li>使用PageHelper.startPage()时在当前线程上下文中设置一个ThreadLocal变量</li>
+<li>在 ThreadLocal中设置了分页参数，之后在查询执行的时候，获取当前线程中的分页参数</li>
+<li>执行查询的时候通过拦截器在sql语句中添加分页参数，之后实现分页查询，查询结束后在 finally 语句中清除ThreadLocal中的查询参数</li>
+</ol>
+<p>PageHelper方法使用了静态的ThreadLocal参数，分页参数和线程是绑定的。只要可以保证在PageHelper方法调用后紧跟 MyBatis 查询方法，这就是安全的。因为PageHelper在finally代码段中自动清除了ThreadLocal存储的对象。</p>
+<h2 id="二面"><a href="#二面" class="headerlink" title="二面"></a>二面</h2><blockquote>
+<p>2021年8月23日 14:35-15:09  面试官迟到了几分钟，当时我有点急，因为预定就是半小时，然后奇安信15:00的笔试，哈哈，好在也就几分钟就来了，面试体验非常好！</p>
+</blockquote>
+<ol>
+<li>自我介绍？包括学校，专业，主修课程，掌握的技能，每次都要强调下我们学校的电子商务是偏技术的</li>
+<li>说说项目吧，都是学校的吗？没有实习吗？项目都是学校和同学打比赛写的，有实习，因为疫情管控和通勤时间太长了就辞了。挑一个说说项目中的难点，如何解决，当时的心情怎么样？这个就不说了，项目烂大街啊哈哈哈，但反映的是项目必须准备充分，有1-2个可以讲的，讲解你遇到的困难，怎么解决的，这个过程你去如何阐述，这其实不仅仅检查你的开发能力，还能考验语言表述能力。不然你说项目没啥，那就狂问基础，直到你趴下为止……</li>
+<li>挖了很久项目，那我们现在来聊聊基础，讲讲jvm中新生代和老年代的转换吧<ul>
+<li>大对象直接到老年代</li>
+<li>分配担保机制：当Eden区没有足够内存时，发起MinorGC，若此时存活对象无法存入Survivor区，这通过分配担保机制把新生代的对象提前转移到老年代去；</li>
+<li>Survivor To被填满，将所有的对象转移到老年代</li>
+<li>Survivor To中一半以上对象的年龄相等，直接转</li>
+<li>Survivor To中对象年龄达到阈值（默认15）</li>
+</ul>
+</li>
+<li>讲讲Spring，SpringMVC，SpringBoot，SpringCloud的区别和联系</li>
+<li>都是关系型数据库对吧，还有非关系型呢，那说说常用的关联查询？Mysql有内连接Inner Join，left Join，Right Join，没有全连接，Sql Server有全连接</li>
+<li>网络怎么样？正打算说OSI七层协议，面试官说给个场景，说说浏览器请求一个搜狐的网站，到用户显示用到的协议吧。首先，域名，搜狐是<strong>HTTPS</strong>的，拿到域名就要进行域名和IP的转换，<strong>IP协议</strong>，用到了<strong>DNS协议</strong>，底层是<strong>UDP协议</strong>，然后是<strong>TCP协议</strong>的三次握手建立连接，请求后端，拿到数据，渲染页面</li>
+<li>平时怎么学习提升自己的？千里培训—&gt;看b站视频学习—&gt;看博客和公众号(举了几个博主和美团技术团队的博客)—&gt;看书，因为前面的都是别人嚼碎的东西，要想深入底层，只有看书，最近在看《深入理解JVM》，平时看书也会做读书笔记（电子档的），这个是方便后面查找知识点</li>
+</ol>
+<p>反问：</p>
+<ol>
+<li>进去真的要转语言吗？其实我知道答案，我只是想继续聊会，语言只是工具，有学习能力才是最重要的</li>
+<li>请面试官评价下我今天的表现？记不太清他咋说了，反正没有直接说怎么怎么样</li>
+<li>又聊了会，说等会人事会通知你后面的面试流程，今天就这样吧</li>
+</ol>
+<h2 id="三面"><a href="#三面" class="headerlink" title="三面"></a>三面</h2><blockquote>
+<p>2021年8月27日  16:35-17:04  太紧张了，一想到是VP就紧张的要是，看牛客上说VP气场十足！搞得中午都没睡着，下午进腾讯会议，发现是面试官挺年轻啊，应该是部门老大吧，很和蔼的！全程基本上是聊天，面试体验巨好</p>
+</blockquote>
+<ol>
+<li>自我介绍+专业介绍+项目+比赛，期间也在问我一些东西</li>
+<li>说一下你觉得最有成就感的事？就讲了下自己自学经历，里面学到什么，面试官就笑了</li>
+<li>平时有关注什么技术论坛吗？美团技术团队，还有很多UP主，博主等等</li>
+<li>为什么选择武汉？</li>
+</ol>
+<p><strong>反问</strong></p>
+<ol>
+<li>面试官您在选候选人的时候，看重什么？ 一面二面三面不一样的，哈哈，记得最清楚的是一面就是看和简历匹配度，写了精通的话，那就不好意思了，那就要好好问问你，我当时也笑了，我说这是对技术的不尊重，他说没个10年这些精通的都是作死，笑死我了！</li>
+<li>对我的评价怎么样？</li>
+</ol>
+<p>然后聊了很久，面试官说，你有啥想聊的都可以跟我聊啊，哈哈哈，确实面试官技术人很好，技术广度很广的，反复强调数据结构和设计模式</p>
+<ol>
+<li>于是我就说这个数据结构和算法我还好，设计模式，因为没怎么写企业的项目，积累很少，他说这个是时间换来的，你已经很不错了</li>
+<li>公司培养体系？只能说非常完善！</li>
+<li>薪资？不是BAT那种企业，公司是自研软件，然后卖钱，盈利模式不一样，但薪资是中上游</li>
+</ol>
+<h2 id="OC"><a href="#OC" class="headerlink" title="OC"></a>OC</h2><p>HR给我打电话的时候，我还在深信服笔试，微信小程序把手机锁了，我猜想应该是绿盟的，还看了电话是武汉的，就接了，当时在自习室，我很小声，HR问我放不方便，我说等会吧，现在不方便，约定了半小时后她再打来。</p>
+<p>后面聊了15分钟，就发offer了~</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Luffy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2021/09/02/%E7%BB%BF%E7%9B%9F%E7%A0%94%E5%8F%91%E4%B8%80%E4%BA%8C%E4%B8%89%E9%9D%A2-%E5%B7%B2OC/">http://example.com/2021/09/02/绿盟研发一二三面-已OC/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Luffy's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E9%9D%A2%E7%BB%8F/">面经</a></div><div class="post_share"><div class="social-share" data-image="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/08/16/%E5%88%B7%E9%9D%A2%E7%BB%8F/"><img class="next-cover" data-lazy-src="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">刷面经</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/07/28/字节一面凉经/" title="字节一面凉经"><img class="cover" data-lazy-src="https://s3.ax1x.com/2021/01/23/s73VYD.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-07-28</div><div class="title">字节一面凉经</div></div></a></div><div><a href="/2021/08/05/百度提前批一面/" title="百度提前批一面"><img class="cover" data-lazy-src="https://s3.ax1x.com/2021/01/23/s73Fw6.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-05</div><div class="title">百度提前批一面</div></div></a></div><div><a href="/2021/08/16/刷面经/" title="刷面经"><img class="cover" data-lazy-src="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-16</div><div class="title">刷面经</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" data-lazy-src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Luffy</div><div class="author-info__description">心之所向，素履以往</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length_num">41</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length_num">18</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/luffy997" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:389783961@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E7%BB%BF%E7%9B%9F%E7%A7%91%E6%8A%80"><span class="toc-number">1.</span> <span class="toc-text">绿盟科技</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%80%E9%9D%A2"><span class="toc-number">1.1.</span> <span class="toc-text">一面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BA%8C%E9%9D%A2"><span class="toc-number">1.2.</span> <span class="toc-text">二面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%B8%89%E9%9D%A2"><span class="toc-number">1.3.</span> <span class="toc-text">三面</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#OC"><span class="toc-number">1.4.</span> <span class="toc-text">OC</span></a></li></ol></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/09/02/%E7%BB%BF%E7%9B%9F%E7%A0%94%E5%8F%91%E4%B8%80%E4%BA%8C%E4%B8%89%E9%9D%A2-%E5%B7%B2OC/" title="绿盟研发一二三面 已OC"><img data-lazy-src="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="绿盟研发一二三面 已OC"/></a><div class="content"><a class="title" href="/2021/09/02/%E7%BB%BF%E7%9B%9F%E7%A0%94%E5%8F%91%E4%B8%80%E4%BA%8C%E4%B8%89%E9%9D%A2-%E5%B7%B2OC/" title="绿盟研发一二三面 已OC">绿盟研发一二三面 已OC</a><time datetime="2021-09-02T02:24:50.000Z" title="发表于 2021-09-02 10:24:50">2021-09-02</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/08/16/%E5%88%B7%E9%9D%A2%E7%BB%8F/" title="刷面经"><img data-lazy-src="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="刷面经"/></a><div class="content"><a class="title" href="/2021/08/16/%E5%88%B7%E9%9D%A2%E7%BB%8F/" title="刷面经">刷面经</a><time datetime="2021-08-16T13:08:27.000Z" title="发表于 2021-08-16 21:08:27">2021-08-16</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/08/05/%E7%99%BE%E5%BA%A6%E6%8F%90%E5%89%8D%E6%89%B9%E4%B8%80%E9%9D%A2/" title="百度提前批一面"><img data-lazy-src="https://s3.ax1x.com/2021/01/23/s73Fw6.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="百度提前批一面"/></a><div class="content"><a class="title" href="/2021/08/05/%E7%99%BE%E5%BA%A6%E6%8F%90%E5%89%8D%E6%89%B9%E4%B8%80%E9%9D%A2/" title="百度提前批一面">百度提前批一面</a><time datetime="2021-08-05T00:43:28.000Z" title="发表于 2021-08-05 08:43:28">2021-08-05</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/29/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E7%BA%A2%E9%BB%91%E6%A0%91%E3%80%81B-%E6%A0%91%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" title="二叉搜索树、平衡二叉树、红黑树、B+树性能对比"><img data-lazy-src="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="二叉搜索树、平衡二叉树、红黑树、B+树性能对比"/></a><div class="content"><a class="title" href="/2021/07/29/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E7%BA%A2%E9%BB%91%E6%A0%91%E3%80%81B-%E6%A0%91%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" title="二叉搜索树、平衡二叉树、红黑树、B+树性能对比">二叉搜索树、平衡二叉树、红黑树、B+树性能对比</a><time datetime="2021-07-29T08:49:40.000Z" title="发表于 2021-07-29 16:49:40">2021-07-29</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/28/%E5%AD%97%E8%8A%82%E4%B8%80%E9%9D%A2%E5%87%89%E7%BB%8F/" title="字节一面凉经"><img data-lazy-src="https://s3.ax1x.com/2021/01/23/s73VYD.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="字节一面凉经"/></a><div class="content"><a class="title" href="/2021/07/28/%E5%AD%97%E8%8A%82%E4%B8%80%E9%9D%A2%E5%87%89%E7%BB%8F/" title="字节一面凉经">字节一面凉经</a><time datetime="2021-07-28T00:32:38.000Z" title="发表于 2021-07-28 08:32:38">2021-07-28</time></div></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By Luffy</div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js', function () {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script></div></body></html>
