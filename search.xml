@@ -4,17 +4,17 @@
   
     
     <entry>
-      <title>机器学习入门</title>
-      <link href="2021/12/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/"/>
-      <url>2021/12/23/%E6%9C%BA%E5%99%A8%E5%AD%A6%E4%B9%A0%E5%85%A5%E9%97%A8/</url>
+      <title>Python环境搭建</title>
+      <link href="2021/12/23/Python%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"/>
+      <url>2021/12/23/Python%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/</url>
       
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[<p>Python 是一种解释型、面向对象、动态数据类型的高级程序设计语言。</p><p>Python 由 Guido van Rossum 于 1989 年底发明，第一个公开发行版发行于 1991 年。</p><h1 id="版本选择"><a href="#版本选择" class="headerlink" title="版本选择"></a>版本选择</h1><p>Python主要的版本分支是3.X和2.X，2.X和3.X分支是不兼容的，可以说是相互独立的，所以在安装环境的时候，一定要注意版本问题。</p><p>这里我选的3.6这个大版本</p><h1 id="Python安装"><a href="#Python安装" class="headerlink" title="Python安装"></a>Python安装</h1><p>这里很简单，贴个官网连接，选个适合自己电脑系统和位数的文件就行了</p><p><a href="https://www.python.org/downloads/">Python安装官网</a></p><p>下载下来，需要注意的是在安装中需要勾选把Python环境加入PATH中，一直点下一步就行了，安装完成后可以在开始中找到新增的四个模块：</p><p><img src= "/img/loading.gif" data-lazy-src="https://s2.loli.net/2021/12/24/vGYpIP4zVixt2Qh.png"></p><p>也可以通过在CMD界面中输入python检验是否安装成功</p><p><img src= "/img/loading.gif" data-lazy-src="https://s2.loli.net/2021/12/24/sLdh7inaNrJVt4l.png"></p><p>点开IDLE，Python自带的IDE就可以编写Python程序了，但我们通常编写程序还是用的Pycharm</p><h1 id="Pycharm安装与配置"><a href="#Pycharm安装与配置" class="headerlink" title="Pycharm安装与配置"></a>Pycharm安装与配置</h1><p>Pycharm和Idea都是 JetBrains的软件，都是收费的，当然Pycharm的简单版本是免费的，但后面做项目是需要更多功能支持的，这里还是需要安装专业版。</p><p>网上找个下载链接下载安装破解就行了，这里就不过多赘述。</p><p>Pycharm很重要的一个配置就是开发环境的配置</p><p><img src= "/img/loading.gif" data-lazy-src="https://s2.loli.net/2021/12/24/wS7ebudlFsGnLYH.png"></p><p>就是需要把Python的编译器告诉Pycharm的位置，但是会发现我并没有用Python默认的编译器，而是选择的<strong>Anaconda3</strong>。</p><h1 id="Anaconda的安装和配置"><a href="#Anaconda的安装和配置" class="headerlink" title="Anaconda的安装和配置"></a>Anaconda的安装和配置</h1><p> <strong>Anaconda</strong>指的是一个开源的<a href="https://so.csdn.net/so/search?from=pc_blog_highlight&q=Python">Python</a>发行版本，其包含了conda、Python等180多个科学包及其依赖项。 因为包含了大量的科学包，Anaconda 的下载文件比较大（约 531 MB），如果只需要某些包，或者需要节省带宽或存储空间，也可以使用Miniconda这个较小的发行版（仅包含conda和 Python）。 </p><p>因为我在写Python程序的适合，会安装一些其他的库，但是用pip命令经常安装失败，报错也解决不了，于是网上看就推荐用Anaconda，自带了很多库函数，很方便。</p><p><a href="https://www.anaconda.com/">Anaconda官网</a></p><p>选个版本下载安装就行了。</p><p>现在我们已经装上Anaconda，可以发现它自带了很多东西，其中有很常用的Jupyter Notebook，Python的交互式程序运行格式。</p><p><img src= "/img/loading.gif" data-lazy-src="https://s2.loli.net/2021/12/24/JpZrz2FkPb35xgO.png" alt="image.png"></p><p>那么如何在Pycharm配置我们的Anaconda呢？</p><p>很简单，我们配置下System Interpreter，然后把它添加到环境中就行了</p><p><img src= "/img/loading.gif" data-lazy-src="https://s2.loli.net/2021/12/24/vi67nEmXOVgLyjI.png"></p><p><img src= "/img/loading.gif" data-lazy-src="https://s2.loli.net/2021/12/24/BhUYy3D6ulpV4O7.png"></p><p>就这样，我们就把Pycharm的运行环境切换到Anaconda，我们运行一个程序试试</p><p><img src= "/img/loading.gif" data-lazy-src="https://s2.loli.net/2021/12/24/6zWYITc2fNuLbtZ.png"></p><p>可以看到已经使用的Anaconda的python.exe去运行程序了。</p><p>当我们需要安装Anaconda没有的库，我们可以直接使用Pycharm去安装</p><p><img src= "/img/loading.gif" data-lazy-src="https://s2.loli.net/2021/12/24/NhWAqLxHp7U2KsI.png"></p><p>就这样，我们Python的基本环境就安装好了，可以愉快的编写Python程序了！</p>]]></content>
       
       
       
         <tags>
             
-            <tag> 机器学习 </tag>
+            <tag> Python </tag>
             
         </tags>
       
