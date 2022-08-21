@@ -1,0 +1,291 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Django Rest Framework请求响应视图路由 | Luffy's Blog</title><meta name="keywords" content="DRF"><meta name="author" content="Luffy"><meta name="copyright" content="Luffy"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta http-equiv="Cache-Control" content="no-transform"><meta http-equiv="Cache-Control" content="no-siteapp"><meta name="description" content="DRF封装了很多关于请求信息的参数，我们可以通过 request获取，响应 Response 也有着规定的模板，让接口响应更加规范。 在视图中，封装了非常多的视图类，便于简化视图层操作。  APIView是DRF中提供的所有视图类的积累，它继承于django.views.View，传入的请求是DRF的 Request实例，任何APIException异常都会被捕获，并且传递给合适的响应 ，业务代码">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django Rest Framework请求响应视图路由">
+<meta property="og:url" content="http://example.com/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/index.html">
+<meta property="og:site_name" content="Luffy&#39;s Blog">
+<meta property="og:description" content="DRF封装了很多关于请求信息的参数，我们可以通过 request获取，响应 Response 也有着规定的模板，让接口响应更加规范。 在视图中，封装了非常多的视图类，便于简化视图层操作。  APIView是DRF中提供的所有视图类的积累，它继承于django.views.View，传入的请求是DRF的 Request实例，任何APIException异常都会被捕获，并且传递给合适的响应 ，业务代码">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2022/08/21/vyYQMD.png">
+<meta property="article:published_time" content="2022-08-21T06:44:05.000Z">
+<meta property="article:modified_time" content="2022-08-21T06:44:51.530Z">
+<meta property="article:author" content="Luffy">
+<meta property="article:tag" content="DRF">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2022/08/21/vyYQMD.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="http://example.com/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//hm.baidu.com"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.css"><script>var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "https://hm.baidu.com/hm.js?f12e359ae2c4466b9a839d06622143d0";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script><script>var GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: {"path":"search.xml","languages":{"hits_empty":"找不到您查询的内容：${query}"}},
+  translate: {"defaultEncoding":1,"translateDelay":0,"msgToTraditionalChinese":"繁","msgToSimplifiedChinese":"簡"},
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: true
+  },
+  runtime: '天',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: {"limitCount":50,"languages":{"author":"作者: Luffy","link":"链接: ","source":"来源: Luffy's Blog","info":"著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。"}},
+  ClickShowText: undefined,
+  lightbox: 'fancybox',
+  Snackbar: {"chs_to_cht":"你已切换为繁体","cht_to_chs":"你已切换为简体","day_to_night":"你已切换为深色模式","night_to_day":"你已切换为浅色模式","bgLight":"#49b1f5","bgDark":"#121212","position":"bottom-left"},
+  justifiedGallery: {
+    js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+    css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+  },
+  isPhotoFigcaption: true,
+  islazyload: true,
+  isanchor: true
+};
+
+var saveToLocal = {
+  set: function setWithExpiry(key, value, ttl) {
+    const now = new Date()
+    const expiryDay = ttl * 86400000
+    const item = {
+      value: value,
+      expiry: now.getTime() + expiryDay,
+    }
+    localStorage.setItem(key, JSON.stringify(item))
+  },
+
+  get: function getWithExpiry(key) {
+    const itemStr = localStorage.getItem(key)
+
+    if (!itemStr) {
+      return undefined
+    }
+    const item = JSON.parse(itemStr)
+    const now = new Date()
+
+    if (now.getTime() > item.expiry) {
+      localStorage.removeItem(key)
+      return undefined
+    }
+    return item.value
+  }
+}</script><script id="config_change">var GLOBAL_CONFIG_SITE = { 
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2022-08-21 14:44:51'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(function () {
+  window.activateDarkMode = function () {
+    document.documentElement.setAttribute('data-theme', 'dark')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+    }
+  }
+  window.activateLightMode = function () {
+    document.documentElement.setAttribute('data-theme', 'light')
+    if (document.querySelector('meta[name="theme-color"]') !== null) {
+      document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+    }
+  }
+
+  const autoChangeMode = 'false'
+  const t = saveToLocal.get('theme')
+  if (autoChangeMode === '1') {
+    const isDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const isLightMode = window.matchMedia('(prefers-color-scheme: light)').matches
+    const isNotSpecified = window.matchMedia('(prefers-color-scheme: no-preference)').matches
+    const hasNoSupport = !isDarkMode && !isLightMode && !isNotSpecified
+
+    if (t === undefined) {
+      if (isLightMode) activateLightMode()
+      else if (isDarkMode) activateDarkMode()
+      else if (isNotSpecified || hasNoSupport) {
+        const now = new Date()
+        const hour = now.getHours()
+        const isNight = hour <= 6 || hour >= 18
+        isNight ? activateDarkMode() : activateLightMode()
+      }
+      window.matchMedia('(prefers-color-scheme: dark)').addListener(function (e) {
+        if (saveToLocal.get('theme') === undefined) {
+          e.matches ? activateDarkMode() : activateLightMode()
+        }
+      })
+    } else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else if (autoChangeMode === '2') {
+    const now = new Date()
+    const hour = now.getHours()
+    const isNight = hour <= 6 || hour >= 18
+    if (t === undefined) isNight ? activateDarkMode() : activateLightMode()
+    else if (t === 'light') activateLightMode()
+    else activateDarkMode()
+  } else {
+    if (t === 'dark') activateDarkMode()
+    else if (t === 'light') activateLightMode()
+  }
+})()</script><meta name="generator" content="Hexo 5.2.0"></head><body><div id="loading-box"><div class="loading-left-bg"></div><div class="loading-right-bg"></div><div class="spinner-box"><div class="configure-border-1"><div class="configure-core"></div></div><div class="configure-border-2"><div class="configure-core"></div></div><div class="loading-word">加载中...</div></div></div><div id="web_bg"></div><div id="mobile-sidebar"><div id="menu_mask"></div><div id="mobile-sidebar-menus"><div class="mobile_author_icon"><img class="avatar-img" data-lazy-src="/img/avatar.jpg" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="mobile_post_data"><div class="mobile_data_item is-center"><div class="mobile_data_link"><a href="/archives/"><div class="headline">文章</div><div class="length_num">48</div></a></div></div><div class="mobile_data_item is-center">      <div class="mobile_data_link"><a href="/tags/"><div class="headline">标签</div><div class="length_num">20</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url(https://s1.ax1x.com/2022/08/21/vyYQMD.png)"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">Luffy's Blog</a></span><span id="menus"><div id="search_button"><a class="site-page social-icon search"><i class="fas fa-search fa-fw"></i><span> 搜索</span></a></div><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 首页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 时间轴</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标籤</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="javascript:void(0);"><i class="fa-fw fa fa-heartbeat"></i><span> 清单</span><i class="fas fa-chevron-down expand"></i></a><ul class="menus_item_child"><li><a class="site-page" href="/music/"><i class="fa-fw fas fa-music"></i><span> 音乐</span></a></li><li><a class="site-page" href="/Gallery/"><i class="fa-fw fas fa-images"></i><span> 照片</span></a></li><li><a class="site-page" href="/movies/"><i class="fa-fw fas fa-video"></i><span> 电影</span></a></li></ul></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><span class="close" id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></span></span></nav><div id="post-info"><div id="post-title"><div class="posttitle">Django Rest Framework请求响应视图路由</div></div><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-08-21T06:44:05.000Z" title="发表于 2022-08-21 14:44:05">2022-08-21</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2022-08-21T06:44:51.530Z" title="更新于 2022-08-21 14:44:51">2022-08-21</time></span></div><div class="meta-secondline"> <span class="post-meta-separator">|</span><span class="post-meta-pv-cv"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><p>DRF封装了很多关于请求信息的参数，我们可以通过 <code>request</code>获取，响应 <code>Response</code> 也有着规定的模板，让接口响应更加规范。</p>
+<p>在视图中，封装了非常多的视图类，便于简化视图层操作。</p>
+<ul>
+<li><p><code>APIView</code>是DRF中提供的所有视图类的积累，它继承于<code>django.views.View</code>，传入的请求是DRF的 <code>Request</code>实例，任何<code>APIException</code>异常都会被捕获，并且传递给合适的响应 ，业务代码需要自己写</p>
+</li>
+<li><p><code>ViewSet</code>，继承自<code>APIView</code>，没有继承拓展类，业务逻辑还得自己去写，提供action参数，进行视图和路由 的绑定，不再使用http请求作为视图方法 get post put delete 可以自己指定路由和方法绑定，实现把关于一个模型的操作都写在一个类里</p>
+</li>
+<li><p><code>GenericViewSet</code>，继承自<code>GenericAPIView</code>，没有继承拓展类，业务逻辑还得自己去写，把部分公共代码实现了服用。不再使用http请求作为视图方法 get post put delete 可以自己指定路由和方法绑定，实现把关于一个模型的操作都写在一个类里</p>
+</li>
+</ul>
+<p>两个拓展视图集：</p>
+<ul>
+<li><p><code>ModelViewSet</code>（增删改查都可以实现了），继承了<code>GenericAPIView</code>，继承了五个拓展类</p>
+</li>
+<li><p><code>ReadOnlyModelViewSet</code>（实现了获取多个数据对象和获取单一数据对象），继承了<code>GenericAPIView</code>、<code>ListModelMixin</code> 和 <code>RetrieveModelMixin</code>。</p>
+</li>
+</ul>
+<p>路由…</p>
+<h1 id="请求响应"><a href="#请求响应" class="headerlink" title="请求响应"></a>请求响应</h1><h2 id="Request"><a href="#Request" class="headerlink" title="Request"></a>Request</h2><p>新建一个req应用，用于专门编写本次实验的例子，视图层代码如下；</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self,request</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    request：&lt;rest_framework.request.Request: GET &#x27;/req/s1&#x27;&gt; 用的drf</span></span><br><span class="line"><span class="string">    request._request：&lt;WSGIRequest: GET &#x27;/req/s1&#x27;&gt;</span></span><br><span class="line"><span class="string">    :param request:</span></span><br><span class="line"><span class="string">    :return:</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    print(<span class="string">f&#x27;request：<span class="subst">&#123;request&#125;</span>&#x27;</span>)</span><br><span class="line">    print(<span class="string">f&#x27;request._request：<span class="subst">&#123;request._request&#125;</span>&#x27;</span>)</span><br><span class="line">    print(<span class="string">&#x27;drf提供的request常用操作-------------------------------------&#x27;</span>)</span><br><span class="line">    print(<span class="string">f&#x27;用户：<span class="subst">&#123;request.user&#125;</span>&#x27;</span>)</span><br><span class="line">    print(<span class="string">f&#x27;地址栏参数：<span class="subst">&#123;request.query_params&#125;</span>&#x27;</span>)</span><br><span class="line">    print(<span class="string">f&#x27;地址栏参数转字典：<span class="subst">&#123;request.query_params.dict()&#125;</span>&#x27;</span>)</span><br><span class="line">    <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>:<span class="string">&#x27;ok&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">def</span> <span class="title">post</span>(<span class="params">self,request</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    请求体：&lt;QueryDict: &#123;&#x27;name&#x27;: [&#x27;小王&#x27;], &#x27;files&#x27;: [&lt;InMemoryUploadedFile: 1_Request.txt (text/plain)&gt;, &lt;InMemoryUploadedFile: 1_Response.txt (text/plain)&gt;]&#125;&gt;</span></span><br><span class="line"><span class="string">    请求体转字典：&#123;&#x27;name&#x27;: &#x27;小王&#x27;, &#x27;files&#x27;: &lt;InMemoryUploadedFile: 1_Response.txt (text/plain)&gt;&#125;</span></span><br><span class="line"><span class="string">    &#123;&lt;InMemoryUploadedFile: 1_Response.txt (text/plain)&gt;&#125;</span></span><br><span class="line"><span class="string">    请求体中的文件列表：&lt;MultiValueDict: &#123;&#x27;files&#x27;: [&lt;InMemoryUploadedFile: 1_Request.txt (text/plain)&gt;, &lt;InMemoryUploadedFile: 1_Response.txt (text/plain)&gt;]&#125;&gt;</span></span><br><span class="line"><span class="string">    &#123;&#x27;ALLUSERSPROFILE&#x27;: &#x27;C:\\ProgramData&#x27;, &#x27;APPDATA&#x27;: &#x27;C:\\Users\\Luffy\\AppData\\Roaming&#x27;, 省略&#125;</span></span><br><span class="line"><span class="string">    NSFOCUS</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    print(<span class="string">f&#x27;请求体：<span class="subst">&#123;request.data&#125;</span>&#x27;</span>)</span><br><span class="line">    print(<span class="string">f&#x27;请求体转字典：<span class="subst">&#123;request.data.dict()&#125;</span>&#x27;</span>)</span><br><span class="line">    print(&#123;request.data.dict().get(<span class="string">&#x27;files&#x27;</span>)&#125;)</span><br><span class="line">    print(<span class="string">f&#x27;请求体中的文件列表：<span class="subst">&#123;request.FILES&#125;</span>&#x27;</span>)</span><br><span class="line">    <span class="comment"># 获取请求头</span></span><br><span class="line">    print(request._request.META)</span><br><span class="line">    <span class="comment"># 自定义请求头 要用HTTP_大写单词获取</span></span><br><span class="line">    print(request._request.META.get(<span class="string">&#x27;HTTP_COMPANY&#x27;</span>))</span><br><span class="line">    <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;ok&#x27;</span>&#125;)</span><br></pre></td></tr></table></figure>
+
+<p>请求中很多键值对的数据类型并不是用的Python的字典，所以需要获取值的时候要转为字典再获取</p>
+<h2 id="Response"><a href="#Response" class="headerlink" title="Response"></a>Response</h2><p><code>Response(data, status=None, template_name=None, headers=None, content_type=None)</code></p>
+<p>返回的模板如上，举个例子</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> Response(data=serializer.data,status=status.HTTP_201_CREATED,headers=&#123;<span class="string">&#x27;company&#x27;</span>:<span class="string">&#x27;NSFOCUS&#x27;</span>&#125;,content_type=<span class="string">&#x27;application/json&#x27;</span>)</span><br></pre></td></tr></table></figure>
+
+<p>这个每个固定的，知道里面需要传的参数即可</p>
+<h1 id="视图"><a href="#视图" class="headerlink" title="视图"></a>视图</h1><p>在开篇也已经说到了各个视图类的基本内容，直接上代码：</p>
+<h2 id="APIView"><a href="#APIView" class="headerlink" title="APIView"></a>APIView</h2><p><code>url.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">path(<span class="string">&#x27;stu3/&lt;int:pk&gt;/&#x27;</span>,TeacherInfoAPIView.as_view()), <span class="comment"># 单个</span></span><br><span class="line">path(<span class="string">&#x27;stu3/&#x27;</span>,TeacherListAPIView.as_view()), <span class="comment"># 多个</span></span><br></pre></td></tr></table></figure>
+
+<p><code>views.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TeacherListAPIView</span>(<span class="params">APIView</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;APIView不支持自定义方法，只支持get post put delete的https请求&#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self,request</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        获取list</span></span><br><span class="line"><span class="string">        :param request:</span></span><br><span class="line"><span class="string">        :return:</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        teacher = Teacher.objects.all()</span><br><span class="line">        serializer = TeacherModelSerializer(instance=teacher, many=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">return</span> Response(data=serializer.data, status=status.HTTP_200_OK)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">post</span>(<span class="params">self,request</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">        新增数据</span></span><br><span class="line"><span class="string">        :param request:</span></span><br><span class="line"><span class="string">        :return:</span></span><br><span class="line"><span class="string">        &#x27;&#x27;&#x27;</span></span><br><span class="line">        serializer = TeacherModelSerializer(data=request.data.dict())</span><br><span class="line">        serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">        serializer.save()</span><br><span class="line">        <span class="keyword">return</span> Response(data=serializer.data, status=status.HTTP_201_CREATED)</span><br><span class="line"></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TeacherInfoAPIView</span>(<span class="params">APIView</span>):</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get</span>(<span class="params">self,request,pk</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;根据id查询老师信息&#x27;&#x27;&#x27;</span></span><br><span class="line">        teacher = Teacher.objects.get(pk=pk)</span><br><span class="line">        serializer = TeacherModelSerializer(instance=teacher)</span><br><span class="line">        <span class="keyword">return</span> Response(data=serializer.data, status=status.HTTP_200_OK)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">put</span>(<span class="params">self,request,pk</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;根据id更新&#x27;&#x27;&#x27;</span></span><br><span class="line">        data = request.data.dict()</span><br><span class="line">        teacher = Teacher.objects.get(pk=pk)</span><br><span class="line">        serializer = TeacherModelSerializer(instance=teacher,data=data)</span><br><span class="line">        serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">        serializer.save()</span><br><span class="line">        <span class="keyword">return</span> Response(data=serializer.data, status=status.HTTP_200_OK)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">delete</span>(<span class="params">self,request,pk</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;根据id删除，这里直接删了，因为数据库中没有isDeleted字段&#x27;&#x27;&#x27;</span></span><br><span class="line">        data = request.data.dict()</span><br><span class="line">        teacher = Teacher.objects.get(pk=pk)</span><br><span class="line">        teacher.delete()</span><br><span class="line">        <span class="keyword">return</span> Response(status=status.HTTP_200_OK)</span><br></pre></td></tr></table></figure>
+
+<h2 id="ViewSet"><a href="#ViewSet" class="headerlink" title="ViewSet"></a>ViewSet</h2><p><code>url.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">path(<span class="string">&#x27;stu4&#x27;</span>,TeacherViewSet.as_view(actions=&#123;<span class="string">&#x27;get&#x27;</span>:<span class="string">&#x27;list&#x27;</span>,</span><br><span class="line">                                            <span class="string">&#x27;post&#x27;</span>:<span class="string">&#x27;add&#x27;</span>,</span><br><span class="line">                                            &#125;)),</span><br><span class="line"></span><br><span class="line">path(<span class="string">&#x27;stu4/&lt;int:pk&gt;/&#x27;</span>, TeacherViewSet.as_view(actions=&#123;<span class="string">&#x27;get&#x27;</span>: <span class="string">&#x27;get_teacherById&#x27;</span>,</span><br><span class="line">                                             &#125;)),</span><br></pre></td></tr></table></figure>
+
+<p><code>view.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TeacherViewSet</span>(<span class="params">ViewSet</span>):</span></span><br><span class="line">    <span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">    没有继承拓展类，业务逻辑还得自己去写，提供action参数，进行视图和路由 的绑定，</span></span><br><span class="line"><span class="string">    不再使用http请求作为视图方法 get post put delete 可以自己指定路由和方法绑定，</span></span><br><span class="line"><span class="string">    实现把关于一个模型的操作都写在一个类里</span></span><br><span class="line"><span class="string">    &#x27;&#x27;&#x27;</span></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">list</span>(<span class="params">self,request</span>):</span></span><br><span class="line">        teacher = Teacher.objects.all()</span><br><span class="line">        serializer = TeacherModelSerializer(instance=teacher, many=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">return</span> Response(data=serializer.data, status=status.HTTP_200_OK)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">add</span>(<span class="params">self,request</span>):</span></span><br><span class="line">        serializer = TeacherModelSerializer(data=request.data.dict())</span><br><span class="line">        serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">        serializer.save()</span><br><span class="line">        <span class="keyword">return</span> Response(data=serializer.data, status=status.HTTP_201_CREATED)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_teacherById</span>(<span class="params">self,request,pk</span>):</span></span><br><span class="line">        <span class="string">&#x27;&#x27;&#x27;根据id查询老师信息&#x27;&#x27;&#x27;</span></span><br><span class="line">        teacher = Teacher.objects.get(pk=pk)</span><br><span class="line">        serializer = TeacherModelSerializer(instance=teacher)</span><br><span class="line">        <span class="keyword">return</span> Response(data=serializer.data, status=status.HTTP_200_OK)</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>写了几个，就是可以自定义函数方法了</p>
+<h2 id="GenericViewSet"><a href="#GenericViewSet" class="headerlink" title="GenericViewSet"></a>GenericViewSet</h2><p>可以把我们经常写的模型和序列化器代码抽取出来</p>
+<p><code>url.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">path(<span class="string">&#x27;stu5&#x27;</span>, TeacherGenericViewSet.as_view(actions=&#123;<span class="string">&#x27;get&#x27;</span>: <span class="string">&#x27;list&#x27;</span>,</span><br><span class="line">                                             <span class="string">&#x27;post&#x27;</span>: <span class="string">&#x27;create&#x27;</span>,</span><br><span class="line">                                             &#125;)),</span><br><span class="line"></span><br><span class="line">path(<span class="string">&#x27;stu5/&lt;int:pk&gt;/&#x27;</span>, TeacherGenericViewSet.as_view(actions=&#123;<span class="string">&#x27;get&#x27;</span>: <span class="string">&#x27;get_one&#x27;</span>,</span><br><span class="line">                                                       &#125;)),</span><br></pre></td></tr></table></figure>
+
+<p><code>view.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">TeacherGenericViewSet</span>(<span class="params">GenericViewSet</span>):</span></span><br><span class="line">    queryset = Teacher.objects.all()</span><br><span class="line">    serializer_class = TeacherModelSerializer</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">list</span>(<span class="params">self, request</span>):</span></span><br><span class="line"></span><br><span class="line">        serializer = self.get_serializer(instance=self.get_queryset(), many=<span class="literal">True</span>)</span><br><span class="line">        <span class="keyword">return</span> Response(serializer.data)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">create</span>(<span class="params">self, request</span>):</span></span><br><span class="line">        serializer = self.get_serializer(data=request.data)</span><br><span class="line">        serializer.is_valid(raise_exception=<span class="literal">True</span>)</span><br><span class="line">        serializer.save()</span><br><span class="line">        <span class="keyword">return</span> Response(serializer.data, status=status.HTTP_201_CREATED)</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">def</span> <span class="title">get_one</span>(<span class="params">self, request, pk</span>):</span></span><br><span class="line">        <span class="keyword">try</span>:</span><br><span class="line">            instance = self.get_object()</span><br><span class="line">            <span class="comment"># 实例化序列化器对象</span></span><br><span class="line">            serializer = self.get_serializer(instance=instance)</span><br><span class="line">            <span class="keyword">return</span> Response(data=serializer.data, status=status.HTTP_200_OK)</span><br><span class="line">        <span class="keyword">except</span> Student.DoesNotExist:</span><br><span class="line">            <span class="keyword">return</span> Response(&#123;<span class="string">&#x27;msg&#x27;</span>: <span class="string">&#x27;老师不存在&#x27;</span>&#125;, status=status.HTTP_404_NOT_FOUND)</span><br></pre></td></tr></table></figure>
+
+<h2 id="ModelViewSet"><a href="#ModelViewSet" class="headerlink" title="ModelViewSet"></a>ModelViewSet</h2><p>实现了五个拓展类，所以写两行代码即可有5个http接口</p>
+<p><code>url.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.routers <span class="keyword">import</span> DefaultRouter,SimpleRouter</span><br><span class="line">router = DefaultRouter()</span><br><span class="line"><span class="comment"># 注册试图（访问前缀，视图集，调用别名）</span></span><br><span class="line">router.register(prefix=<span class="string">&#x27;s9&#x27;</span>,viewset=StudentMixinViewSet,basename=<span class="string">&#x27;s9&#x27;</span>)</span><br><span class="line"><span class="comment"># 路由列表</span></span><br><span class="line"></span><br><span class="line">urlpatterns += router.urls</span><br></pre></td></tr></table></figure>
+
+<p><code>view.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StudentModelViewSet</span>(<span class="params">ModelViewSet</span>):</span></span><br><span class="line">    queryset = Student.objects.all()</span><br><span class="line">    serializer_class = StudentModelSerializer</span><br></pre></td></tr></table></figure>
+
+<h2 id="ReadOnlyModelViewSet"><a href="#ReadOnlyModelViewSet" class="headerlink" title="ReadOnlyModelViewSet"></a>ReadOnlyModelViewSet</h2><p>只能读</p>
+<p><code>url.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> rest_framework.routers <span class="keyword">import</span> DefaultRouter,SimpleRouter</span><br><span class="line">router = DefaultRouter()</span><br><span class="line"><span class="comment"># 注册试图（访问前缀，视图集，调用别名）</span></span><br><span class="line">router.register(prefix=<span class="string">&#x27;stu6&#x27;</span>,viewset=StudentModelViewSet,basename=<span class="string">&#x27;stu6&#x27;</span>)</span><br><span class="line">router.register(prefix=<span class="string">&#x27;stu7&#x27;</span>,viewset=StudentReadOnlyModelViewSet,basename=<span class="string">&#x27;stu7&#x27;</span>)</span><br><span class="line"><span class="comment"># 路由列表</span></span><br><span class="line">urlpatterns += router.urls</span><br></pre></td></tr></table></figure>
+
+<p><code>view.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="string">ViewSet</span></span><br><span class="line"><span class="string">GenericViewSet</span></span><br><span class="line"><span class="string">ModelViewSet = GenericViewSet + ListModelMixin + CreateModelMixin + UpdateModelMixin+</span></span><br><span class="line"><span class="string">RetrieveModelMixin + DestoryModelMixin</span></span><br><span class="line"><span class="string">ReadOnlyModelViewSet = GenericViewSet + ListModelMixin + RetrieveModelMixin</span></span><br><span class="line"><span class="string">&#x27;&#x27;&#x27;</span></span><br><span class="line"><span class="class"><span class="keyword">class</span> <span class="title">StudentReadOnlyModelViewSet</span>(<span class="params">ReadOnlyModelViewSet</span>):</span></span><br><span class="line">    queryset = Student.objects.all()</span><br><span class="line">    serializer_class = StudentModelSerializer</span><br></pre></td></tr></table></figure>
+
+
+
+<h1 id="路由"><a href="#路由" class="headerlink" title="路由"></a>路由</h1><p> REST框架添加了对自动URL路由到Django的支持，并为你提供了一种简单、快速和一致的方式来将视图逻辑连接到一组URL。 </p>
+<p>在上面编写视图用例的已经写到了两种路由，第一种和Django类似，但是通过 <code>as_view()</code>，自适应路由（我这样理解的，不清楚对不对），就是可以根据试图层的http接口自己生成路由，在 <code>APIView</code>中不需要写参数。但在GenericViewSet中或者继承了GenericViewSet的视图模板中，不仅仅有http借口，此时就可以添加参数action来进行视图和路由的匹配。</p>
+<p>对于ModelViewSet和ReadOnlyModelViewSet可以使用DefaultRouter和SimpleRouter，DefaultRouter和SimpleRouter两者简单的区别就是前者提供API页面，SimpleRouter后者只是简单的数据返回。</p>
+<p>关于DRF路由的写法，还有自定义路由等等，可以参考中文官方文档</p>
+<p><a target="_blank" rel="noopener" href="https://q1mi.github.io/Django-REST-framework-documentation/api-guide/routers_zh/"> Django REST framework 中文文档 </a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:undefined">Luffy</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="http://example.com/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/">http://example.com/2022/08/21/Django-Rest-Framework请求响应视图路由/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="http://example.com" target="_blank">Luffy's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/DRF/">DRF</a></div><div class="post_share"><div class="social-share" data-image="https://s1.ax1x.com/2022/08/21/vyYQMD.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><div class="post-reward"><div class="reward-button"><i class="fas fa-qrcode"></i> 打赏<div class="reward-main"><ul class="reward-all"><li class="reward-item"><a href="/img/wechat.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="/img/wechat.jpg" alt="微信"/></a><div class="post-qr-code-desc">微信</div></li><li class="reward-item"><a href="/img/alipay.jpg" target="_blank"><img class="post-qr-code-img" data-lazy-src="/img/alipay.jpg" alt="支付宝"/></a><div class="post-qr-code-desc">支付宝</div></li></ul></div></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/08/21/Django-Rest-Framework%E5%85%AB%E5%A4%A7%E7%BB%84%E4%BB%B6/"><img class="prev-cover" data-lazy-src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">Django Rest Framework八大组件</div></div></a></div><div class="next-post pull-right"><a href="/2022/08/21/Django-Rest-Framework%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8/"><img class="next-cover" data-lazy-src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" onerror="onerror=null;src='/img/404.jpg'"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">Django Rest Framework序列化器</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2022/08/21/Django-Rest-Framework入门/" title="Django Rest Framework入门"><img class="cover" data-lazy-src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-21</div><div class="title">Django Rest Framework入门</div></div></a></div><div><a href="/2022/08/21/Django-Rest-Framework八大组件/" title="Django Rest Framework八大组件"><img class="cover" data-lazy-src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-21</div><div class="title">Django Rest Framework八大组件</div></div></a></div><div><a href="/2022/08/21/Django-Rest-Framework序列化器/" title="Django Rest Framework序列化器"><img class="cover" data-lazy-src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2022-08-21</div><div class="title">Django Rest Framework序列化器</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div class="vcomment" id="vcomment"></div></div></div></div></div><div class="aside_content" id="aside_content"><div class="card-widget card-info"><div class="card-content"><div class="card-info-avatar is-center"><img class="avatar-img" data-lazy-src="/img/avatar.jpg" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/><div class="author-info__name">Luffy</div><div class="author-info__description">心之所向，素履以往</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length_num">48</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length_num">20</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/luffy997" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:389783961@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div></div><div class="card-widget card-announcement"><div class="card-content"><div class="item-headline"><i class="fas fa-bullhorn card-announcement-animation"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="card-content"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94"><span class="toc-number">1.</span> <span class="toc-text">请求响应</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#Request"><span class="toc-number">1.1.</span> <span class="toc-text">Request</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Response"><span class="toc-number">1.2.</span> <span class="toc-text">Response</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%A7%86%E5%9B%BE"><span class="toc-number">2.</span> <span class="toc-text">视图</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#APIView"><span class="toc-number">2.1.</span> <span class="toc-text">APIView</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ViewSet"><span class="toc-number">2.2.</span> <span class="toc-text">ViewSet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#GenericViewSet"><span class="toc-number">2.3.</span> <span class="toc-text">GenericViewSet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ModelViewSet"><span class="toc-number">2.4.</span> <span class="toc-text">ModelViewSet</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ReadOnlyModelViewSet"><span class="toc-number">2.5.</span> <span class="toc-text">ReadOnlyModelViewSet</span></a></li></ol></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%B7%AF%E7%94%B1"><span class="toc-number">3.</span> <span class="toc-text">路由</span></a></li></ol></div></div></div><div class="card-widget card-recent-post"><div class="card-content"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2022/08/21/Django-Rest-Framework%E5%85%AB%E5%A4%A7%E7%BB%84%E4%BB%B6/" title="Django Rest Framework八大组件"><img data-lazy-src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Django Rest Framework八大组件"/></a><div class="content"><a class="title" href="/2022/08/21/Django-Rest-Framework%E5%85%AB%E5%A4%A7%E7%BB%84%E4%BB%B6/" title="Django Rest Framework八大组件">Django Rest Framework八大组件</a><time datetime="2022-08-21T06:46:07.000Z" title="发表于 2022-08-21 14:46:07">2022-08-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/" title="Django Rest Framework请求响应视图路由"><img data-lazy-src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Django Rest Framework请求响应视图路由"/></a><div class="content"><a class="title" href="/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/" title="Django Rest Framework请求响应视图路由">Django Rest Framework请求响应视图路由</a><time datetime="2022-08-21T06:44:05.000Z" title="发表于 2022-08-21 14:44:05">2022-08-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/21/Django-Rest-Framework%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8/" title="Django Rest Framework序列化器"><img data-lazy-src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Django Rest Framework序列化器"/></a><div class="content"><a class="title" href="/2022/08/21/Django-Rest-Framework%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8/" title="Django Rest Framework序列化器">Django Rest Framework序列化器</a><time datetime="2022-08-21T06:36:27.000Z" title="发表于 2022-08-21 14:36:27">2022-08-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/08/21/Django-Rest-Framework%E5%85%A5%E9%97%A8/" title="Django Rest Framework入门"><img data-lazy-src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Django Rest Framework入门"/></a><div class="content"><a class="title" href="/2022/08/21/Django-Rest-Framework%E5%85%A5%E9%97%A8/" title="Django Rest Framework入门">Django Rest Framework入门</a><time datetime="2022-08-21T06:04:58.000Z" title="发表于 2022-08-21 14:04:58">2022-08-21</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2022/03/16/Python%E7%8E%AF%E5%A2%83%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/" title="Python环境相关的问题"><img data-lazy-src="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="Python环境相关的问题"/></a><div class="content"><a class="title" href="/2022/03/16/Python%E7%8E%AF%E5%A2%83%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/" title="Python环境相关的问题">Python环境相关的问题</a><time datetime="2022-03-16T13:07:50.000Z" title="发表于 2022-03-16 21:07:50">2022-03-16</time></div></div></div></div></div></div></div></main><footer id="footer" style="background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab)"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2022 By Luffy</div></div></footer></div><section id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="translateLink" type="button" title="简繁转换">简</button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></section><div class="search-dialog" id="local-search"><div class="search-dialog__title" id="local-search-title">本地搜索</div><div id="local-input-panel"><div id="local-search-input"><div class="local-search-box"><input class="local-search-box--input" placeholder="搜索文章" type="text"/></div></div></div><hr/><div id="local-search-results"><div id="local-hits"></div><div id="local-stats"><div class="local-search-stats__hr" id="hr"><span>由</span> <a target="_blank" rel="noopener" href="https://github.com/wzpan/hexo-generator-search" style="color:#49B1F5;">hexo-generator-search</a>
+ <span>提供支持</span></div></div></div><span class="search-close-button"><i class="fas fa-times"></i></span></div><div id="search-mask"></div><div><script src="https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js"></script><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="/js/tw_cn.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js"></script><script src="https://cdn.jsdelivr.net/npm/vanilla-lazyload/dist/lazyload.iife.min.js"></script><script src="https://cdn.jsdelivr.net/npm/node-snackbar/dist/snackbar.min.js"></script><script src="/js/search/local-search.js"></script><script>var preloader = {
+  endLoading: () => {
+    document.body.style.overflow = 'auto';
+    document.getElementById('loading-box').classList.add("loaded")
+  },
+  initLoading: () => {
+    document.body.style.overflow = '';
+    document.getElementById('loading-box').classList.remove("loaded")
+
+  }
+}
+window.addEventListener('load',()=> {preloader.endLoading()})</script><div class="js-pjax"><script>if (document.getElementsByClassName('mermaid').length) {
+  if (window.mermaidJsLoad) mermaid.init()
+  else {
+    $.getScript('https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js', function () {
+      window.mermaidJsLoad = true
+      mermaid.initialize({
+        theme: 'default',
+      })
+      false && mermaid.init()
+    })
+  }
+}</script><script>function loadValine () {
+  function initValine () {
+    let initData = {
+      el: '#vcomment',
+      appId: '',
+      appKey: '',
+      placeholder: 'Please leave your footprints',
+      avatar: 'monsterid',
+      meta: 'nick,mail,link'.split(','),
+      pageSize: '10',
+      lang: 'en',
+      recordIP: false,
+      serverURLs: '',
+      emojiCDN: '',
+      emojiMaps: "",
+      enableQQ: false,
+      path: window.location.pathname,
+    }
+
+    if (true) { 
+      initData.requiredFields= ('nick,mail'.split(','))
+    }
+    
+    if (false) {
+      const otherData = false
+      initData = Object.assign({}, initData, otherData)
+    }
+    
+    const valine = new Valine(initData)
+  }
+
+  if (typeof Valine === 'function') initValine() 
+  else $.getScript('https://cdn.jsdelivr.net/npm/valine/dist/Valine.min.js', initValine)
+}
+
+if ('Valine' === 'Valine' || !true) {
+  if (true) btf.loadComment(document.querySelector('#vcomment'),loadValine)
+  else setTimeout(() => loadValine(), 0)
+} else {
+  function loadOtherComment () {
+    loadValine()
+  }
+}</script><script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div><canvas class="fireworks" mobile="false"></canvas><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/fireworks.min.js"></script><script defer="defer" id="ribbon" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-ribbon.min.js" size="150" alpha="0.6" zIndex="-1" mobile="true" data-click="true"></script><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/activate-power-mode.min.js"></script><script>POWERMODE.colorful = true;
+POWERMODE.shake = true;
+POWERMODE.mobile = false;
+document.body.addEventListener('input', POWERMODE);
+</script></div></body></html>
