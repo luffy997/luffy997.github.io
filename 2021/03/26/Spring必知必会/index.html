@@ -1,0 +1,827 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Spring中用到了哪些设计模式？单例模式Spring中的Bean默认情况下都是单例的。bean被声明为单例的时候，在处理多次请求的时候在Spring容器里只实例化出一个bean，后续的请求都公用这个对象，这个对象会保存在一个map里面。当有请求来的时候会先从缓存(map)里查看有没有，有的话直接使用这个对象，没有的话才实例化一个新的对象，所以这是个单例的。但是对于原型(prototype)bea">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Spring必知必会">
+<meta property="og:url" content="http://example.com/2021/03/26/Spring%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="Spring中用到了哪些设计模式？单例模式Spring中的Bean默认情况下都是单例的。bean被声明为单例的时候，在处理多次请求的时候在Spring容器里只实例化出一个bean，后续的请求都公用这个对象，这个对象会保存在一个map里面。当有请求来的时候会先从缓存(map)里查看有没有，有的话直接使用这个对象，没有的话才实例化一个新的对象，所以这是个单例的。但是对于原型(prototype)bea">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/03/26/Yt45DHFURLdonjW.jpg">
+<meta property="article:published_time" content="2021-03-26T00:12:16.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:05.969Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="Spring">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.loli.net/2021/03/26/Yt45DHFURLdonjW.jpg">
+  
+  
+  
+  <title>Spring必知必会 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Spring必知必会"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-03-26 08:12" pubdate>
+          2021年3月26日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          4.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          36 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Spring必知必会</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="Spring中用到了哪些设计模式？"><a href="#Spring中用到了哪些设计模式？" class="headerlink" title="Spring中用到了哪些设计模式？"></a>Spring中用到了哪些设计模式？</h1><h2 id="单例模式"><a href="#单例模式" class="headerlink" title="单例模式"></a><strong>单例模式</strong></h2><p>Spring中的Bean默认情况下都是单例的。bean被声明为单例的时候，在处理多次请求的时候在Spring容器里只实例化出一个bean，后续的请求都公用这个对象，这个对象会保存在一个map里面。当有请求来的时候会先从缓存(map)里查看有没有，有的话直接使用这个对象，没有的话才实例化一个新的对象，所以这是个单例的。但是对于原型(prototype)bean来说当每次请求来的时候直接实例化新的bean，没有缓存以及从缓存查的过程。</p>
+<ul>
+<li><p>所以单例的bean只有第一次创建新的bean后面就会复用bean，所以不会频繁创建对象。</p>
+</li>
+<li><p>原型的bean每次都会新创建</p>
+</li>
+</ul>
+<p><strong>单例bean的优势：</strong></p>
+<ol>
+<li>减少了新生成实例的消耗 新生成实例消耗包括两方面，首先，Spring会通过反射或者cglib来生成bean实例这都是耗性能的操作，其次给对象分配内存也会涉及复杂算法</li>
+<li>减少jvm垃圾回收 由于不会给每个请求都新生成bean实例，所以自然回收的对象少了</li>
+<li>可以快速获取到bean 因为单例的获取bean操作除了第一次生成之外其余的都是从缓存里获取的所以很快</li>
+</ol>
+<p><strong>单例bean的劣势：</strong></p>
+<p>单例的bean一个很大的劣势就是他不能做到线程安全！！！，由于所有请求都共享一个bean实例，所以这个bean要是有状态的一个bean的话可能在并发场景下出现问题，有状态的Bean，多线程环境下不安全，那么适合用Prototype原型模式。Prototype: 每次对bean的请求都会创建一个新的bean实例。</p>
+<p>总的来说Spring把bean默认设计成单例，就是为了<strong>提高性能！</strong></p>
+<h2 id="工厂模式"><a href="#工厂模式" class="headerlink" title="工厂模式"></a>工厂模式</h2><h2 id="代理模式"><a href="#代理模式" class="headerlink" title="代理模式"></a>代理模式</h2><h2 id="模板方法模式"><a href="#模板方法模式" class="headerlink" title="模板方法模式"></a>模板方法模式</h2><p>这篇博文讲的不错，贴个链接：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u013521220/article/details/107374259">Spring中用到了哪些设计模式？</a></p>
+<h1 id="Spring的IOC"><a href="#Spring的IOC" class="headerlink" title="Spring的IOC"></a>Spring的IOC</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zhangcongyi420/article/details/89419715">Spring的IOC 实现原理</a></p>
+<p>简单来说，IOC 叫做控制反转，指的是通过Spring来管理对象的创建、配置和生命周期，这样相当于把控制权交给了Spring，不需要⼈⼯来管理对象之间复杂的依赖关系，这样做的好处就是解耦。在Spring里面，主要提供了 BeanFactory 和 ApplicationContext 两种 IOC 容器，通过他们来实现对 Bean 的管理。</p>
+<h1 id="Spring的AOP"><a href="#Spring的AOP" class="headerlink" title="Spring的AOP"></a>Spring的AOP</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/moreevan/article/details/11977115/">Spring AOP 实现原理</a></p>
+<p>简单的来说，AOP 叫做面向切面编程，他是⼀个编程范式，⽬的就是提高代码的模块性。Srping AOP 基于动态代理的方式实现，如果是实现了接⼝的话就会使用 JDK 动态代理，反之则使用 CGLIB 代理，Spring中 AOP的应用主要体现在 事务、日志、异常处理等方面，通过在代码的前后做⼀些增强处理，可以实现对业务逻辑的隔离，提高代码的模块化能力，同时也是解耦。Spring主要提供了 Aspect 切面、JoinPoint 连接点、PointCut 切入点、Advice 增强等实现方式。</p>
+<p>AOP的使用，我在之前的博客也写到，这里贴个链接：</p>
+<p><a target="_blank" rel="noopener" href="https://luffy997.github.io/2021/01/06/SpringBoot%E4%B9%8BAOP%E7%9A%84%E4%BD%BF%E7%94%A8/">SpringBoot之AOP的使用</a></p>
+<h1 id="JDK动态代理和CGLIB代理有什么区别？"><a href="#JDK动态代理和CGLIB代理有什么区别？" class="headerlink" title="JDK动态代理和CGLIB代理有什么区别？"></a>JDK动态代理和CGLIB代理有什么区别？</h1><p>JDK 动态代理主要是针对类实现了某个接口，AOP 则会使用 JDK 动态代理。他基于反射的机制实现，生成⼀个实现同样接口的⼀个代理类，然后通过重写方法的方式，实现对代码的增强。</p>
+<p>而如果某个类没有实现接口，AOP 则会使⽤ CGLIB 代理。他的底层原理是基于 asm 第三方框架，通过修改字节码生成⼀个子类，然后重写父类的方法，实现对代码的增强。</p>
+<h1 id="Spring的AOP和Aspectj-AOP的区别"><a href="#Spring的AOP和Aspectj-AOP的区别" class="headerlink" title="Spring的AOP和Aspectj AOP的区别"></a>Spring的AOP和Aspectj AOP的区别</h1><p>Spring AOP 基于动态代理实现，属于运行时增强。</p>
+<p>AspectJ 则属于编译时增强，主要有3种方式：</p>
+<ol>
+<li><p>编译时织⼊：指的是增强的代码和源代码我们都有，直接使⽤ AspectJ 编译器编译就行了，编译之后⽣成⼀个新的类，他也会作为⼀个正常的 Java 类装载到JVM。</p>
+</li>
+<li><p>编译后织⼊：指的是代码已经被编译成 class ⽂件或者已经打成 jar 包，这时候要增强的话，就是</p>
+<p>编译后织入，比如你依赖了第三方的类库，⼜想对他增强的话，就可以通过这种方式。</p>
+</li>
+</ol>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-tag">&lt;<span class="hljs-name">configuration</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">weaveDependencies</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">weaveDependency</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">weaveDependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">weaveDependency</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">weaveDependency</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">weaveDependencies</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">configuration</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<ol>
+<li>加载时织入：指的是在 JVM 加载类的时候进⾏织⼊。</li>
+</ol>
+<p>总结下来的话，就是 Spring AOP 只能在运行时织⼊，不需要单独编译，性能相比 AspectJ 编译织⼊的⽅式慢，而AspectJ 只⽀持编译前后和类加载时织⼊，性能更好，功能更加强大。</p>
+<h1 id="FactoryBean和BeanFactory有什么区别？"><a href="#FactoryBean和BeanFactory有什么区别？" class="headerlink" title="FactoryBean和BeanFactory有什么区别？"></a>FactoryBean和BeanFactory有什么区别？</h1><p>BeanFactory是Bean的工厂，ApplicationContext的父类，IOC容器的核心，负责生产和管理Bean对象。</p>
+<p>FactoryBean是Bean，可以通过实现Factory接口定制实例化Bean的逻辑，通过代理一个Bean对象，对方法前后做一些操作。</p>
+<h1 id="SpringBean的生命周期"><a href="#SpringBean的生命周期" class="headerlink" title="SpringBean的生命周期"></a>SpringBean的生命周期</h1><p>SpringBean 生命周期简单概括为4个阶段：</p>
+<ol>
+<li><p>实例化，创建一个Bean对象</p>
+</li>
+<li><p>填充属性，为属性赋值</p>
+</li>
+<li><p>初始化</p>
+<ul>
+<li>如果实现类xxxAware接口，通过不同类型的Aware接口拿到Spring容器的资源</li>
+<li>如果实现了BeanPostProcessor接口，则会回调该接口的postProcessBeforeInitialization和postProcessAfterInitialization方法</li>
+<li>如果配置了init-method方法，则会执行init-method配置的方法</li>
+</ul>
+</li>
+<li><p>销毁</p>
+<ul>
+<li><p>容器关闭后，如果Bean实现了DisposableBean接口，则会回调该接口的destory方法</p>
+</li>
+<li><p>如果配置了destory-method方法，则会执行destory-method配置的方法</p>
+<p>​</p>
+</li>
+</ul>
+</li>
+</ol>
+<p><img src="https://i.loli.net/2021/03/25/olSnIia4xpgN2zP.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><a target="_blank" rel="noopener" href="https://www.jianshu.com/p/1dec08d290c1">请别再问Spring Bean的生命周期了！</a></p>
+<h1 id="Spirng是怎么解决循环依赖的"><a href="#Spirng是怎么解决循环依赖的" class="headerlink" title="Spirng是怎么解决循环依赖的"></a>Spirng是怎么解决循环依赖的</h1><p>首先，Spring解决循环依赖有两个前提条件：</p>
+<ol>
+<li>不全是构造器方式的循环依赖</li>
+<li>必须是单例</li>
+</ol>
+<p>基于上面的问题，我们知道Bean的生命周期，本质上解决循环依赖问题的就是三级缓存，通过三级缓存提前拿到未初始化的对象。</p>
+<p>第一级缓存：用来保存实例化、初始化都完成的对象</p>
+<p>第二级缓存：用来保存实例化完成，但未初始化完成的对象</p>
+<p>第三级缓存：用来保存一个对象工厂，提供一个匿名内部类，用于创建二级缓存中的对象</p>
+<p><img src="https://i.loli.net/2021/03/26/qLdW6vIhZFgxinD.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>假设一个简单的循环依赖场景，A、B互相依赖。</p>
+<p><img src="https://i.loli.net/2021/03/26/VMi1J7zj5NBHOdh.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>A对象的创建过程：</p>
+<ol>
+<li>创建对象A，实例化的时候把A对象工厂放入三级缓存</li>
+</ol>
+<p><img src="https://i.loli.net/2021/03/26/HS8Wuqzco6324hs.jpg" srcset="/img/loading.gif" lazyload></p>
+<ol>
+<li><p>A注入属性时，发现依赖B，转而去实例化B</p>
+</li>
+<li><p>同样创建对象B，注入属性时发现依赖A，一次从一级到三级缓存查询A，从三级缓存通过对象工厂拿到A，把A放入二级缓存，同时删除三级缓存中的A，此时，B已经实例化并且初始化完成，把B放入一级缓存。</p>
+<p><img src="https://i.loli.net/2021/03/26/z4xug2cRHAZdP9C.jpg" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>接着继续创建A，顺利从一级缓存拿到实例化且初始化完成的B对象，A对象创建也完成，删除二级缓存中的A，同时把A放入一级缓存</p>
+</li>
+<li><p>最后，一级缓存中保存着实例化、初始化都完成的A、B对象</p>
+<p><img src="https://i.loli.net/2021/03/26/lmjHCGcTw2Fqyxp.jpg" srcset="/img/loading.gif" lazyload></p>
+</li>
+</ol>
+<p>因此，由于把实例化和初始化的流程分开了，所以如果都是用构造器的化，就没法分离这个操作，所以都是构造器的话就无法解决循环依赖 的问题了。</p>
+<p>下面对上面的做一些补充说明：</p>
+<ol>
+<li><p>创建对象A，实例化的时候把A对象工厂放入三级缓存，这里为啥直接放入第三级缓存，因为A既没有实例化完成，也没用初始化完成，只能放入三级缓存（一二级都要实例化完成），下面是源码：</p>
+<p><img src="https://i.loli.net/2021/03/26/X4YAUF9jI5evphr.png" srcset="/img/loading.gif" lazyload></p>
+</li>
+<li><p>为什么第三级缓存要使用ObjectFactory？</p>
+<p>如果仅仅是解决循环依赖问题，使用二级缓存就可以了，但是如果对象实现了AOP，那么注入到其他bean的时候，并不是最终的代理对象，而是原始的。这时就需要通过三级缓存的ObjectFactory才能提前产生最终的需要代理的对象。</p>
+<p><img src="https://i.loli.net/2021/03/26/oUlnZaJRXNsV5yG.png" srcset="/img/loading.gif" lazyload></p>
+<p>​</p>
+<ol>
+<li><p>什么时候将Bean的引用提前暴露给第三级缓存的ObjectFactory持有？时机就是在第一步实例化之后，第二步依赖注入之前，完成此操作。</p>
+<p><img src="https://i.loli.net/2021/03/26/BtaOd4SX1HmlnMk.png" srcset="/img/loading.gif" lazyload></p>
+<p>​</p>
+<p>​</p>
+</li>
+<li><p>循环依赖问题在Spring中主要有三种情况：</p>
+<ul>
+<li>通过构造方法进行依赖注入时产生的循环依赖问题。</li>
+<li>通过setter方法进行依赖注入且是在多例（原型）模式下产生的循环依赖问题。</li>
+<li>通过setter方法进行依赖注入且是在单例模式下产生的循环依赖问题。</li>
+</ul>
+<p>在Spring中，只有第（3）种方式的循环依赖问题被解决了，其他两种方式在遇到循环依赖问题时都会产生异常。其实也很好解释：</p>
+<p>第（1）种构造方法注入的情况下，在new对象的时候就会堵塞住了，其实也就是”先有鸡还是先有蛋“的历史难题。</p>
+<p>第（2）种setter方法（多例）的情况下，每一次getBean()时，都会产生一个新的Bean，如此反复下去就会有无穷无尽的Bean产生了，最终就会导致OOM问题的出现。</p>
+</li>
+</ol>
+</li>
+</ol>
+<p>参考文章：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/a745233700/article/details/110914620?utm_medium=distribute.pc_relevant.none-task-blog-baidujs_utm_term-0&spm=1001.2101.3001.4242">Spring如何解决循环依赖问题</a></p>
+<h1 id="为什么要三级缓存？二级不行吗？"><a href="#为什么要三级缓存？二级不行吗？" class="headerlink" title="为什么要三级缓存？二级不行吗？"></a>为什么要三级缓存？二级不行吗？</h1><p>不可以，主要是为了生成代理对象。</p>
+<p>因为三级缓存中放的是生成具体对象的匿名内部类，他可以⽣成代理对象，也可以是普通的实例对象。</p>
+<p>使⽤三级缓存主要是为了保证不管什么时候使用的都是⼀个对象。</p>
+<p>假设只有⼆级缓存的情况，往二级缓存中放的显示⼀个普通的Bean对象， BeanPostProcessor 去⽣成</p>
+<p>代理对象之后，覆盖掉⼆级缓存中的普通Bean对象，那么多线程环境下可能取到的对象就不⼀致了。</p>
+<p><img src="https://i.loli.net/2021/03/26/c6uSjZOahlrVA2J.jpg" srcset="/img/loading.gif" lazyload></p>
+<h1 id="Spring事务传播机制有哪些"><a href="#Spring事务传播机制有哪些" class="headerlink" title="Spring事务传播机制有哪些"></a>Spring事务传播机制有哪些</h1><ol>
+<li>PROPAGATION_REQUIRED：如果当前没有事务，就创建⼀个新事务，如果当前存在事务，就加</li>
+</ol>
+<p>⼊该事务，这也是通常我们的默认选择。</p>
+<ol>
+<li>PROPAGATION_REQUIRES_NEW：创建新事务，无论当前存不存在事务，都创建新事务。</li>
+<li>PROPAGATION_NESTED：如果当前存在事务，则在嵌套事务内执行。如果当前没有事务，则按</li>
+</ol>
+<p>REQUIRED属性执行。</p>
+<ol>
+<li>PROPAGATION_NOT_SUPPORTED：以非事务方式执行操作，如果当前存在事务，就把当前事务</li>
+</ol>
+<p>挂起。</p>
+<ol>
+<li>PROPAGATION_NEVER：以非事务方式执行，如果当前存在事务，则抛出异常。</li>
+<li>PROPAGATION_MANDATORY：支持当前事务，如果当前存在事务，就加入该事务，如果当前不</li>
+</ol>
+<p>存在事务，就抛出异常。</p>
+<ol>
+<li>PROPAGATION_SUPPORTS：支持当前事务，如果当前存在事务，就加入该事务，如果当前不存</li>
+</ol>
+<p>在事务，就以非事务执行。</p>
+<h1 id="SpringBoot启动流程"><a href="#SpringBoot启动流程" class="headerlink" title="SpringBoot启动流程"></a>SpringBoot启动流程</h1><ol>
+<li>准备环境，根据不同的环境创建不同的Environment</li>
+<li>准备、加载上下文，为不同的环境选择不同的Spring Context，然后加载资源，配置Bean</li>
+<li>初始化，这个阶段刷新Spring Context，启动应用</li>
+<li>最后结束流程</li>
+</ol>
+<p><img src="https://i.loli.net/2021/03/26/jua6whBdD5KreoP.png" srcset="/img/loading.gif" lazyload></p>
+<p>贴一篇讲解Spring启动相关注解的博文：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/u014352080/article/details/102716468">SpringBoot启动流程及其原理</a></p>
+<h1 id="Spring中的Controller、Service、Dao是不是线程安全的？"><a href="#Spring中的Controller、Service、Dao是不是线程安全的？" class="headerlink" title="Spring中的Controller、Service、Dao是不是线程安全的？"></a>Spring中的Controller、Service、Dao是不是线程安全的？</h1><p>对于Bean之前开篇也已经讲到：</p>
+<p>原型Bean</p>
+<p>对于原型Bean,每次创建一个新对象，也就是线程之间并不存在Bean共享，自然是不会有线程安全的问题。</p>
+<p><strong>单例Bean</strong></p>
+<p>对于单例Bean,所有线程都共享一个单例实例Bean,因此是存在资源的竞争。</p>
+<p>如果单例Bean,是一个无状态Bean，也就是线程中的操作不会对Bean的成员执行查询以外的操作，那么这个单例Bean是线程安全的。比如Spring mvc 的 Controller、Service、Dao等，这些Bean大多是无状态的，只关注于方法本身。</p>
+<p><strong>spring单例，为什么controller、service和dao确能保证线程安全？</strong></p>
+<p>Spring中的Bean默认是单例模式的，框架并没有对bean进行多线程的封装处理。</p>
+<p>实际上大部分时间Bean是无状态的（比如Dao） 所以说在某种程度上来说Bean其实是安全的。</p>
+<p>但是如果Bean是有状态的 那就需要开发人员自己来进行线程安全的保证，最简单的办法就是改变bean的作用域 把 “singleton”改为’‘protopyte’ 这样每次请求Bean就相当于是 new Bean() 这样就可以保证线程的安全了。</p>
+<ul>
+<li>有状态就是有数据存储功能</li>
+<li>无状态就是不会保存数据 　　 controller、service和dao层本身并不是线程安全的，只是如果只是调用里面的方法，而且多线程调用一个实例的方法，会在内存中复制变量，这是自己的线程的工作内存，是安全的。</li>
+</ul>
+<p>对于任何无状态单例都是线程安全的</p>
+<p><strong>@Controller @Service是不是线程安全的?</strong></p>
+<p>默认配置下不是的，因为默认情况下@Controller没有加上@Scope，没有加@Scope就是默认值singleton，单例的。意思就是系统只会初始化一次Controller容器，所以每次请求的都是同一个Controller容器，当然是非线程安全的。</p>
+<p>这里写了个测试代码：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br></pre></td><td class="code"><pre><code class="hljs java">/\*\*<br>\* Contrller 默认单例分析测试<br>\* <span class="hljs-meta">@author</span> 路飞<br>\* <span class="hljs-meta">@create</span> <span class="hljs-number">2021</span>/<span class="hljs-number">3</span>/<span class="hljs-number">26</span> <span class="hljs-number">14</span>:<span class="hljs-number">54</span><br>\*/<br><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@Scope(value = &quot;singleton&quot;)</span> <span class="hljs-comment">//加上@Scope注解，他有2个取值：单例-singleton 多实例-prototype</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">TestController</span> &#123;<br><span class="hljs-keyword">private</span> <span class="hljs-type">int</span> <span class="hljs-variable">var</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">int</span> <span class="hljs-variable">staticVar</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br>ThreadLocal&lt;Long&gt; t1 = <span class="hljs-keyword">new</span> <span class="hljs-title class_">ThreadLocal</span>&lt;Long&gt;();<br><span class="hljs-meta">@Autowired</span><br><span class="hljs-keyword">private</span> User user;<br><span class="hljs-meta">@Value(&quot;$&#123;test.val&#125;&quot;)</span><br><span class="hljs-keyword">private</span> <span class="hljs-type">int</span> testVal;<br><span class="hljs-meta">@GetMapping(&quot;/testVal01&quot;)</span><br><span class="hljs-keyword">public</span> String <span class="hljs-title function_">test01</span><span class="hljs-params">()</span>&#123;<br><span class="hljs-comment">//var随着请求次数，进行+1</span><br>System.out.println(<span class="hljs-string">&quot;普通变量var:&quot;</span> + (++<span class="hljs-keyword">var</span>));<br><span class="hljs-keyword">return</span> <span class="hljs-string">&quot;普通变量var:&quot;</span>+<span class="hljs-keyword">var</span>;<br>&#125;<br><span class="hljs-meta">@GetMapping(&quot;/testVal02&quot;)</span><br><span class="hljs-keyword">public</span> String <span class="hljs-title function_">test02</span><span class="hljs-params">()</span>&#123;<br><span class="hljs-comment">//发现每次请求都是线程安全的</span><br>System.out.println(<span class="hljs-string">&quot;普通变量var：&quot;</span> + (++<span class="hljs-keyword">var</span>));<br><span class="hljs-keyword">return</span> <span class="hljs-string">&quot;普通变量var：&quot;</span>+<span class="hljs-keyword">var</span>;<br>&#125;<br><span class="hljs-meta">@GetMapping(&quot;/testVal03&quot;)</span><br><span class="hljs-keyword">public</span> String <span class="hljs-title function_">test03</span><span class="hljs-params">()</span>&#123;<br><span class="hljs-comment">//static的staticVar还是会随着请求而+1，线程不安全</span><br>System.out.println(<span class="hljs-string">&quot;普通变量var:&quot;</span> + (++<span class="hljs-keyword">var</span>)+ <span class="hljs-string">&quot;---静态变量staticVar:&quot;</span> + (++staticVar));<br><span class="hljs-keyword">return</span> <span class="hljs-string">&quot;普通变量var:&quot;</span> + <span class="hljs-keyword">var</span> + <span class="hljs-string">&quot;静态变量staticVar:&quot;</span> + staticVar;<br>&#125;<br><span class="hljs-meta">@GetMapping(&quot;/testVal04&quot;)</span><br><span class="hljs-keyword">public</span> String <span class="hljs-title function_">test04</span><span class="hljs-params">()</span>&#123;<br>t1.set(<span class="hljs-number">1L</span>);<br>System.out.println(<span class="hljs-string">&quot;先取一下user对象中的值：&quot;</span>+user.getAge()+<span class="hljs-string">&quot;----&gt;&quot;</span>+user.hashCode());<br>user.setAge(<span class="hljs-number">1</span>);<br>System.out.println(<span class="hljs-string">&quot;普通变量var:&quot;</span> + (++<span class="hljs-keyword">var</span>) + <span class="hljs-string">&quot;===静态变量staticVar:&quot;</span> + (++staticVar) + <span class="hljs-string">&quot;===配置变量testInt:&quot;</span> + (++testVal)<br>+ <span class="hljs-string">&quot;===ThreadLocal变量tl:&quot;</span> + t1.get()+<span class="hljs-string">&quot;===注入变量user:&quot;</span> + user.getAge());<br><span class="hljs-keyword">return</span> <span class="hljs-string">&quot;普通变量var:&quot;</span> + <span class="hljs-keyword">var</span> + <span class="hljs-string">&quot;,静态变量staticVar:&quot;</span> + staticVar + <span class="hljs-string">&quot;,配置读取变量testInt:&quot;</span> + testVal + <span class="hljs-string">&quot;,ThreadLocal变量tl:&quot;</span><br>+ t1.get() + <span class="hljs-string">&quot;注入变量user:&quot;</span> + user.getAge();<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>启动测试，调用第一个接口，发现普通变量的值会随着请求次数的增加而+1，所以是线程不安全的</p>
+<p>但我们加上@scope注解时，让它不走默认的singleton，而是走原型，启动程序，发现普通变量的值不会会随着请求次数的增加而+1，现在看来没有出现线程不安全的情况，那我们继续测试，假如static变量，我们知道类加载是懒加载机制，在准别阶段就会对static变量进行初始化，后面就不管了，我们启动程序发现，static变量会随着请求次数的增加而+1，所以加了@scope注解并不一定是线程安全的！</p>
+<p>这里就引入了TheadLocal，为每一个线程创建一个副本，实现线程的上下文传递同一个对象，隔离了多线程之间数据共享的问题，所以启动程序会发现t1变量是线程安全的，但static和User对象都是线程不安全的。</p>
+<p>TestController 是每次请求的时候都初始化了一个对象，但是静态变量始终是只有一份的，而且这个注入的user对象也是只有一份的。静态变量只有一份这是当然的咯，那么有没有办法让user对象可以每次都new一个新的呢？当然可以：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java">/\*\*<br>\* <span class="hljs-meta">@author</span> 路飞<br>\* <span class="hljs-meta">@create</span> <span class="hljs-number">2021</span>/<span class="hljs-number">3</span>/<span class="hljs-number">26</span> <span class="hljs-number">15</span>:<span class="hljs-number">05</span><br>\*/<br><span class="hljs-meta">@Configuration</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">MyConfig</span> &#123;<br><span class="hljs-meta">@Bean</span><br><span class="hljs-meta">@Scope(value = &quot;prototype&quot;)</span><br><span class="hljs-keyword">public</span> User <span class="hljs-title function_">user</span><span class="hljs-params">()</span>&#123;<br><span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">User</span>();<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>我们在注入IOC容器的时候，加入@scope，把它设置成原型即可，测试程序发现User的hashcode是不一样的，每次赋值前取user中的变量值也都是默认值0。</p>
+<p>总结下：</p>
+<ol>
+<li>在@Controller&#x2F;@Service等容器中，默认情况下，scope是singleton的，是线程不安全的</li>
+<li>尽量不要在@Controller&#x2F;@Service等容器中定义静态变量，不论是单例还是多实例，因为都不能保证线程安全</li>
+<li>默认注入的Bean对象，在不设置scope的时候也是线程不安全的</li>
+<li>一定要定义变量的话，用TheadLocal进行封装，来保证线程安全</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Spring/" class="print-no-link">#Spring</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Spring必知必会</div>
+      <div>http://example.com/2021/03/26/Spring必知必会/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年3月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/04/02/Redis%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" title="Redis必知必会">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Redis必知必会</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/03/24/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" title="Java多线程必知必会">
+                        <span class="hidden-mobile">Java多线程必知必会</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

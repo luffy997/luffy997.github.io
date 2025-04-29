@@ -1,0 +1,784 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="归并排序归并排序（MERGE-SORT）是利用归并的思想实现的排序方法，该方法采用经典的分治策略（分治法将问题分成一些小的问题然后递归求解，而治的阶段则将分的阶段得到的各个答案拼接在一起，即为分而治之）。 实现思想  具体步骤  代码实现 12345678910111213141516171819202122232425262728293031323334353637383940414243444">
+<meta property="og:type" content="article">
+<meta property="og:title" content="八大排序算法（下）">
+<meta property="og:url" content="http://example.com/2021/03/17/%E5%85%AB%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%EF%BC%88%E4%B8%8B%EF%BC%89/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="归并排序归并排序（MERGE-SORT）是利用归并的思想实现的排序方法，该方法采用经典的分治策略（分治法将问题分成一些小的问题然后递归求解，而治的阶段则将分的阶段得到的各个答案拼接在一起，即为分而治之）。 实现思想  具体步骤  代码实现 12345678910111213141516171819202122232425262728293031323334353637383940414243444">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.ax1x.com/2021/01/23/s73VYD.jpg">
+<meta property="article:published_time" content="2021-03-16T19:54:31.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:05.625Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="算法">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s3.ax1x.com/2021/01/23/s73VYD.jpg">
+  
+  
+  
+  <title>八大排序算法（下） - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="八大排序算法（下）"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-03-17 03:54" pubdate>
+          2021年3月17日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">八大排序算法（下）</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="归并排序"><a href="#归并排序" class="headerlink" title="归并排序"></a>归并排序</h1><p>归并排序（MERGE-SORT）是利用归并的思想实现的排序方法，该方法采用经典的分治策略（分治法将问题分成一些小的问题然后递归求解，而治的阶段则将分的阶段得到的各个答案拼接在一起，即为分而治之）。</p>
+<p><strong>实现思想</strong></p>
+<p><img src="https://i.loli.net/2021/03/17/xMubRDktIYjQdOX.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><strong>具体步骤</strong></p>
+<p><img src="https://i.loli.net/2021/03/17/kLhDN6S9mYcEQb7.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><strong>代码实现</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//分+合方法</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">mergeSort</span><span class="hljs-params">(<span class="hljs-type">int</span>[] arr, <span class="hljs-type">int</span> left, <span class="hljs-type">int</span> right, <span class="hljs-type">int</span>[] temp)</span> &#123;<br><span class="hljs-keyword">if</span>(left &lt; right) &#123;<br><span class="hljs-type">int</span> <span class="hljs-variable">mid</span> <span class="hljs-operator">=</span> (left + right) / <span class="hljs-number">2</span>; <span class="hljs-comment">//中间索引</span><br><span class="hljs-comment">//向左递归进行分解</span><br>mergeSort(arr, left, mid, temp);<br><span class="hljs-comment">//向右递归进行分解</span><br>mergeSort(arr, mid + <span class="hljs-number">1</span>, right, temp);<br><span class="hljs-comment">//合并</span><br>merge(arr, left, mid, right, temp);<br>&#125;<br>&#125;<br><span class="hljs-comment">//合并的方法</span><br>/\*\*<br>\*<br>\* <span class="hljs-meta">@param</span> arr 排序的原始数组<br>\* <span class="hljs-meta">@param</span> left 左边有序序列的初始索引<br>\* <span class="hljs-meta">@param</span> mid 中间索引<br>\* <span class="hljs-meta">@param</span> right 右边索引<br>\* <span class="hljs-meta">@param</span> temp 做中转的数组<br>\*/<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">merge</span><span class="hljs-params">(<span class="hljs-type">int</span>[] arr, <span class="hljs-type">int</span> left, <span class="hljs-type">int</span> mid, <span class="hljs-type">int</span> right, <span class="hljs-type">int</span>[] temp)</span> &#123;<br><span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> left; <span class="hljs-comment">// 初始化i, 左边有序序列的初始索引</span><br><span class="hljs-type">int</span> <span class="hljs-variable">j</span> <span class="hljs-operator">=</span> mid + <span class="hljs-number">1</span>; <span class="hljs-comment">//初始化j, 右边有序序列的初始索引</span><br><span class="hljs-type">int</span> <span class="hljs-variable">t</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; <span class="hljs-comment">// 指向temp数组的当前索引</span><br><span class="hljs-comment">//(一)</span><br><span class="hljs-comment">//先把左右两边(有序)的数据按照规则填充到temp数组</span><br><span class="hljs-comment">//直到左右两边的有序序列，有一边处理完毕为止</span><br><span class="hljs-keyword">while</span> (i &lt;= mid &amp;&amp; j &lt;= right) &#123;<span class="hljs-comment">//继续</span><br><span class="hljs-comment">//如果左边的有序序列的当前元素，小于等于右边有序序列的当前元素</span><br><span class="hljs-comment">//即将左边的当前元素，填充到 temp数组</span><br><span class="hljs-comment">//然后 t++, i++</span><br><span class="hljs-keyword">if</span>(arr[i] &lt;= arr[j]) &#123;<br>temp[t] = arr[i];<br>t += <span class="hljs-number">1</span>;<br>i += <span class="hljs-number">1</span>;<br>&#125; <span class="hljs-keyword">else</span> &#123; <span class="hljs-comment">//反之,将右边有序序列的当前元素，填充到temp数组</span><br>temp[t] = arr[j];<br>t += <span class="hljs-number">1</span>;<br>j += <span class="hljs-number">1</span>;<br>&#125;<br>&#125;<br><span class="hljs-comment">//(二)</span><br><span class="hljs-comment">//把有剩余数据的一边的数据依次全部填充到temp</span><br><span class="hljs-keyword">while</span>( i &lt;= mid) &#123; <span class="hljs-comment">//左边的有序序列还有剩余的元素，就全部填充到temp</span><br>temp[t] = arr[i];<br>t += <span class="hljs-number">1</span>;<br>i += <span class="hljs-number">1</span>;<br>&#125;<br><span class="hljs-keyword">while</span>( j &lt;= right) &#123; <span class="hljs-comment">//右边的有序序列还有剩余的元素，就全部填充到temp</span><br>temp[t] = arr[j];<br>t += <span class="hljs-number">1</span>;<br>j += <span class="hljs-number">1</span>;<br>&#125;<br><span class="hljs-comment">//(三)</span><br><span class="hljs-comment">//将temp数组的元素拷贝到arr</span><br><span class="hljs-comment">//注意，并不是每次都拷贝所有</span><br>t = <span class="hljs-number">0</span>;<br><span class="hljs-type">int</span> <span class="hljs-variable">tempLeft</span> <span class="hljs-operator">=</span> left; <span class="hljs-comment">//</span><br><span class="hljs-comment">//第一次合并 tempLeft = 0 , right = 1 // tempLeft = 2 right = 3 // tL=0 ri=3</span><br><span class="hljs-comment">//最后一次 tempLeft = 0 right = 7</span><br><span class="hljs-keyword">while</span>(tempLeft &lt;= right) &#123;<br>arr[tempLeft] = temp[t];<br>t += <span class="hljs-number">1</span>;<br>tempLeft += <span class="hljs-number">1</span>;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>注释写的很详细，这里就不做过多论述了。</p>
+<h1 id="基数排序"><a href="#基数排序" class="headerlink" title="基数排序"></a>基数排序</h1><p>基数排序（RADIX-SORT）属于“分配式排序”，又称“桶子法”，顾名思义，它是通过键值的各个位的值，将要排序的元素分配至某些“桶”中，达到排序的效果。</p>
+<p>基数排序是属于稳定性的排序，基数排序法是效率高的稳定性排序法</p>
+<p>基数排序是桶排序的扩展。</p>
+<p><strong>基本思想</strong></p>
+<p>将所有待比较数值统一为同样的数位长度，数位较短的数前面补零。然后，从最低为开始，依次进行排序。</p>
+<p>这样从最低位排序一直到最高位排序完成以后，数列就是一个有序序列。</p>
+<p><strong>图文说明</strong></p>
+<p><img src="https://i.loli.net/2021/03/17/DW5qLVdYaIAQ3ON.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="https://i.loli.net/2021/03/17/esxpcPiIalXC1WJ.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><strong>代码实现</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">radixSort</span><span class="hljs-params">(<span class="hljs-type">int</span>[] arr)</span> &#123;<br><span class="hljs-comment">//根据前面的推导过程，我们可以得到最终的基数排序代码</span><br><span class="hljs-comment">//1.得到最大的位数</span><br><span class="hljs-type">int</span> <span class="hljs-variable">max</span> <span class="hljs-operator">=</span> arr[<span class="hljs-number">0</span>];<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; i &lt; arr.length; i++) &#123;<br><span class="hljs-keyword">if</span> (arr[i] &gt; max) &#123;<br>max = arr[i];<br>&#125;<br>&#125;<br><span class="hljs-type">int</span> <span class="hljs-variable">maxLength</span> <span class="hljs-operator">=</span> (max + <span class="hljs-string">&quot; &quot;</span>).length(); <span class="hljs-comment">//转字符串 去length 得到长度</span><br><span class="hljs-comment">//定义一个二维数组，表示10个桶, 每个桶就是一个一维数组</span><br><span class="hljs-comment">//说明</span><br><span class="hljs-comment">//1. 二维数组包含10个一维数组</span><br><span class="hljs-comment">//2. 为了防止在放入数的时候，数据溢出，则每个一维数组(桶)，大小定为arr.length</span><br><span class="hljs-comment">//3. 名明确，基数排序是使用空间换时间的经典算法</span><br><span class="hljs-type">int</span>[][] bucket = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[<span class="hljs-number">10</span>][arr.length];<br><span class="hljs-comment">//循环处理</span><br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>, n = <span class="hljs-number">1</span>; i &lt; maxLength; i++, n \*= <span class="hljs-number">10</span>) &#123;<br><span class="hljs-type">int</span>[] bucketElementCounts = <span class="hljs-keyword">new</span> <span class="hljs-title class_">int</span>[<span class="hljs-number">10</span>];<br><span class="hljs-comment">//第n轮</span><br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">j</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; j &lt; arr.length; j++) &#123;<br><span class="hljs-comment">//取出每个元素的个位的值</span><br><span class="hljs-type">int</span> <span class="hljs-variable">digitOfElement</span> <span class="hljs-operator">=</span> arr[j] / n % <span class="hljs-number">10</span>;<br><span class="hljs-comment">//放入到对应的桶中</span><br>bucket[digitOfElement][bucketElementCounts[digitOfElement]] = arr[j];<br>bucketElementCounts[digitOfElement]++;<br>&#125;<br><span class="hljs-comment">//按照这个桶的顺序（一维数组的下标依次取出数据，放入原来数组）</span><br><span class="hljs-type">int</span> <span class="hljs-variable">index</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><span class="hljs-comment">//遍历每一桶，并将桶中数据，放入原数组</span><br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">k</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; k &lt; bucketElementCounts.length; k++) &#123;<br><span class="hljs-comment">//如果桶中有数据，我们放入到原数组</span><br><span class="hljs-keyword">if</span> (bucketElementCounts[k] != <span class="hljs-number">0</span>) &#123;<br><span class="hljs-comment">//循环该桶即第K个桶（即第k个一维数组），放入</span><br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">l</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>; l &lt; bucketElementCounts[k]; l++) &#123;<br><span class="hljs-comment">//取出元素放入到arr</span><br>arr[index++] = bucket[k][l];<br>&#125;<br>&#125;<br>bucketElementCounts[k] = <span class="hljs-number">0</span>;<br>&#125;<br><span class="hljs-comment">// System.out.println(&quot;第&quot; + (i + 1) + &quot;轮基数排序后：&quot; + Arrays.toString(arr));</span><br>&#125;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h1 id="堆排序"><a href="#堆排序" class="headerlink" title="堆排序"></a>堆排序</h1><p>堆排序是利用堆这种数据结构而设计的一种排序算法，堆排序是一种选择排序，它的最坏，最好，平均时间复杂度均为O(nlogn)，它也是不稳定排序。</p>
+<p><strong>堆是什么？</strong></p>
+<p>具有完全以下性质的完全二叉树：每个节点的值都大于或等于其左右孩子节点的值，称为大顶堆，不要求节点的左孩子和右孩子值的大小。</p>
+<p><img src="https://i.loli.net/2021/03/17/HGnRPQfUjYJWtV9.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>每个节点的值都小于或等于其左右孩子节点的值，称为小顶堆</p>
+<p><img src="https://i.loli.net/2021/03/17/xEocFaQnu24Hlp1.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><strong>一般升序采用大顶堆，降序采用小顶堆</strong></p>
+<p><strong>基本思想</strong></p>
+<ol>
+<li>将待排序序列构造成一个大顶堆</li>
+<li>此时，整个序列的最大值就是堆顶的最大值</li>
+<li>将其与末尾元素进行交换，此时末尾就为最大值</li>
+<li>然后将剩下的n-1个元素重新构造成一个堆，这样会得到n个元素的次小值。如此反复执行，就得到一个有序序列了。</li>
+</ol>
+<p><strong>图解</strong></p>
+<blockquote>
+<p>步骤一：构造初始堆。将给定无序序列构造成一个大顶堆</p>
+</blockquote>
+<p>1.假设给定无序序列结构如下</p>
+<p><img src="https://i.loli.net/2021/03/17/R7Pzd6y3x129tKH.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>2.此时我们从最后一个非叶子结点开始（叶结点自然不用调整，第一个非叶子结点 arr.length&#x2F;2-1&#x3D;5&#x2F;2-1&#x3D;1，也就是下面的6结点），从左至右，从下至上进行调整。</p>
+<p><img src="https://i.loli.net/2021/03/17/JzqwdAPQgOe4ytB.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>3.找到第二个非叶节点4，由于[4,9,8]中9元素最大，4和9交换。</p>
+<p><img src="https://i.loli.net/2021/03/17/J4kIA3uaQmcUgRp.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>4.这时，交换导致了子根[4,5,6]结构混乱，继续调整，[4,5,6]中6最大，交换4和6。</p>
+<p><img src="https://i.loli.net/2021/03/17/duXn1TpNODwcbyC.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>此时，我们就将一个无序序列构造成了一个大顶堆。</p>
+<blockquote>
+<p>步骤二 ：将堆顶元素与末尾元素进行交换，使末尾元素最大。然后继续调整堆，再将堆顶元素与末尾元素交换，得到第二大元素。如此反复进行交换、重建、交换。</p>
+</blockquote>
+<p>6.将堆顶元素9和末尾元素4进行交换</p>
+<p><img src="https://i.loli.net/2021/03/17/5mLhj6FV7rW9pJQ.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>7.重新调整结构，使其继续满足堆定义</p>
+<p><img src="https://i.loli.net/2021/03/17/WpYXTH2VzIQ38Gh.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>8.再将堆顶元素8与末尾元素5进行交换，得到第二大元素8.</p>
+<p><img src="https://i.loli.net/2021/03/17/aG1XdTEW9ZCSNH7.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>9.后续过程，继续进行调整，交换，如此反复进行，最终使得整个序列有序</p>
+<p><img src="https://i.loli.net/2021/03/17/RyQJpsnNoCKZg3X.jpg" srcset="/img/loading.gif" lazyload></p>
+<p><strong>代码实现</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">headSort</span><span class="hljs-params">(<span class="hljs-type">int</span> arr [])</span>&#123;<br><span class="hljs-comment">// System.out.println(&quot;堆排序&quot;);</span><br><span class="hljs-type">int</span> <span class="hljs-variable">temp</span> <span class="hljs-operator">=</span> <span class="hljs-number">0</span>;<br><span class="hljs-comment">// //分步完成</span><br><span class="hljs-comment">// adjustHeap(arr,1,arr.length);</span><br><span class="hljs-comment">// System.out.println(&quot;第一次&quot;+ Arrays.toString(arr));</span><br><span class="hljs-comment">// adjustHeap(arr,0,arr.length);</span><br><span class="hljs-comment">// System.out.println(&quot;第二次&quot;+ Arrays.toString(arr));</span><br><span class="hljs-comment">//将无序序列构建成一个堆，根据升序降序需求选择大顶堆或小顶堆</span><br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">i</span> <span class="hljs-operator">=</span> arr.length /<span class="hljs-number">2</span> -<span class="hljs-number">1</span>;i &gt;=<span class="hljs-number">0</span>;i --)&#123;<br>adjustHeap(arr,i,arr.length);<br>&#125;<br>/\*\*<br>\* <span class="hljs-number">2.</span>将堆顶元素与末尾元素交换，将最大元素沉到数组末端<br>\* <span class="hljs-number">3.</span>重新调整结构，使其满足堆定义，然后继续交换堆顶元素与当前末尾元素，反复执行<br>\*/<br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">j</span> <span class="hljs-operator">=</span> arr.length -<span class="hljs-number">1</span>; j &gt; <span class="hljs-number">0</span>; j--)&#123;<br><span class="hljs-comment">//交换</span><br>temp = arr[j];<br>arr[j] = arr[<span class="hljs-number">0</span>];<br>arr[<span class="hljs-number">0</span>] = temp;<br>adjustHeap(arr,<span class="hljs-number">0</span>,j);<br>&#125;<br><span class="hljs-comment">// System.out.println(&quot;数组=&quot;+Arrays.toString(arr));</span><br>&#125;<br>/\*\*<br>\*<br>\* <span class="hljs-meta">@param</span> arr 待调整的数组<br>\* <span class="hljs-meta">@param</span> i 表示非叶子节点在数组中的索引<br>\* <span class="hljs-meta">@param</span> length 表示对多少个元素进行调整，length是在逐渐减少<br>\*/<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">adjustHeap</span><span class="hljs-params">(<span class="hljs-type">int</span> arr [],<span class="hljs-type">int</span> i,<span class="hljs-type">int</span> length)</span>&#123;<br><span class="hljs-type">int</span> <span class="hljs-variable">temp</span> <span class="hljs-operator">=</span>arr[i]; <span class="hljs-comment">//先取出当前元素的值，保存在临时变量</span><br><span class="hljs-comment">//开始调整</span><br><span class="hljs-comment">//说明</span><br><span class="hljs-comment">//1，k = i \*2 +1 k是i节点的左子节点</span><br><span class="hljs-keyword">for</span> (<span class="hljs-type">int</span> <span class="hljs-variable">k</span> <span class="hljs-operator">=</span> i \* <span class="hljs-number">2</span> +<span class="hljs-number">1</span>; k &lt; length; k = i \* <span class="hljs-number">2</span> +<span class="hljs-number">1</span>) &#123;<br><span class="hljs-keyword">if</span> (k+<span class="hljs-number">1</span> &lt; length &amp;&amp; arr[k] &lt; arr [k+<span class="hljs-number">1</span>])&#123; <span class="hljs-comment">//说明左子节点的值小于右子节点的值</span><br>k ++;<br>&#125;<br><span class="hljs-keyword">if</span> (arr [k] &gt; temp)&#123; <span class="hljs-comment">//如果子节点大于父节点</span><br>arr[i] = arr [k]; <span class="hljs-comment">//把较大的值赋给当前节点</span><br>i = k;<br>&#125;<span class="hljs-keyword">else</span> &#123;<br><span class="hljs-keyword">break</span>;<br>&#125;<br>&#125;<br><span class="hljs-comment">//当for 循环结束后，我们已经将以i 为父节点的树的最大值，放在了最顶（局部）</span><br>arr [i] = temp; <span class="hljs-comment">//将temp值放到调整后的位置</span><br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这篇介绍是三种排序确定有点难，需要大家先理解实现思路，在debug进去程序，去看每一步的操作。</p>
+<h1 id="八大排序算法时间复杂度分析"><a href="#八大排序算法时间复杂度分析" class="headerlink" title="八大排序算法时间复杂度分析"></a>八大排序算法时间复杂度分析</h1><table>
+<thead>
+<tr>
+<th>排序算法</th>
+<th>平均时间</th>
+<th>最差情形</th>
+<th>稳定度</th>
+<th>额外空间</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>冒泡</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>稳定</td>
+<td>O(1)</td>
+<td>n小时较好</td>
+</tr>
+<tr>
+<td>交换</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>不稳定</td>
+<td>O(1)</td>
+<td>n小时较好</td>
+</tr>
+<tr>
+<td>选择</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>不稳定</td>
+<td>O(1)</td>
+<td>n小时较好</td>
+</tr>
+<tr>
+<td>插入</td>
+<td>O(n^2)</td>
+<td>O(n^2)</td>
+<td>稳定</td>
+<td>O(1)</td>
+<td>大部分已排序较好</td>
+</tr>
+<tr>
+<td>基数</td>
+<td>O(logRB)</td>
+<td>O(logRB)</td>
+<td>稳定</td>
+<td>O(n)</td>
+<td>B是真数（0-9）R是基数（个十百）</td>
+</tr>
+<tr>
+<td>Shell</td>
+<td>O(nlogn)</td>
+<td>O(n^s) 1&lt;s&lt;2</td>
+<td>不稳定</td>
+<td>O(1)</td>
+<td>s是所选分组</td>
+</tr>
+<tr>
+<td>快排</td>
+<td>O(nlogn)</td>
+<td>O(n^2)</td>
+<td>不稳定</td>
+<td>O(nlogn)</td>
+<td>n大时较好</td>
+</tr>
+<tr>
+<td>归并</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>稳定</td>
+<td>O(1)</td>
+<td>n大时较好</td>
+</tr>
+<tr>
+<td>堆</td>
+<td>O(nlogn)</td>
+<td>O(nlogn)</td>
+<td>不稳定</td>
+<td>O(1)</td>
+<td>n大时较好</td>
+</tr>
+</tbody></table>
+<p><strong>平均时间复杂度和最坏时间复杂度</strong></p>
+<ol>
+<li><p>平均时间复杂度是指所有可能的输入实例均以等概率出现的情况下，该算法的运行时间。</p>
+</li>
+<li><p>最坏情况下的时间复杂度称最坏时间复杂度。一般讨论的时间复杂度均是最坏情况下的时间复杂度。 这样做的原因是：最坏情况下的时间复杂度是算法在任何输入实例上运行时间的界限，这就保证了算法的运行时间不会比最坏情况更长。</p>
+<p>​</p>
+</li>
+</ol>
+<p>我个人喜欢快排，尤其是递归实现的快排，理解思想和代码阅读都很容易，在开发中遇到排序通常调用的是集合工具类Arrays的sort()方法，它底层也是用的快排。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E7%AE%97%E6%B3%95/" class="print-no-link">#算法</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>八大排序算法（下）</div>
+      <div>http://example.com/2021/03/17/八大排序算法（下）/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年3月17日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/03/18/Mysql%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" title="Mysql必知必会">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Mysql必知必会</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/03/16/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0/" title="单例模式的多种实现方式">
+                        <span class="hidden-mobile">单例模式的多种实现方式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,673 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="SpringBoot集成Mybatis的使用 MyBatis 是一款优秀的持久层框架，它支持定制化 SQL、存储过程以及高级映射。MyBatis 避免了几乎所有的 JDBC 代码和手动设置参数以及获取结果集。 MyBatis 可以使用简单的 XML 或注解来配置和映射原生信息，将接口和 Java 的 POJOs映射成数据库中的记录。 这里我使用原生的Mybatis，不使用Mybatis插件，来讲解">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot集成Mybatis的使用">
+<meta property="og:url" content="http://example.com/2021/01/12/SpringBoot%E9%9B%86%E6%88%90Mybatis%E7%9A%84%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="SpringBoot集成Mybatis的使用 MyBatis 是一款优秀的持久层框架，它支持定制化 SQL、存储过程以及高级映射。MyBatis 避免了几乎所有的 JDBC 代码和手动设置参数以及获取结果集。 MyBatis 可以使用简单的 XML 或注解来配置和映射原生信息，将接口和 Java 的 POJOs映射成数据库中的记录。 这里我使用原生的Mybatis，不使用Mybatis插件，来讲解">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.ax1x.com/2021/01/23/s7eROO.jpg">
+<meta property="article:published_time" content="2021-01-11T19:46:52.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:03.379Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s3.ax1x.com/2021/01/23/s7eROO.jpg">
+  
+  
+  
+  <title>SpringBoot集成Mybatis的使用 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="SpringBoot集成Mybatis的使用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-01-12 03:46" pubdate>
+          2021年1月12日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">SpringBoot集成Mybatis的使用</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="SpringBoot集成Mybatis的使用"><a href="#SpringBoot集成Mybatis的使用" class="headerlink" title="SpringBoot集成Mybatis的使用"></a>SpringBoot集成Mybatis的使用</h1><p><img src="https://s3.ax1x.com/2021/01/23/s7Z8xK.png" srcset="/img/loading.gif" lazyload></p>
+<p>MyBatis 是一款优秀的持久层框架，它支持定制化 SQL、存储过程以及高级映射。MyBatis 避免了几乎所有的 JDBC 代码和手动设置参数以及获取结果集。 MyBatis 可以使用简单的 <strong>XML</strong> 或<strong>注解</strong>来配置和映射原生信息，将接口和 Java 的 POJOs映射成数据库中的记录。</p>
+<p>这里我使用原生的Mybatis，不使用Mybatis插件，来讲解SpringBoot如何搭建Mybatis环境，并编写接口测试案例。</p>
+<p>Mybatis中文官网：<a target="_blank" rel="noopener" href="https://mybatis.org/mybatis-3/zh/index.html">https://mybatis.org/mybatis-3/zh/index.html</a></p>
+<h2 id="1-Maven依赖"><a href="#1-Maven依赖" class="headerlink" title="1.Maven依赖"></a>1.Maven依赖</h2><figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br></pre></td><td class="code"><pre><code class="hljs xml"><span class="hljs-meta">&lt;?xml version=<span class="hljs-string">&quot;1.0&quot;</span> encoding=<span class="hljs-string">&quot;UTF-8&quot;</span>?&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">project</span> <span class="hljs-attr">xmlns</span>=<span class="hljs-string">&quot;http://maven.apache.org/POM/4.0.0&quot;</span> <span class="hljs-attr">xmlns:xsi</span>=<span class="hljs-string">&quot;http://www.w3.org/2001/XMLSchema-instance&quot;</span></span><br><span class="hljs-tag"><span class="hljs-attr">xsi:schemaLocation</span>=<span class="hljs-string">&quot;http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd&quot;</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">modelVersion</span>&gt;</span>4.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">modelVersion</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">parent</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-parent<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.4.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">relativePath</span>/&gt;</span> <span class="hljs-comment">&lt;!-- lookup parent from repository --&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">parent</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>com.dev<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>springboot-mybatis<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>0.0.1-SNAPSHOT<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">name</span>&gt;</span>springboot-mybatis<span class="hljs-tag">&lt;/<span class="hljs-name">name</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">description</span>&gt;</span>Spring Boot集成Mybatis<span class="hljs-tag">&lt;/<span class="hljs-name">description</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">properties</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">java.version</span>&gt;</span>1.8<span class="hljs-tag">&lt;/<span class="hljs-name">java.version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">properties</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependencies</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-web<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-devtools<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>runtime<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">optional</span>&gt;</span>true<span class="hljs-tag">&lt;/<span class="hljs-name">optional</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-starter-test<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>test<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-comment">&lt;!--mysql--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>mysql<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mysql-connector-java<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">scope</span>&gt;</span>runtime<span class="hljs-tag">&lt;/<span class="hljs-name">scope</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-comment">&lt;!--mybatis--&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.mybatis.spring.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>mybatis-spring-boot-starter<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.3.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">dependencies</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">build</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">plugins</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">plugin</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>org.springframework.boot<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span><br><span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>spring-boot-maven-plugin<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">plugin</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">plugins</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">build</span>&gt;</span><br><span class="hljs-tag">&lt;/<span class="hljs-name">project</span>&gt;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="2-创建数据库表"><a href="#2-创建数据库表" class="headerlink" title="2.创建数据库表"></a>2.创建数据库表</h2><p>创建一个t_users的数据表，插入测试数据</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs sql"><span class="hljs-keyword">CREATE TABLE</span> `t\_users` (<br>`id` <span class="hljs-type">int</span>(<span class="hljs-number">11</span>) <span class="hljs-keyword">NOT NULL</span> AUTO\_INCREMENT,<br>`username` <span class="hljs-type">varchar</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">CHARACTER SET</span> utf8mb4 <span class="hljs-keyword">COLLATE</span> utf8mb4\_general\_ci <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span>,<br>`password` <span class="hljs-type">varchar</span>(<span class="hljs-number">32</span>) <span class="hljs-keyword">CHARACTER SET</span> utf8mb4 <span class="hljs-keyword">COLLATE</span> utf8mb4\_general\_ci <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span>,<br>`salt` <span class="hljs-type">varchar</span>(<span class="hljs-number">20</span>) <span class="hljs-keyword">CHARACTER SET</span> utf8mb4 <span class="hljs-keyword">COLLATE</span> utf8mb4\_general\_ci <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span>,<br>`<span class="hljs-keyword">create</span>\_time` datetime <span class="hljs-keyword">NOT NULL</span>,<br>`<span class="hljs-keyword">update</span>\_time` datetime <span class="hljs-keyword">DEFAULT</span> <span class="hljs-keyword">NULL</span>,<br><span class="hljs-keyword">PRIMARY KEY</span> (`id`) <span class="hljs-keyword">USING</span> BTREE<br>) ENGINE <span class="hljs-operator">=</span> InnoDB AUTO\_INCREMENT <span class="hljs-operator">=</span> <span class="hljs-number">6</span> <span class="hljs-keyword">CHARACTER SET</span> <span class="hljs-operator">=</span> utf8mb4 <span class="hljs-keyword">COLLATE</span> <span class="hljs-operator">=</span> utf8mb4\_general\_ci <span class="hljs-type">ROW</span>\_FORMAT <span class="hljs-operator">=</span> Compact;<br><span class="hljs-comment">-- ----------------------------</span><br><span class="hljs-comment">-- Records of t\_users</span><br><span class="hljs-comment">-- ----------------------------</span><br><span class="hljs-keyword">INSERT INTO</span> `t\_users` <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">1</span>, <span class="hljs-string">&#x27;路飞&#x27;</span>, <span class="hljs-string">&#x27;be59564e3e648e0f606e17d7bb5b7934&#x27;</span>, <span class="hljs-string">&#x27;noJmwJ7F&#x27;</span>, <span class="hljs-string">&#x27;2020-12-31 23:00:02&#x27;</span>, <span class="hljs-string">&#x27;2021-01-07 22:59:59&#x27;</span>);<br><span class="hljs-keyword">INSERT INTO</span> `t\_users` <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">2</span>, <span class="hljs-string">&#x27;Alen&#x27;</span>, <span class="hljs-string">&#x27;99cdfcdb829c4c505acd92ed77f1b536&#x27;</span>, <span class="hljs-string">&#x27;7Vy^!Kjp&#x27;</span>, <span class="hljs-string">&#x27;2021-01-28 23:00:05&#x27;</span>, <span class="hljs-string">&#x27;2021-01-20 23:00:11&#x27;</span>);<br><span class="hljs-keyword">INSERT INTO</span> `t\_users` <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">3</span>, <span class="hljs-string">&#x27;小明&#x27;</span>, <span class="hljs-string">&#x27;7cdd798bd3ad0235cfb93f67e24aa485&#x27;</span>, <span class="hljs-string">&#x27;@4qpfdQS&#x27;</span>, <span class="hljs-string">&#x27;2021-01-27 23:00:08&#x27;</span>, <span class="hljs-string">&#x27;2021-01-23 23:00:15&#x27;</span>);<br><span class="hljs-keyword">INSERT INTO</span> `t\_users` <span class="hljs-keyword">VALUES</span> (<span class="hljs-number">5</span>, <span class="hljs-string">&#x27;Luffy&#x27;</span>, <span class="hljs-string">&#x27;7cdd798bd3ad0235cfb93f67e24aa485&#x27;</span>, <span class="hljs-string">&#x27;3$^\*G)df&#x27;</span>, <span class="hljs-string">&#x27;2021-01-11 23:27:47&#x27;</span>, <span class="hljs-string">&#x27;2021-01-11 23:27:47&#x27;</span>);<br><span class="hljs-keyword">SET</span> <span class="hljs-keyword">FOREIGN</span>\_KEY\_CHECKS <span class="hljs-operator">=</span> <span class="hljs-number">1</span>;<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-配置文件"><a href="#3-配置文件" class="headerlink" title="3.配置文件"></a>3.配置文件</h2><figure class="highlight properties"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs properties"><span class="hljs-attr">server.port</span>=<span class="hljs-string">8031</span><br><span class="hljs-attr">spring.datasource.driver-class-name</span>=<span class="hljs-string">com.mysql.jdbc.Driver</span><br><span class="hljs-attr">spring.datasource.url</span>=<span class="hljs-string">jdbc:mysql://localhost:3306/shiro?useUnicode=true&amp;characterEncoding=UTF-8&amp;serverTimezone=GMT%2B8</span><br><span class="hljs-attr">spring.datasource.username</span>=<span class="hljs-string">root</span><br><span class="hljs-attr">spring.datasource.password</span>=<span class="hljs-string">root</span><br><span class="hljs-comment">#实体类扫描</span><br><span class="hljs-attr">mybatis.type-aliases-package</span>=<span class="hljs-string">com.dev.entity</span><br><span class="hljs-comment">#开启驼峰命名</span><br><span class="hljs-attr">mybatis.configuration.map-underscore-to-camel-case</span>=<span class="hljs-string">false</span><br><span class="hljs-attr">logging.level.com.dev.mapper</span>=<span class="hljs-string">debug</span><br><span class="hljs-attr">debug</span>=<span class="hljs-string">true</span><br></code></pre></td></tr></table></figure>
+
+<p>需要注意的是：</p>
+<p>mybatis.type-aliases-package 是实体类entiy位置存放的位置</p>
+<p>mybatis.configuration.map-underscore-to-camel-case 驼峰命名的开启 默认不开启 这个看个人习惯</p>
+<h2 id="4-实体类"><a href="#4-实体类" class="headerlink" title="4.实体类"></a>4.实体类</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br></pre></td><td class="code"><pre><code class="hljs java">/\*\*<br>\* Users实体类<br>\* <span class="hljs-meta">@author</span> 路飞<br>\* <span class="hljs-meta">@create</span> <span class="hljs-number">2021</span>/<span class="hljs-number">1</span>/<span class="hljs-number">11</span><br>\*/<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Users</span> &#123;<br><span class="hljs-keyword">private</span> Integer id;<br><span class="hljs-keyword">private</span> String username;<br><span class="hljs-keyword">private</span> String password;<br><span class="hljs-keyword">private</span> String salt;<br><span class="hljs-keyword">private</span> Date create\_time;<br><span class="hljs-keyword">private</span> Date update\_time;<br><span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">getId</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-keyword">return</span> id;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setId</span><span class="hljs-params">(Integer id)</span> &#123;<br><span class="hljs-built_in">this</span>.id = id;<br>&#125;<br><span class="hljs-keyword">public</span> String <span class="hljs-title function_">getUsername</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-keyword">return</span> username;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setUsername</span><span class="hljs-params">(String username)</span> &#123;<br><span class="hljs-built_in">this</span>.username = username;<br>&#125;<br><span class="hljs-keyword">public</span> String <span class="hljs-title function_">getPassword</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-keyword">return</span> password;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setPassword</span><span class="hljs-params">(String password)</span> &#123;<br><span class="hljs-built_in">this</span>.password = password;<br>&#125;<br><span class="hljs-keyword">public</span> String <span class="hljs-title function_">getSalt</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-keyword">return</span> salt;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">setSalt</span><span class="hljs-params">(String salt)</span> &#123;<br><span class="hljs-built_in">this</span>.salt = salt;<br>&#125;<br><span class="hljs-keyword">public</span> Date getCreate\_time() &#123;<br><span class="hljs-keyword">return</span> create\_time;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> setCreate\_time(Date create\_time) &#123;<br><span class="hljs-built_in">this</span>.create\_time = create\_time;<br>&#125;<br><span class="hljs-keyword">public</span> Date getUpdate\_time() &#123;<br><span class="hljs-keyword">return</span> update\_time;<br>&#125;<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> setUpdate\_time(Date update\_time) &#123;<br><span class="hljs-built_in">this</span>.update\_time = update\_time;<br>&#125;<br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> String <span class="hljs-title function_">toString</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-keyword">return</span> <span class="hljs-string">&quot;Users&#123;&quot;</span> +<br><span class="hljs-string">&quot;id=&quot;</span> + id +<br><span class="hljs-string">&quot;, username=&#x27;&quot;</span> + username + <span class="hljs-string">&#x27;\&#x27;&#x27;</span> +<br><span class="hljs-string">&quot;, password=&#x27;&quot;</span> + password + <span class="hljs-string">&#x27;\&#x27;&#x27;</span> +<br><span class="hljs-string">&quot;, salt=&#x27;&quot;</span> + salt + <span class="hljs-string">&#x27;\&#x27;&#x27;</span> +<br><span class="hljs-string">&quot;, create\_time=&quot;</span> + create\_time +<br><span class="hljs-string">&quot;, update\_time=&quot;</span> + update\_time +<br><span class="hljs-string">&#x27;&#125;&#x27;</span>;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-持久层"><a href="#5-持久层" class="headerlink" title="5.持久层"></a>5.持久层</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs java">/\*\*<br>\* 持久层<br>\* <span class="hljs-meta">@author</span> 路飞<br>\* <span class="hljs-meta">@create</span> <span class="hljs-number">2021</span>/<span class="hljs-number">1</span>/<span class="hljs-number">11</span><br>\*/<br><span class="hljs-meta">@Mapper</span><br><span class="hljs-meta">@Repository</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UsersMapper</span> &#123;<br><span class="hljs-comment">//测试增删改查</span><br><span class="hljs-meta">@Select(&quot;SELECT \* FROM t\_users&quot;)</span><br>List&lt;Users&gt; <span class="hljs-title function_">selAllUsers</span><span class="hljs-params">()</span>;<br><span class="hljs-meta">@Select(&quot;SELECT \* FROM t\_users WHERE username = #&#123;username&#125; &quot;)</span><br>Users <span class="hljs-title function_">selUser</span><span class="hljs-params">(String username)</span>;<br><span class="hljs-meta">@Insert(&quot;INSERT INTO t\_users VALUES(DEFAULT,#&#123;username&#125;,#&#123;password&#125;,#&#123;salt&#125;,now(),now())&quot;)</span><br>Integer <span class="hljs-title function_">insUser</span><span class="hljs-params">(Users users)</span>;<br><span class="hljs-meta">@Update(&quot;UPDATE t\_users SET username = #&#123;username&#125; WHERE id = &#123;id&#125;&quot;)</span><br>Integer <span class="hljs-title function_">updUser</span><span class="hljs-params">(String username,Integer id)</span>;<br><span class="hljs-meta">@Delete(&quot;DELETE FROM t\_users WHERE username =#&#123;username&#125;&quot;)</span><br>Integer <span class="hljs-title function_">delUser</span><span class="hljs-params">(String username)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>Mybatis支持XML和注解的方式编写SQL，XML编写有一点难度，但对于复杂的SQL需要用到XML来写。这里为了测试方便，我采用注解的方式来编写CRUD测试案例。</p>
+<h2 id="6-service和service实现类"><a href="#6-service和service实现类" class="headerlink" title="6.service和service实现类"></a>6.service和service实现类</h2><p>service.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java">/\*\*<br>\* Users服务接口<br>\* <span class="hljs-meta">@author</span> 路飞<br>\* <span class="hljs-meta">@create</span> <span class="hljs-number">2021</span>/<span class="hljs-number">1</span>/<span class="hljs-number">11</span><br>\*/<br><span class="hljs-keyword">public</span> <span class="hljs-keyword">interface</span> <span class="hljs-title class_">UsersService</span> &#123;<br>List&lt;Users&gt; <span class="hljs-title function_">selAllUsers</span><span class="hljs-params">()</span>;<br>Users <span class="hljs-title function_">selUser</span><span class="hljs-params">(String username)</span>;<br>Integer <span class="hljs-title function_">insUser</span><span class="hljs-params">(Users users)</span>;<br>Integer <span class="hljs-title function_">updUser</span><span class="hljs-params">(String username,Integer id)</span>;<br>Integer <span class="hljs-title function_">delUser</span><span class="hljs-params">(String username)</span>;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>serviceImpl.java</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs java">/\*\*<br>\* Users服务接口实现<br>\* <span class="hljs-meta">@author</span> 路飞<br>\* <span class="hljs-meta">@create</span> <span class="hljs-number">2021</span>/<span class="hljs-number">1</span>/<span class="hljs-number">11</span><br>\*/<br><span class="hljs-meta">@Service</span><br><span class="hljs-meta">@Transactional</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UsersServiceImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">UsersService</span> &#123;<br><span class="hljs-meta">@Autowired</span><br><span class="hljs-keyword">private</span> UsersMapper usersMapper;<br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> List&lt;Users&gt; <span class="hljs-title function_">selAllUsers</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-keyword">return</span> usersMapper.selAllUsers();<br>&#125;<br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> Users <span class="hljs-title function_">selUser</span><span class="hljs-params">(String username)</span> &#123;<br><span class="hljs-keyword">return</span> usersMapper.selUser(username);<br>&#125;<br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">insUser</span><span class="hljs-params">(Users users)</span> &#123;<br><span class="hljs-keyword">return</span> usersMapper.insUser(users);<br>&#125;<br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">updUser</span><span class="hljs-params">(String username, Integer id)</span> &#123;<br><span class="hljs-keyword">return</span> usersMapper.updUser(username,id);<br>&#125;<br><span class="hljs-meta">@Override</span><br><span class="hljs-keyword">public</span> Integer <span class="hljs-title function_">delUser</span><span class="hljs-params">(String username)</span> &#123;<br><span class="hljs-keyword">return</span> usersMapper.delUser(username);<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="7-controller接口层"><a href="#7-controller接口层" class="headerlink" title="7.controller接口层"></a>7.controller接口层</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br></pre></td><td class="code"><pre><code class="hljs java">/\*\*<br>\* Users接口层<br>\* <span class="hljs-meta">@author</span> 路飞<br>\* <span class="hljs-meta">@create</span> <span class="hljs-number">2021</span>/<span class="hljs-number">1</span>/<span class="hljs-number">11</span><br>\*/<br><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping(&quot;/users&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UsersController</span> &#123;<br><span class="hljs-meta">@Autowired</span><br><span class="hljs-keyword">private</span> UsersService usersService;<br>/\*\*<br>\* 显示所有用户<br>\* <span class="hljs-meta">@return</span><br>\*/<br><span class="hljs-meta">@GetMapping(&quot;/showAll&quot;)</span><br><span class="hljs-keyword">public</span> List&lt;Users&gt; <span class="hljs-title function_">showAllUsers</span><span class="hljs-params">()</span>&#123;<br>List&lt;Users&gt; users = usersService.selAllUsers();<br><span class="hljs-keyword">return</span> users;<br>&#125;<br>/\*\*<br>\* 查询用户<br>\* <span class="hljs-meta">@param</span> username<br>\* <span class="hljs-meta">@return</span><br>\*/<br><span class="hljs-meta">@PostMapping(&quot;/selUser&quot;)</span><br><span class="hljs-keyword">public</span> Users <span class="hljs-title function_">selUser</span><span class="hljs-params">(<span class="hljs-meta">@RequestParam(value = &quot;username&quot;)</span> String username)</span>&#123;<br><span class="hljs-type">Users</span> <span class="hljs-variable">users</span> <span class="hljs-operator">=</span> usersService.selUser(username);<br><span class="hljs-keyword">return</span> users;<br>&#125;<br>/\*\*<br>\* 插入用户<br>\* <span class="hljs-meta">@return</span><br>\*/<br><span class="hljs-meta">@PostMapping(&quot;/insUser&quot;)</span><br><span class="hljs-keyword">public</span> Map&lt;String,Object&gt; <span class="hljs-title function_">insUser</span><span class="hljs-params">(<span class="hljs-meta">@RequestBody</span> Users users)</span>&#123;<br>Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br><span class="hljs-type">Integer</span> <span class="hljs-variable">integer</span> <span class="hljs-operator">=</span> usersService.insUser(users);<br><span class="hljs-keyword">if</span> (integer &gt; <span class="hljs-number">0</span> )&#123;<br>map.put(<span class="hljs-string">&quot;code&quot;</span>,<span class="hljs-number">200</span>);<br>map.put(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;success&quot;</span>);<br><span class="hljs-keyword">return</span> map;<br>&#125;<span class="hljs-keyword">else</span> &#123;<br>map.put(<span class="hljs-string">&quot;code&quot;</span>,<span class="hljs-number">100</span>);<br>map.put(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;failed&quot;</span>);<br><span class="hljs-keyword">return</span> map;<br>&#125;<br>&#125;<br>/\*\*<br>\* 修改用户<br>\* <span class="hljs-meta">@return</span><br>\*/<br><span class="hljs-meta">@PostMapping(&quot;/updUser&quot;)</span><br><span class="hljs-keyword">public</span> Map&lt;String,Object&gt; <span class="hljs-title function_">updUser</span><span class="hljs-params">(<span class="hljs-meta">@RequestParam(value = &quot;id&quot;)</span> Integer id,</span><br><span class="hljs-params"><span class="hljs-meta">@RequestParam(value = &quot;username&quot;)</span>String username)</span>&#123;<br>Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br><span class="hljs-type">Integer</span> <span class="hljs-variable">integer</span> <span class="hljs-operator">=</span> usersService.updUser(username,id);<br><span class="hljs-keyword">if</span> (integer &gt; <span class="hljs-number">0</span> )&#123;<br>map.put(<span class="hljs-string">&quot;code&quot;</span>,<span class="hljs-number">200</span>);<br>map.put(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;success&quot;</span>);<br><span class="hljs-keyword">return</span> map;<br>&#125;<span class="hljs-keyword">else</span> &#123;<br>map.put(<span class="hljs-string">&quot;code&quot;</span>,<span class="hljs-number">100</span>);<br>map.put(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;failed&quot;</span>);<br><span class="hljs-keyword">return</span> map;<br>&#125;<br>&#125;<br>/\*\*<br>\* 删除用户<br>\* <span class="hljs-meta">@param</span> username<br>\* <span class="hljs-meta">@return</span><br>\*/<br><span class="hljs-meta">@PostMapping(&quot;/delUser&quot;)</span><br><span class="hljs-keyword">public</span> Map&lt;String,Object&gt; <span class="hljs-title function_">delUser</span><span class="hljs-params">(<span class="hljs-meta">@RequestParam(value = &quot;username&quot;)</span> String username)</span>&#123;<br>Map&lt;String, Object&gt; map = <span class="hljs-keyword">new</span> <span class="hljs-title class_">HashMap</span>&lt;&gt;();<br><span class="hljs-type">Integer</span> <span class="hljs-variable">integer</span> <span class="hljs-operator">=</span> usersService.delUser(username);<br><span class="hljs-keyword">if</span> (integer &gt; <span class="hljs-number">0</span> )&#123;<br>map.put(<span class="hljs-string">&quot;code&quot;</span>,<span class="hljs-number">200</span>);<br>map.put(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;success&quot;</span>);<br><span class="hljs-keyword">return</span> map;<br>&#125;<span class="hljs-keyword">else</span> &#123;<br>map.put(<span class="hljs-string">&quot;code&quot;</span>,<span class="hljs-number">100</span>);<br>map.put(<span class="hljs-string">&quot;msg&quot;</span>,<span class="hljs-string">&quot;failed&quot;</span>);<br><span class="hljs-keyword">return</span> map;<br>&#125;<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>这里是SpringMVC的操作了，几个核心注解需要注意：</p>
+<p>@RestController 是@Controller和@ResponseBody的整合，标明该类是接口，并把数据以JSON的格式返回</p>
+<p>@RequestMapping 是接口映射地址，包含所有类型的请求，放在接口层最前面，把该接口的路径都规定为&#x2F;users&#x2F;*</p>
+<p>@GetMapping GET请求的接口</p>
+<p>@PostMapping POST请求的接口</p>
+<p>@RequestParam POST请求需要在请求头中把Content-Type设置为application&#x2F;x-www-form-urlencoded，常见参数提交，也是默认Ajax和Axios默认的参数提交格式</p>
+<p>@RequestBody POST请求需要在请求头中把Content-Type设置为application&#x2F;json，一般用于表单提交</p>
+<h2 id="8-测试类"><a href="#8-测试类" class="headerlink" title="8.测试类"></a>8.测试类</h2><p>在测试类在注入UsersService，测试查询方法是否成功生效</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@SpringBootTest</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">SpringbootMybatisApplicationTests</span> &#123;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-type">Logger</span> <span class="hljs-variable">logger</span> <span class="hljs-operator">=</span> LoggerFactory.getLogger(SpringbootMybatisApplicationTests.class);<br><span class="hljs-meta">@Autowired</span><br><span class="hljs-keyword">private</span> UsersService usersService;<br><span class="hljs-meta">@Test</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">showAll</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-comment">//lambadas表达式</span><br>logger.info(<span class="hljs-string">&quot;-----------查询全部-------------&quot;</span>);<br>usersService.selAllUsers().forEach(System.out::println);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://i.loli.net/2021/01/12/UjYBlEgXwi6ZJbq.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>测试成功，返回数据。</p>
+<h2 id="9-PostMan测试"><a href="#9-PostMan测试" class="headerlink" title="9.PostMan测试"></a>9.PostMan测试</h2><p>controller层采用前后端分离的模式，后端只处理业务逻辑，编写API，这里我们用PostMan测试API是否能成功返回数据</p>
+<p><img src="https://i.loli.net/2021/01/12/btCmFzeYQVa6IRw.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>测试POST提交参数</p>
+<p><img src="https://i.loli.net/2021/01/12/V1NRcZEI8Uezwjy.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>测试成功！</p>
+<h2 id="10-GitHub源码"><a href="#10-GitHub源码" class="headerlink" title="10.GitHub源码"></a>10.GitHub源码</h2><p><a target="_blank" rel="noopener" href="https://github.com/luffy997/SpringBootBucket/tree/main/springboot-mybatis">springboot-mybatis</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/SpringBoot/" class="print-no-link">#SpringBoot</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>SpringBoot集成Mybatis的使用</div>
+      <div>http://example.com/2021/01/12/SpringBoot集成Mybatis的使用/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年1月12日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/01/20/SpringBoot%E4%B9%8B%E5%AE%9E%E7%8E%B0RESTful%E6%8E%A5%E5%8F%A3/" title="SpringBoot之实现RESTful接口">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SpringBoot之实现RESTful接口</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/01/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="计算机网络学习笔记">
+                        <span class="hidden-mobile">计算机网络学习笔记</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

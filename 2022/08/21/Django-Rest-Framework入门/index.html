@@ -1,0 +1,718 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Python应用非常广泛，人工智能领域、自动化、Web开发中都有着不错的生态支持。 在Web开发领域，Djang和Flask作为目前主流的Web框架社区热度非常高，Django比Flask体积大很多，可以搭建大型的Web应用服务器，所以最近也在学这个框架。 其实Django东西并不多，相反写起来有点复杂。Django REST framework（后面简称DRF）就出现了，以RESTful作为接口">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django Rest Framework入门">
+<meta property="og:url" content="http://example.com/2022/08/21/Django-Rest-Framework%E5%85%A5%E9%97%A8/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="Python应用非常广泛，人工智能领域、自动化、Web开发中都有着不错的生态支持。 在Web开发领域，Djang和Flask作为目前主流的Web框架社区热度非常高，Django比Flask体积大很多，可以搭建大型的Web应用服务器，所以最近也在学这个框架。 其实Django东西并不多，相反写起来有点复杂。Django REST framework（后面简称DRF）就出现了，以RESTful作为接口">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2022/08/21/vyYQMD.png">
+<meta property="article:published_time" content="2022-08-20T22:04:58.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:07.105Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="DRF">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s1.ax1x.com/2022/08/21/vyYQMD.png">
+  
+  
+  
+  <title>Django Rest Framework入门 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Django Rest Framework入门"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-21 06:04" pubdate>
+          2022年8月21日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Django Rest Framework入门</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Python应用非常广泛，人工智能领域、自动化、Web开发中都有着不错的生态支持。</p>
+<p>在Web开发领域，Djang和Flask作为目前主流的Web框架社区热度非常高，Django比Flask体积大很多，可以搭建大型的Web应用服务器，所以最近也在学这个框架。</p>
+<p>其实Django东西并不多，相反写起来有点复杂。Django REST framework（后面简称DRF）就出现了，以<strong>RESTful</strong>作为接口命名规范，在操作数据时加入序列化器简化数据校验，字段返回等操作，封装视图层简化接口编写和参数返回，提供<strong>认证、权限、限流、过滤、排序、分页、异常处理、API接口文档</strong>等组件，功能非常强大，可以说仅仅Django是一个基石，DRF才是真正的开发必备。</p>
+<p>下面从0到1，总结自己学习DRF的过程。</p>
+<ul>
+<li><strong>Django REST framework 入门</strong></li>
+<li><strong>Django REST framework 序列化器</strong></li>
+<li><strong>Django REST framework 请求响应 视图 路由</strong></li>
+<li><strong>Django REST framework 八大组件</strong></li>
+</ul>
+<hr>
+<h2 id="环境准备"><a href="#环境准备" class="headerlink" title="环境准备"></a>环境准备</h2><ul>
+<li>Windows 10</li>
+<li>Python 3.6</li>
+<li>Mysql 5.7</li>
+<li>Django 3.2</li>
+<li>Pycharm 2019.3</li>
+</ul>
+<p>安装好Python3.6后，安装pipenv做虚拟环境，以后的库就放在虚拟环境</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br></pre></td><td class="code"><pre><code class="hljs shell">Microsoft Windows [版本 10.0.18363.1556]<br>(c) 2019 Microsoft Corporation。保留所有权利。<br><span class="hljs-meta prompt_"># </span><span class="language-bash">创建<span class="hljs-built_in">env</span>目录作为虚拟环境地址</span><br>D:\Environment\env&gt;dir<br>驱动器 D 中的卷是 Program<br>卷的序列号是 654B-777A<br>D:\Environment\env 的目录<br>2022/03/24 09:56 &lt;DIR&gt; .<br>2022/03/24 09:56 &lt;DIR&gt; ..<br>0 个文件 0 字节<br>2 个目录 283,803,500,544 可用字节<br><span class="hljs-meta prompt_"># </span><span class="language-bash">安装pipenv</span><br>D:\Environment\env&gt;pip install pipenv<br>Looking in indexes: http://pypi.douban.com/simple<br>Requirement already satisfied: pipenv in d:\python3.6\lib\site-packages (2022.1.8)<br>Requirement already satisfied: virtualenv-clone&gt;=0.2.5 in d:\python3.6\lib\site-packages (from pipenv) (0.5.7)<br>Requirement already satisfied: certifi in d:\python3.6\lib\site-packages (from pipenv) (2021.10.8)<br>Requirement already satisfied: pip&gt;=18.0 in d:\python3.6\lib\site-packages (from pipenv) (21.3.1)<br>Requirement already satisfied: virtualenv in d:\python3.6\lib\site-packages (from pipenv) (20.13.3)<br>Requirement already satisfied: setuptools&gt;=36.2.1 in d:\python3.6\lib\site-packages (from pipenv) (59.6.0)<br>Requirement already satisfied: importlib-metadata&gt;=0.12 in d:\python3.6\lib\site-packages (from virtualenv-&gt;pipenv) (4.8.3)<br>Requirement already satisfied: importlib-resources&gt;=1.0 in d:\python3.6\lib\site-packages (from virtualenv-&gt;pipenv) (5.4.0)<br>Requirement already satisfied: platformdirs&lt;3,&gt;=2 in d:\python3.6\lib\site-packages (from virtualenv-&gt;pipenv) (2.4.0)<br>Requirement already satisfied: filelock&lt;4,&gt;=3.2 in d:\python3.6\lib\site-packages (from virtualenv-&gt;pipenv) (3.4.1)<br>Requirement already satisfied: six&lt;2,&gt;=1.9.0 in d:\python3.6\lib\site-packages (from virtualenv-&gt;pipenv) (1.11.0)<br>Requirement already satisfied: distlib&lt;1,&gt;=0.3.1 in d:\python3.6\lib\site-packages (from virtualenv-&gt;pipenv) (0.3.4)<br>Requirement already satisfied: typing-extensions&gt;=3.6.4 in d:\python3.6\lib\site-packages (from importlib-metadata&gt;=0.12-&gt;virtualenv-&gt;pipenv) (4.1.1)<br>Requirement already satisfied: zipp&gt;=0.5 in d:\python3.6\lib\site-packages (from importlib-metadata&gt;=0.12-&gt;virtualenv-&gt;pipenv) (3.6.0)<br>D:\Environment\env&gt;pipenv graph<br>Warning: No virtualenv has been created for this project yet! Consider running `pipenv install` first to automatically generate one for you or see `pipenv install --help` for further instructions.<br><span class="hljs-meta prompt_"># </span><span class="language-bash">安装Django，不加版本就是默认最新版</span><br>D:\Environment\env&gt;pipenv install django<br>Creating a virtualenv for this project...<br>Pipfile: D:\Environment\env\Pipfile<br>Using D:/python3.6/python.exe (3.6.2) to create virtualenv...<br>[ =] Creating virtual environment...created virtual environment CPython3.6.2.final.0-64 in 3139ms<br>creator CPython3Windows(dest=C:\Users\Luffy\.virtualenvs\env-cX5X2ZN8, clear=False, no\_vcs\_ignore=False, global=False)<br>seeder FromAppData(download=False, pip=bundle, setuptools=bundle, wheel=bundle, via=copy, app\_data\_dir=C:\Users\Luffy\AppData\Local\pypa\virtualenv)<br>added seed packages: pip==21.3.1, setuptools==59.6.0, wheel==0.37.1<br>activators BashActivator,BatchActivator,FishActivator,NushellActivator,PowerShellActivator,PythonActivator<br>Successfully created virtual environment!<br>Virtualenv location: C:\Users\Luffy\.virtualenvs\env-cX5X2ZN8<br>Creating a Pipfile for this project...<br>Installing django...<br>Adding django to Pipfile&#x27;s [packages]...<br>Installation Succeeded<br>Pipfile.lock not found, creating...<br>Locking [dev-packages] dependencies...<br>Locking [packages] dependencies...<br>Locking...Building requirements...<br>Resolving dependencies...<br>Success!<br>Updated Pipfile.lock (85c883)!<br>Installing dependencies from Pipfile.lock (85c883)...<br>================================ 0/0 - 00:00:00<br>To activate this project&#x27;s virtualenv, run pipenv shell.<br>Alternatively, run a command inside the virtualenv with pipenv run.<br><span class="hljs-meta prompt_"># </span><span class="language-bash">查看虚拟环境中安装的库</span><br>D:\Environment\env&gt;pipenv graph<br>Django==3.2.12<br>- asgiref [required: &gt;=3.3.2,&lt;4, installed: 3.4.1]<br>- typing-extensions [required: Any, installed: 4.1.1]<br>- pytz [required: Any, installed: 2022.1]<br>- sqlparse [required: &gt;=0.2.2, installed: 0.4.2]<br><span class="hljs-meta prompt_"># </span><span class="language-bash">进入虚拟环境</span><br>D:\Environment\env&gt;pipenv shell<br>Launching subshell in virtual environment...<br>Microsoft Windows [版本 10.0.18363.1556]<br>(c) 2019 Microsoft Corporation。保留所有权利。<br><span class="hljs-meta prompt_"># </span><span class="language-bash">查看虚拟环境实际位置</span><br>(env-cX5X2ZN8) D:\Environment\env&gt;pipenv --venv<br>C:\Users\Luffy\.virtualenvs\env-cX5X2ZN8<br>(env-cX5X2ZN8) D:\Environment\env&gt;<br></code></pre></td></tr></table></figure>
+
+<h2 id="创建项目"><a href="#创建项目" class="headerlink" title="创建项目"></a>创建项目</h2><p>直接使用pipenv创建Django项目，然后用PyCharm打开即可</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell">(env-cX5X2ZN8) D:\Environment\env&gt;django-admin startproject drfdemo<br>(env-cX5X2ZN8) D:\Environment\env&gt;dir<br>驱动器 D 中的卷是 Program<br>卷的序列号是 654B-777A<br>D:\Environment\env 的目录<br>2022/03/24 10:53 &lt;DIR&gt; .<br>2022/03/24 10:53 &lt;DIR&gt; ..<br>2022/03/24 10:53 &lt;DIR&gt; drfdemo<br>2022/03/24 10:51 151 Pipfile<br>2022/03/24 10:51 2,069 Pipfile.lock<br>2 个文件 2,220 字节<br>3 个目录 283,753,816,064 可用字节<br>(env-cX5X2ZN8) D:\Environment\env&gt;<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/vyJy8K"><img src="https://s1.ax1x.com/2022/08/21/vyJy8K.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>在 <code>settings.py</code> 中导入os包，启动Django项目，即可在浏览器中看到启动成功</p>
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/vyJ6gO"><img src="https://s1.ax1x.com/2022/08/21/vyJ6gO.png" srcset="/img/loading.gif" lazyload></a></p>
+<h2 id="常规配置"><a href="#常规配置" class="headerlink" title="常规配置"></a>常规配置</h2><p><strong>语言和时区</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">LANGUAGE\_CODE = <span class="hljs-string">&#x27;zh-Hans&#x27;</span><br>TIME\_ZONE = <span class="hljs-string">&#x27;Asia/Shanghai&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>关掉csrf防御</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># &#x27;django.middleware.csrf.CsrfViewMiddleware&#x27;,</span><br></code></pre></td></tr></table></figure>
+
+<p>数据库</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python">DATABASES = &#123;<br><span class="hljs-string">&#x27;default&#x27;</span>: &#123;<br><span class="hljs-string">&#x27;ENGINE&#x27;</span>: <span class="hljs-string">&#x27;django.db.backends.mysql&#x27;</span>,<br><span class="hljs-string">&#x27;HOST&#x27;</span>: <span class="hljs-string">&#x27;127.0.0.1&#x27;</span>,<br><span class="hljs-string">&#x27;PORT&#x27;</span>: <span class="hljs-number">3306</span>,<br><span class="hljs-string">&#x27;USER&#x27;</span>: <span class="hljs-string">&#x27;root&#x27;</span>,<br><span class="hljs-string">&#x27;PASSWORD&#x27;</span>: <span class="hljs-string">&#x27;123456&#x27;</span>,<br><span class="hljs-string">&#x27;NAME&#x27;</span>: <span class="hljs-string">&#x27;drf&#x27;</span><br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>连接MySql还需要下载库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pipenv install pymysql<br></code></pre></td></tr></table></figure>
+
+<p>在主项目下的 <code>__init__.py</code>中加入连接数据库配置</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> pymysql<br>pymysql.install\_<span class="hljs-keyword">as</span>\_MySQLdb()<br></code></pre></td></tr></table></figure>
+
+<p>基本上到现在，一个Django项目的常用配置就好了</p>
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/vyJWbd"><img src="https://s1.ax1x.com/2022/08/21/vyJWbd.png" srcset="/img/loading.gif" lazyload></a></p>
+<h2 id="创建应用"><a href="#创建应用" class="headerlink" title="创建应用"></a>创建应用</h2><p>创建一个students的应用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">python manage.py startapp students<br></code></pre></td></tr></table></figure>
+
+<p>注册应用到 <code>settings.py</code>中去</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python">INSTALLED\_APPS = [<br><span class="hljs-string">&#x27;django.contrib.admin&#x27;</span>,<br><span class="hljs-string">&#x27;django.contrib.auth&#x27;</span>,<br><span class="hljs-string">&#x27;django.contrib.contenttypes&#x27;</span>,<br><span class="hljs-string">&#x27;django.contrib.sessions&#x27;</span>,<br><span class="hljs-string">&#x27;django.contrib.messages&#x27;</span>,<br><span class="hljs-string">&#x27;django.contrib.staticfiles&#x27;</span>,<br><span class="hljs-string">&#x27;students&#x27;</span>,<br>]<br></code></pre></td></tr></table></figure>
+
+<p>编写model类</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.db <span class="hljs-keyword">import</span> models<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Student</span>(models.Model):<br>SEX\_OPTION = (<br>(<span class="hljs-number">0</span>,<span class="hljs-string">&#x27;保密&#x27;</span>),<br>(<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;男&#x27;</span>),<br>(<span class="hljs-number">2</span>,<span class="hljs-string">&#x27;女&#x27;</span>),<br>)<br>name = models.CharField(<span class="hljs-built_in">max</span>\_length=<span class="hljs-number">20</span>,verbose\_name=<span class="hljs-string">&#x27;姓名&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;姓名&#x27;</span>)<br>age = models.SmallIntegerField(verbose\_name=<span class="hljs-string">&#x27;年龄&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;年龄&#x27;</span>)<br>sex = models.SmallIntegerField(choices=SEX\_OPTION,verbose\_name=<span class="hljs-string">&#x27;性别&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;性别，0-&gt;保密，1-&gt;男，2-&gt;女，&#x27;</span>)<br>classmate = models.CharField(db\_column=<span class="hljs-string">&#x27;classmate&#x27;</span>,<span class="hljs-built_in">max</span>\_length=<span class="hljs-number">13</span>,verbose\_name=<span class="hljs-string">&#x27;班级&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;班级&#x27;</span>)<br>description = models.TextField(null=<span class="hljs-literal">True</span>,blank=<span class="hljs-literal">True</span>,verbose\_name=<span class="hljs-string">&#x27;个性签名&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;个性签名，可以为空&#x27;</span>)<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>db\_table = <span class="hljs-string">&#x27;db\_student&#x27;</span><br>verbose\_name = <span class="hljs-string">&#x27;学生信息&#x27;</span><br>verbose\_name\_plural = verbose\_name<br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs shell">迁移模型<br>python manage.py makemigrations<br>数据导入<br>python manage.py migrate<br></code></pre></td></tr></table></figure>
+
+<p>打卡数据库，可以发现我们刚刚创建的表，对于字段的一些配置参数，就不解释了，可以查看官网model的编写</p>
+<p>通过下面命令，创建超级管理员，可以用于登录django自带的管理员界面</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">python manage.py createsuperuser<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/vyJsC6"><img src="https://s1.ax1x.com/2022/08/21/vyJsC6.png" srcset="/img/loading.gif" lazyload></a></p>
+<h2 id="测试接口"><a href="#测试接口" class="headerlink" title="测试接口"></a>测试接口</h2><p>简单编写一个测试接口，测试与数据库是否连接成功</p>
+<p><code>drfdemo/urls.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">urlpatterns = [<br>path(<span class="hljs-string">&#x27;admin/&#x27;</span>, admin.site.urls),<br>path(<span class="hljs-string">&#x27;stu/&#x27;</span>, include(<span class="hljs-string">&#x27;students.urls&#x27;</span>)),<br>]<br></code></pre></td></tr></table></figure>
+
+<p><code>students/urls.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python">urlpatterns = [<br>path(<span class="hljs-string">&#x27;test/&#x27;</span>,StudentsViews.test),<br>]<br></code></pre></td></tr></table></figure>
+
+<p><code>views.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">StudentsViews</span>(<span class="hljs-title class_ inherited__">View</span>):<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">test</span>(<span class="hljs-params">self</span>):<br>stus = Student.objects.<span class="hljs-built_in">all</span>()<br><span class="hljs-keyword">for</span> stu <span class="hljs-keyword">in</span> stus:<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;姓名：<span class="hljs-subst">&#123;stu.name&#125;</span>&#x27;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;姓名：<span class="hljs-subst">&#123;stu.age&#125;</span>&#x27;</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;姓名：<span class="hljs-subst">&#123;stu.sex&#125;</span>&#x27;</span>)<br><span class="hljs-comment"># print(f&#x27;QuerrySet：&#123;stu&#125;&#x27;)</span><br><span class="hljs-keyword">return</span> JsonResponse(data=&#123;<span class="hljs-string">&#x27;msg&#x27;</span>:<span class="hljs-string">&#x27;ok&#x27;</span>&#125;)<br></code></pre></td></tr></table></figure>
+
+<p>请求结果，打印在控制台：</p>
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/vytmwj"><img src="https://s1.ax1x.com/2022/08/21/vytmwj.png" srcset="/img/loading.gif" lazyload alt="vytmwj.png"></a></p>
+<p>测试通过</p>
+<h2 id="整合DRF"><a href="#整合DRF" class="headerlink" title="整合DRF"></a>整合DRF</h2><p>DRF简化Django的操作，没有DRF，Django也能完成，只是编码会复杂一些，这里整合DRF做一个简单的例子，先不用理解里面的内容。</p>
+<p>安装依赖</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pipenv install djangorestframework django-filter<br></code></pre></td></tr></table></figure>
+
+<p>把组件加入到<code>setting.py</code>中</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs shell">&#x27;rest\_framework&#x27;,<br>&#x27;django\_filters&#x27;,<br></code></pre></td></tr></table></figure>
+
+<p>编写序列化器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">StudentModelSerializer</span>(serializers.ModelSerializer):<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>model = Student<br><span class="hljs-comment"># 序列化字段</span><br><span class="hljs-comment"># 全部</span><br>fields = <span class="hljs-string">&#x27;\_\_all\_\_&#x27;</span><br><span class="hljs-comment"># 一个一个写</span><br><span class="hljs-comment"># fields =[&#x27;id&#x27;,&#x27;name&#x27;]</span><br></code></pre></td></tr></table></figure>
+
+<p><code>urls.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">path(<span class="hljs-string">&#x27;stu/&#x27;</span>,StudentsGenericAPIView.<span class="hljs-keyword">as</span>\_view()),<br></code></pre></td></tr></table></figure>
+
+<p><code>views.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">StudentsGenericAPIView</span>(<span class="hljs-title class_ inherited__">GenericAPIView</span>):<br>queryset = Student.objects.<span class="hljs-built_in">all</span>()<br>serializer\_<span class="hljs-keyword">class</span> = StudentModelSerializer<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get</span>(<span class="hljs-params">self, request</span>):<br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">获取多条数据</span><br><span class="hljs-string">:param request:</span><br><span class="hljs-string">:return:</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-comment"># 获取模型对象列表，实例化序列化器对象</span><br>serializer = <span class="hljs-variable language_">self</span>.serializer\_<span class="hljs-keyword">class</span>(instance=<span class="hljs-variable language_">self</span>.get\_queryset(), many=<span class="hljs-literal">True</span>)<br><span class="hljs-comment"># 返回序列化的数据列表</span><br><span class="hljs-keyword">return</span> Response(serializer.data)<br></code></pre></td></tr></table></figure>
+
+<p>测试结果<br><a target="_blank" rel="noopener" href="https://imgse.com/i/vyJD4x"><img src="https://s1.ax1x.com/2022/08/21/vyJD4x.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>可以发现，自带页面，而且以json格式返回，写过Django的同学知道要是没用DRF，返回json格式是特别痛苦的一件事，要取出来遍历放入字典再返回，但是用了DRF通过序列化器，就直接能返回json数据，特别方便！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/DRF/" class="print-no-link">#DRF</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Django Rest Framework入门</div>
+      <div>http://example.com/2022/08/21/Django-Rest-Framework入门/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年8月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/21/Django-Rest-Framework%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8/" title="Django Rest Framework序列化器">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Django Rest Framework序列化器</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/03/16/Python%E7%8E%AF%E5%A2%83%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/" title="Python环境相关的问题">
+                        <span class="hidden-mobile">Python环境相关的问题</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

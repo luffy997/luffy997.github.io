@@ -1,0 +1,697 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="SpringBoot之实现RESTful接口REST，即Representational State Transfer的缩写，对这个词组的翻译是表现层状态转化。 RESTful是一种软件设计风格，就是目前最流行的一种互联网软件架构。它结构清晰、符合标准、易于理解、扩展方便，所以正得到越来越多网站的采用。 SpringMVC对RESTful风格的接口有着天然的支持，本篇将讲述如何在SpringBoo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot之实现RESTful接口">
+<meta property="og:url" content="http://example.com/2021/01/20/SpringBoot%E4%B9%8B%E5%AE%9E%E7%8E%B0RESTful%E6%8E%A5%E5%8F%A3/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="SpringBoot之实现RESTful接口REST，即Representational State Transfer的缩写，对这个词组的翻译是表现层状态转化。 RESTful是一种软件设计风格，就是目前最流行的一种互联网软件架构。它结构清晰、符合标准、易于理解、扩展方便，所以正得到越来越多网站的采用。 SpringMVC对RESTful风格的接口有着天然的支持，本篇将讲述如何在SpringBoo">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.ax1x.com/2021/01/23/s73VYD.jpg">
+<meta property="article:published_time" content="2021-01-20T06:15:27.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:03.484Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s3.ax1x.com/2021/01/23/s73VYD.jpg">
+  
+  
+  
+  <title>SpringBoot之实现RESTful接口 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="SpringBoot之实现RESTful接口"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-01-20 14:15" pubdate>
+          2021年1月20日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          10 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">SpringBoot之实现RESTful接口</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="SpringBoot之实现RESTful接口"><a href="#SpringBoot之实现RESTful接口" class="headerlink" title="SpringBoot之实现RESTful接口"></a>SpringBoot之实现RESTful接口</h1><p>REST，即Representational State Transfer的缩写，对这个词组的翻译是<code>表现层状态转化</code>。</p>
+<p>RESTful是一种软件设计风格，就是目前最流行的一种互联网软件架构。它结构清晰、符合标准、易于理解、扩展方便，所以正得到越来越多网站的采用。</p>
+<p>SpringMVC对RESTful风格的接口有着天然的支持，本篇将讲述如何在SpringBoot中怎样写。</p>
+<h2 id="1-重要注解"><a href="#1-重要注解" class="headerlink" title="1.重要注解"></a>1.重要注解</h2><p>在讲述使用之前，想要理解SpringMVC的几个常用注解：</p>
+<ol>
+<li>@Controller：修饰class，用来创建处理http请求的对象</li>
+<li>@RestController：Spring4之后加入的注解，原来在@Controller中返回json需要@ResponseBody来配合，如果直接用@RestController替代@Controller就不需要再配置@ResponseBody，默认返回json格式。</li>
+<li>@RequestMapping：配置url映射</li>
+<li>@PostMapping: 这个是@RequestMapping+POST方法的简写</li>
+<li>@RequestHeader: 请求Header参数</li>
+<li>@PathVariable: URL路径参数，比如&#x2F;user&#x2F;{id}中的id参数</li>
+<li>@RequestParam: URL请求参数，比如&#x2F;user?id&#x3D;1中的id参数</li>
+<li>@RequestBody: 请求Body参数</li>
+</ol>
+<p>下面我们尝试使用Spring MVC来实现一组对User对象操作的RESTful API，配合注释详细说明在Spring MVC中如何映射HTTP请求、如何传参、如何编写单元测试。</p>
+<h2 id="2-API设计"><a href="#2-API设计" class="headerlink" title="2.API设计"></a>2.API设计</h2><table>
+<thead>
+<tr>
+<th>请求类型</th>
+<th>URL</th>
+<th>功能说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GET</td>
+<td>&#x2F;uer&#x2F;</td>
+<td>查询全部</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>&#x2F;uer</td>
+<td>插入数据</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>&#x2F;uer&#x2F;{id}</td>
+<td>根据id查询</td>
+</tr>
+<tr>
+<td>PUT</td>
+<td>&#x2F;uer&#x2F;{id}</td>
+<td>根据id更新</td>
+</tr>
+<tr>
+<td>DELETE</td>
+<td>&#x2F;uer&#x2F;{id}</td>
+<td>根据id删除</td>
+</tr>
+<tr>
+<td>POST</td>
+<td>&#x2F;user&#x2F;{id}</td>
+<td>测试乐观锁</td>
+</tr>
+<tr>
+<td>GET</td>
+<td>&#x2F;user&#x2F;pageInfo&#x2F;{pageNo}</td>
+<td>分页查询</td>
+</tr>
+</tbody></table>
+<p>RESTful架构有一些典型的设计误区，就是URI包含动词。因为”资源”表示一种实体，所以应该是名词，URI不应该有动词，动词应该放在HTTP协议中。 上面设计的API的URI中都是名词。</p>
+<h2 id="3-定义实体"><a href="#3-定义实体" class="headerlink" title="3.定义实体"></a>3.定义实体</h2><p>这里我们使用MybatisPlus的代码生成器，简化操作，只需编写RESTful风格的API</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br></pre></td><td class="code"><pre><code class="hljs java">/\*\*<br>\* &lt;p&gt;<br>\*<br>\* &lt;/p&gt;<br>\*<br>\* <span class="hljs-meta">@author</span> 路飞<br>\* <span class="hljs-meta">@since</span> <span class="hljs-number">2021</span>-<span class="hljs-number">01</span>-<span class="hljs-number">05</span><br>\*/<br><span class="hljs-meta">@Data</span><br><span class="hljs-meta">@EqualsAndHashCode(callSuper = false)</span><br><span class="hljs-meta">@Accessors(chain = true)</span><br><span class="hljs-meta">@ApiModel(value = &quot;Users&quot;, description = &quot;Users&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">Users</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">Serializable</span> &#123;<br><span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-type">long</span> <span class="hljs-variable">serialVersionUID</span> <span class="hljs-operator">=</span> <span class="hljs-number">1L</span>;<br><span class="hljs-meta">@ApiModelProperty(value = &quot;主键ID&quot;)</span><br><span class="hljs-meta">@TableId(value = &quot;id&quot;, type = IdType.AUTO)</span><br><span class="hljs-keyword">private</span> Long id;<br><span class="hljs-meta">@ApiModelProperty(value = &quot;姓名&quot;)</span><br><span class="hljs-keyword">private</span> String name;<br><span class="hljs-meta">@ApiModelProperty(value = &quot;年龄&quot;)</span><br><span class="hljs-keyword">private</span> Integer age;<br><span class="hljs-meta">@ApiModelProperty(value = &quot;邮箱&quot;)</span><br><span class="hljs-keyword">private</span> String email;<br><span class="hljs-meta">@Version</span><br><span class="hljs-keyword">private</span> Integer version;<br><span class="hljs-meta">@ApiModelProperty(value = &quot;逻辑删除&quot;)</span><br><span class="hljs-meta">@TableLogic</span><br><span class="hljs-keyword">private</span> Integer deleted;<br><span class="hljs-meta">@ApiModelProperty(value = &quot;创建时间&quot;)</span><br><span class="hljs-keyword">private</span> Date create\_time;<br><span class="hljs-meta">@ApiModelProperty(value = &quot;更新时间&quot;)</span><br><span class="hljs-keyword">private</span> Date update\_time;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-controller的编写"><a href="#4-controller的编写" class="headerlink" title="4.controller的编写"></a>4.controller的编写</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br></pre></td><td class="code"><pre><code class="hljs java">/\*\*<br>\* &lt;p&gt;<br>\* 前端控制器<br>\* &lt;/p&gt;<br>\*<br>\* <span class="hljs-meta">@author</span> 路飞<br>\* <span class="hljs-meta">@since</span> <span class="hljs-number">2021</span>-<span class="hljs-number">01</span>-<span class="hljs-number">05</span><br>\*/<br><span class="hljs-meta">@RestController</span><br><span class="hljs-meta">@RequestMapping(&quot;/user&quot;)</span><br><span class="hljs-meta">@Slf4j</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">UserController</span> &#123;<br><span class="hljs-meta">@Autowired</span><br><span class="hljs-keyword">private</span> UserService userService;<br><span class="hljs-meta">@Autowired</span><br><span class="hljs-keyword">private</span> UserMapper userMapper;<br>/\*\*<br>\* 查询全部<br>\*<br>\* <span class="hljs-meta">@return</span><br>\*/<br><span class="hljs-meta">@ApiOperation(&quot;查询全部&quot;)</span><br><span class="hljs-meta">@GetMapping(&quot;/&quot;)</span><br><span class="hljs-keyword">public</span> BaseResponse&lt;List&lt;Users&gt;&gt; <span class="hljs-title function_">getAll</span><span class="hljs-params">()</span> &#123;<br>List&lt;Users&gt; list = userService.list(<span class="hljs-literal">null</span>);<br><span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BaseResponse</span>&lt;&gt;(<span class="hljs-literal">true</span>, <span class="hljs-string">&quot;查询成功&quot;</span>, list);<br>&#125;<br>/\*\*<br>\* 根据id查<br>\*<br>\* <span class="hljs-meta">@param</span> id<br>\* <span class="hljs-meta">@return</span><br>\*/<br><span class="hljs-meta">@ApiOperation(&quot;根据id查询&quot;)</span><br><span class="hljs-meta">@GetMapping(&quot;/&#123;id&#125;&quot;)</span><br><span class="hljs-keyword">public</span> BaseResponse&lt;Users&gt; <span class="hljs-title function_">getById</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> Long id)</span> &#123;<br><span class="hljs-type">Users</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> userService.getById(id);<br><span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BaseResponse</span>&lt;&gt;(<span class="hljs-literal">true</span>, <span class="hljs-string">&quot;查询成功&quot;</span>, user);<br>&#125;<br>/\*\*<br>\* 根据id删除<br>\*<br>\* <span class="hljs-meta">@param</span> id<br>\* <span class="hljs-meta">@return</span><br>\*/<br><span class="hljs-meta">@ApiOperation(&quot;根据id删除&quot;)</span><br><span class="hljs-meta">@DeleteMapping(&quot;/&#123;id&#125;&quot;)</span><br><span class="hljs-keyword">public</span> BaseResponse&lt;String&gt; <span class="hljs-title function_">dellteUser</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> Long id)</span> &#123;<br>userService.removeById(id);<br><span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BaseResponse</span>&lt;&gt;(<span class="hljs-literal">true</span>, <span class="hljs-string">&quot;删除成功&quot;</span>, <span class="hljs-string">&quot;200&quot;</span>);<br>&#125;<br>/\*\*<br>\* 根据id更新<br>\*<br>\* <span class="hljs-meta">@param</span> id<br>\* <span class="hljs-meta">@return</span><br>\*/<br><span class="hljs-meta">@ApiOperation(&quot;根据id更新&quot;)</span><br><span class="hljs-meta">@PutMapping(&quot;/&#123;id&#125;&quot;)</span><br><span class="hljs-keyword">public</span> BaseResponse&lt;String&gt; <span class="hljs-title function_">updateUser</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> Long id, <span class="hljs-meta">@ModelAttribute</span> Users user)</span> &#123;<br>userService.updateById(user);<br>log.info(<span class="hljs-string">&quot;更新成功&quot;</span>);<br><span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BaseResponse</span>&lt;&gt;(<span class="hljs-literal">true</span>, <span class="hljs-string">&quot;更新成功&quot;</span>, <span class="hljs-string">&quot;200&quot;</span>);<br>&#125;<br>/\*\*<br>\* 插入数据<br>\*<br>\* <span class="hljs-meta">@param</span> user<br>\* <span class="hljs-meta">@return</span><br>\*/<br><span class="hljs-meta">@ApiOperation(&quot;插入数据&quot;)</span><br><span class="hljs-meta">@PostMapping(&quot;/&quot;)</span><br><span class="hljs-keyword">public</span> BaseResponse&lt;String&gt; <span class="hljs-title function_">insUser</span><span class="hljs-params">(<span class="hljs-meta">@ModelAttribute</span> Users user)</span> &#123;<br>userService.save(user);<br><span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BaseResponse</span>&lt;&gt;(<span class="hljs-literal">true</span>, <span class="hljs-string">&quot;插入成功&quot;</span>, <span class="hljs-string">&quot;200&quot;</span>);<br>&#125;<br>/\*\*<br>\* 测试乐观锁<br>\*<br>\* <span class="hljs-meta">@param</span> id<br>\* <span class="hljs-meta">@param</span> user<br>\* <span class="hljs-meta">@return</span><br>\*/<br><span class="hljs-meta">@ApiOperation(&quot;测试乐观锁&quot;)</span><br><span class="hljs-meta">@PostMapping(&quot;/&#123;id&#125;&quot;)</span><br><span class="hljs-keyword">public</span> BaseResponse&lt;Users&gt; <span class="hljs-title function_">insUser</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> Long id, <span class="hljs-meta">@ModelAttribute</span> Users user)</span> &#123;<br><span class="hljs-comment">//先拿数据，再更新，乐观锁才起作用</span><br><span class="hljs-type">Users</span> <span class="hljs-variable">users</span> <span class="hljs-operator">=</span> userService.getById(id);<br>userService.updateById(user);<br><span class="hljs-type">Users</span> <span class="hljs-variable">userServiceById</span> <span class="hljs-operator">=</span> userService.getById(id);<br><span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BaseResponse</span>&lt;&gt;(<span class="hljs-literal">true</span>, <span class="hljs-string">&quot;成功&quot;</span>, userServiceById);<br>&#125;<br>/\*\*<br>\* 分页显示<br>\*<br>\* <span class="hljs-meta">@param</span> pageNo<br>\* <span class="hljs-meta">@return</span><br>\*/<br><span class="hljs-meta">@ApiOperation(&quot;分页查询&quot;)</span><br><span class="hljs-meta">@GetMapping(&quot;/pageInfo/&#123;pageNo&#125;&quot;)</span><br><span class="hljs-keyword">public</span> BaseResponse&lt;List&lt;Users&gt;&gt; <span class="hljs-title function_">pageInfoUser</span><span class="hljs-params">(<span class="hljs-meta">@PathVariable</span> <span class="hljs-type">int</span> pageNo)</span> &#123;<br><span class="hljs-comment">//默认每页5个</span><br><span class="hljs-comment">// 参数一：当前页</span><br><span class="hljs-comment">// 参数二：页面大小</span><br>Page&lt;Users&gt; page = <span class="hljs-keyword">new</span> <span class="hljs-title class_">Page</span>&lt;&gt;(pageNo, <span class="hljs-number">5</span>);<br>userService.page(page, <span class="hljs-literal">null</span>);<br>List&lt;Users&gt; list = page.getRecords();<br><span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">BaseResponse</span>&lt;&gt;(<span class="hljs-literal">true</span>, <span class="hljs-string">&quot;查询成功&quot;</span>, list);<br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="5-测试"><a href="#5-测试" class="headerlink" title="5.测试"></a>5.测试</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@SpringBootTest</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">SpringbootRestfulApplicationTests</span> &#123;<br><span class="hljs-meta">@Autowired</span><br><span class="hljs-keyword">private</span> UserMapper userMapper;<br><span class="hljs-comment">// 测试插入</span><br><span class="hljs-meta">@Test</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testInsert</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-type">Users</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Users</span>();<br>user.setName(<span class="hljs-string">&quot;Alen&quot;</span>);<br>user.setAge(<span class="hljs-number">3</span>);<br>user.setEmail(<span class="hljs-string">&quot;1234@qq.com&quot;</span>);<br><span class="hljs-type">int</span> <span class="hljs-variable">result</span> <span class="hljs-operator">=</span> userMapper.insert(user); <span class="hljs-comment">// 帮我们自动生成id</span><br>System.out.println(result); <span class="hljs-comment">// 受影响的行数</span><br>System.out.println(user); <span class="hljs-comment">// 发现，id会自动回填</span><br>&#125;<br><span class="hljs-comment">//测试乐观锁</span><br><span class="hljs-meta">@Test</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testversion</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-type">Users</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> userMapper.selectById(<span class="hljs-number">1L</span>);<br><span class="hljs-comment">//修改</span><br>user.setName(<span class="hljs-string">&quot;最强的&quot;</span>);<br>user.setAge(<span class="hljs-number">11</span>);<br><span class="hljs-comment">//更新</span><br>userMapper.updateById(user);<br>&#125;<br><span class="hljs-comment">// 测试乐观锁失败！多线程下</span><br><span class="hljs-meta">@Test</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">testOptimisticLocker2</span><span class="hljs-params">()</span> &#123;<br><span class="hljs-comment">// 线程 1</span><br><span class="hljs-type">Users</span> <span class="hljs-variable">user</span> <span class="hljs-operator">=</span> userMapper.selectById(<span class="hljs-number">1L</span>);<br>user.setName(<span class="hljs-string">&quot;Luffy11111&quot;</span>);<br>user.setEmail(<span class="hljs-string">&quot;134@qq.com&quot;</span>);<br><span class="hljs-comment">// 模拟另外一个线程执行了插队操作</span><br><span class="hljs-type">Users</span> <span class="hljs-variable">user2</span> <span class="hljs-operator">=</span> userMapper.selectById(<span class="hljs-number">1L</span>);<br>user2.setName(<span class="hljs-string">&quot;Luffy22222&quot;</span>);<br>user2.setEmail(<span class="hljs-string">&quot;134@qq.com&quot;</span>);<br>userMapper.updateById(user2);<br><span class="hljs-comment">// 自旋锁来多次尝试提交！</span><br>userMapper.updateById(user); <span class="hljs-comment">// 如果没有乐观锁就会覆盖插队线程的值！</span><br>&#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>使用Postman测试Post，Delete，Put类型的接口，测试成功！</p>
+<h2 id="6-GitHub源码"><a href="#6-GitHub源码" class="headerlink" title="6.GitHub源码"></a>6.GitHub源码</h2><p><a target="_blank" rel="noopener" href="https://github.com/luffy997/SpringBootBucket/tree/main/springboot-restful">springboot-restful</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/SpringBoot/" class="print-no-link">#SpringBoot</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>SpringBoot之实现RESTful接口</div>
+      <div>http://example.com/2021/01/20/SpringBoot之实现RESTful接口/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年1月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/01/21/SpringBoot%E4%B9%8B%E9%9B%86%E6%88%90Swagger2/" title="SpringBoot之集成Swagger2">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SpringBoot之集成Swagger2</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/01/12/SpringBoot%E9%9B%86%E6%88%90Mybatis%E7%9A%84%E4%BD%BF%E7%94%A8/" title="SpringBoot集成Mybatis的使用">
+                        <span class="hidden-mobile">SpringBoot集成Mybatis的使用</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

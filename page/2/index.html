@@ -1,0 +1,811 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="ABC">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Luffy997&#39;s Blog">
+<meta property="og:url" content="http://example.com/page/2/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="ABC">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Luffy997">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 100vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="一个有梦想的字符人"></span>
+          
+        </div>
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div id="board"
+          style="margin-top: 0">
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/08/05/%E7%99%BE%E5%BA%A6%E6%8F%90%E5%89%8D%E6%89%B9%E4%B8%80%E9%9D%A2/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s73kTK.jpg" srcset="/img/loading.gif" lazyload alt="百度提前批一面">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/08/05/%E7%99%BE%E5%BA%A6%E6%8F%90%E5%89%8D%E6%89%B9%E4%B8%80%E9%9D%A2/" target="_self">
+          百度提前批一面
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/08/05/%E7%99%BE%E5%BA%A6%E6%8F%90%E5%89%8D%E6%89%B9%E4%B8%80%E9%9D%A2/" target="_self">
+        <div>
+          百度MEG提前批一面 base 上海 08.05 14:50-15:50 面试官提前加的我微信，商量了面试时间，面试用的百度的自研的Web视频会议网站   自我介绍，项目介绍  算法题：  根号三的小数点后10位 —&gt;没整出来 快排 线程安全的单例（懒汉和饿汉式）   hashmap八股 1.7-&gt;1.8 寻址算法 get的过程  hashmap是线程安全的?怎么用线程安全map？—&
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-08-05 00:43" pubdate>
+              2021-08-05
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%9D%A2%E7%BB%8F/">#面经</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/07/29/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E7%BA%A2%E9%BB%91%E6%A0%91%E3%80%81B-%E6%A0%91%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" target="_self">
+          <img src="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg" srcset="/img/loading.gif" lazyload alt="二叉搜索树、平衡二叉树、红黑树、B+树性能对比">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/07/29/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E7%BA%A2%E9%BB%91%E6%A0%91%E3%80%81B-%E6%A0%91%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" target="_self">
+          二叉搜索树、平衡二叉树、红黑树、B+树性能对比
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/07/29/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E7%BA%A2%E9%BB%91%E6%A0%91%E3%80%81B-%E6%A0%91%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/" target="_self">
+        <div>
+          前言：BST、AVL、RBT、B-tree都是动态结构，查找时间基本都在O(longN)数量级上。下面做出详细对比。 二叉查找树（Binary Search Tree）二叉查找树又称二叉搜索树，二叉排序树，特点如下:  左子树上所有结点值均小于根结点 右子树上所有结点值均大于根结点 结点的左右子树本身又是一颗二叉查找树 二叉查找树中序遍历得到结果是递增排序的结点序列。  BST 的操作代价分析：查
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-07-29 08:49" pubdate>
+              2021-07-29
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/">#数据结构</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/07/28/%E5%AD%97%E8%8A%82%E4%B8%80%E9%9D%A2%E5%87%89%E7%BB%8F/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s73kTK.jpg" srcset="/img/loading.gif" lazyload alt="字节一面凉经">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/07/28/%E5%AD%97%E8%8A%82%E4%B8%80%E9%9D%A2%E5%87%89%E7%BB%8F/" target="_self">
+          字节一面凉经
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/07/28/%E5%AD%97%E8%8A%82%E4%B8%80%E9%9D%A2%E5%87%89%E7%BB%8F/" target="_self">
+        <div>
+          字节提前批技术中台一面凉经~ 07.26 15:00-16:10 面试官人很好   自我介绍  项目介绍，结合项目问了些问题（qps多少？内存占用多少？后面怎么更新和维护这个项目？打算用令牌桶限流）  JDK平时用的版本？  String类可继承吗？ final修饰，不可被继承  HashMap八股 JDK1.7—&gt;1.8变化 底层结构和头插变尾插  并发下怎么用Map？concurentH
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-07-28 00:32" pubdate>
+              2021-07-28
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%9D%A2%E7%BB%8F/">#面经</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/07/19/%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/" target="_self">
+          <img src="https://i.loli.net/2021/07/19/Fbg6i9Vw5XnMSh4.png" srcset="/img/loading.gif" lazyload alt="什么是上下文切换">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/07/19/%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/" target="_self">
+          什么是上下文切换
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/07/19/%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/" target="_self">
+        <div>
+          上下文首先，需要讲清楚什么是上下文。 每个任务运行前，CPU 都需要知道任务从哪里加载、又从哪里开始运行，这就涉及到 CPU 寄存器 和 程序计数器（PC）：  CPU 寄存器是 CPU 内置的容量小、但速度极快的内存； 程序计数器会存储 CPU 正在执行的指令位置，或者即将执行的指令位置。  这两个是 CPU 运行任何任务前都必须依赖的环境，因此叫做 CPU 上下文。 上下文切换那么，什么是上下
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-07-19 12:31" pubdate>
+              2021-07-19
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Linux/">#Linux</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/07/19/Redis%E4%B9%8BAOF%E9%87%8D%E5%86%99%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s7uNlt.jpg" srcset="/img/loading.gif" lazyload alt="Redis之AOF重写及其实现原理">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/07/19/Redis%E4%B9%8BAOF%E9%87%8D%E5%86%99%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
+          Redis之AOF重写及其实现原理
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/07/19/Redis%E4%B9%8BAOF%E9%87%8D%E5%86%99%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
+        <div>
+          AOF重写 AOF 持久化是通过保存被执行的写命令来记录数据库状态的，所以AOF文件的大小随着时间的流逝一定会越来越大；影响包括但不限于：对于Redis服务器，计算机的存储压力；AOF还原出数据库状态的时间增加； 为了解决AOF文件体积膨胀的问题，Redis提供了AOF重写功能：Redis服务器可以创建一个新的AOF文件来替代现有的AOF文件，新旧两个文件所保存的数据库状态是相同的，但是新的AOF
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-07-19 06:07" pubdate>
+              2021-07-19
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Redis/">#Redis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/06/25/SpringCloudAlibaba%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" target="_self">
+          <img src="https://i.loli.net/2021/06/25/v8UuOdxAzMycQwk.png" srcset="/img/loading.gif" lazyload alt="SpringCloudAlibaba快速入门">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/06/25/SpringCloudAlibaba%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" target="_self">
+          SpringCloudAlibaba快速入门
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/06/25/SpringCloudAlibaba%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" target="_self">
+        <div>
+          1. 什么是微服务？官网: https://www.martinfowler.com/articles/microservices.html In short, the microservice architectural style is an approach to developing a single application as a suite of small services, ea
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-06-25 09:32" pubdate>
+              2021-06-25
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">#微服务</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/06/13/Nginx%E4%B8%80%E7%82%B9%E7%82%B9/" target="_self">
+          <img src="https://i.loli.net/2021/06/12/pOVkBsKWd5c4GPI.png" srcset="/img/loading.gif" lazyload alt="Nginx一点点">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/06/13/Nginx%E4%B8%80%E7%82%B9%E7%82%B9/" target="_self">
+          Nginx一点点
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/06/13/Nginx%E4%B8%80%E7%82%B9%E7%82%B9/" target="_self">
+        <div>
+          1. Nginx介绍Nginx是一款轻量级的Web服务器、反向代理服务器，由于它的内存占用少，启动极快，高并发能力强，在互联网项目中广泛应用。  上图基本上说明了当下流行的技术架构，其中Nginx有点入口网关的味道。 说了这么多，我们先安装玩玩吧 2. 安装Nginx一般都是项目都是部署在linux上，这里我们采用Docker的方式启动Nginx，关于Docker的，上一篇有详细介绍 Docke
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-06-13 03:26" pubdate>
+              2021-06-13
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/nginx/">#nginx</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/06/12/Docker/" target="_self">
+          <img src="https://i.loli.net/2021/06/12/VfTEq8BdwYzMKCl.png" srcset="/img/loading.gif" lazyload alt="Docker">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/06/12/Docker/" target="_self">
+          Docker
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/06/12/Docker/" target="_self">
+        <div>
+          最近在学Docker，花了很多时间，算是把Docker的一些基本使用方法get到了，现在记录下 1. Docker基础知识1. 什么是Docker 官网的介绍是“Docker is the world’s leading software container platform.” 官方给Docker的定位是一个应用容器平台。 Docker 是一个容器平台的领导者 Docker 容器平台 Docke
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-06-12 01:34" pubdate>
+              2021-06-12
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%AE%B9%E5%99%A8/">#容器</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/05/22/SpringBoot%E4%B9%8B%E9%9B%86%E6%88%90MongoDB/" target="_self">
+          <img src="https://i.loli.net/2021/05/22/iwIGZaCXqgoBjvr.png" srcset="/img/loading.gif" lazyload alt="SpringBoot之集成MongoDB">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/05/22/SpringBoot%E4%B9%8B%E9%9B%86%E6%88%90MongoDB/" target="_self">
+          SpringBoot之集成MongoDB
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/05/22/SpringBoot%E4%B9%8B%E9%9B%86%E6%88%90MongoDB/" target="_self">
+        <div>
+          公司的技术栈是SpringCloud+ZoomKeeper+RabbitMq+JPA+MongoDB，利用zk去做配置文件，rabbitmq做一些异步处理，持久层采用JPA(数据库的Mysql)，对于大部分都是查询的业务，数据是存在MongoDB中。 MongoDB是一个高性能、开源、无模式的文档型数据库，是当前NoSql数据库中比较热门的一种。 适合对大量或者无固定格式的数据进行存储，比如：日志
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-22 03:42" pubdate>
+              2021-05-22
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/SpringBoot/">#SpringBoot</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/04/28/%E9%9A%8F%E7%AC%9404/" target="_self">
+          <img src="https://i.loli.net/2021/04/13/43zmSMxVFhPncuU.jpg" srcset="/img/loading.gif" lazyload alt="随笔04">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/04/28/%E9%9A%8F%E7%AC%9404/" target="_self">
+          随笔04
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/04/28/%E9%9A%8F%E7%AC%9404/" target="_self">
+        <div>
+          关于多线程的几点补充在理解线程的状态时，需要先了解每个对象都有的——锁池和等待池这两个概念。 锁池就是一个线程A已经占用了对象锁，其他对象想要拿到该对象锁就必须等待A释放锁，这些想拿到对象锁的线程就会进入锁池，等待和竞争锁。 等待池：假设一个线程A调用了某个对象的wait()方法，线程A就会释放该对象的锁，进入到该对象的等待池。 从上面就可以看出锁池是里的线程都是竞争锁的，而等待池里的线程已经被释
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-04-28 01:57" pubdate>
+              2021-04-28
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%9A%8F%E7%AC%94/">#随笔</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <a class="extend prev" rel="prev" href="/"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="page-number current">2</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><a class="extend next" rel="next" href="/page/3/#board"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

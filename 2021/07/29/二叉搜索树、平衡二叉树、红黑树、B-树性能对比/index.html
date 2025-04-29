@@ -1,0 +1,689 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="前言：BST、AVL、RBT、B-tree都是动态结构，查找时间基本都在O(longN)数量级上。下面做出详细对比。 二叉查找树（Binary Search Tree）二叉查找树又称二叉搜索树，二叉排序树，特点如下:  左子树上所有结点值均小于根结点 右子树上所有结点值均大于根结点 结点的左右子树本身又是一颗二叉查找树 二叉查找树中序遍历得到结果是递增排序的结点序列。  BST 的操作代价分析：查">
+<meta property="og:type" content="article">
+<meta property="og:title" content="二叉搜索树、平衡二叉树、红黑树、B+树性能对比">
+<meta property="og:url" content="http://example.com/2021/07/29/%E4%BA%8C%E5%8F%89%E6%90%9C%E7%B4%A2%E6%A0%91%E3%80%81%E5%B9%B3%E8%A1%A1%E4%BA%8C%E5%8F%89%E6%A0%91%E3%80%81%E7%BA%A2%E9%BB%91%E6%A0%91%E3%80%81B-%E6%A0%91%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="前言：BST、AVL、RBT、B-tree都是动态结构，查找时间基本都在O(longN)数量级上。下面做出详细对比。 二叉查找树（Binary Search Tree）二叉查找树又称二叉搜索树，二叉排序树，特点如下:  左子树上所有结点值均小于根结点 右子树上所有结点值均大于根结点 结点的左右子树本身又是一颗二叉查找树 二叉查找树中序遍历得到结果是递增排序的结点序列。  BST 的操作代价分析：查">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg">
+<meta property="article:published_time" content="2021-07-29T00:49:40.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:06.730Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg">
+  
+  
+  
+  <title>二叉搜索树、平衡二叉树、红黑树、B+树性能对比 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="二叉搜索树、平衡二叉树、红黑树、B+树性能对比"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-07-29 08:49" pubdate>
+          2021年7月29日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          28 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">二叉搜索树、平衡二叉树、红黑树、B+树性能对比</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>前言：BST、AVL、RBT、B-tree都是动态结构，查找时间基本都在O(longN)数量级上。下面做出详细对比。</p>
+<h1 id="二叉查找树（Binary-Search-Tree）"><a href="#二叉查找树（Binary-Search-Tree）" class="headerlink" title="二叉查找树（Binary Search Tree）"></a>二叉查找树（Binary Search Tree）</h1><p>二叉查找树又称二叉搜索树，二叉排序树，特点如下:</p>
+<ol>
+<li>左子树上所有结点值均小于根结点</li>
+<li>右子树上所有结点值均大于根结点</li>
+<li>结点的左右子树本身又是一颗二叉查找树</li>
+<li>二叉查找树<strong>中序遍历</strong>得到结果是递增排序的结点序列。</li>
+</ol>
+<h2 id="BST-的操作代价分析："><a href="#BST-的操作代价分析：" class="headerlink" title="BST 的操作代价分析："></a>BST 的操作代价分析：</h2><h3 id="查找代价："><a href="#查找代价：" class="headerlink" title="查找代价："></a><strong>查找代价</strong>：</h3><p>任何一个数据的查找过程都需要从根结点出发，沿某一个路径朝叶子结点前进。因此查找中数据比较次数与树的形态密切相关。<br>当树中每个结点左右子树高度大致相同时，<strong>树高为logN</strong>。则<strong>平均查找长度与logN成正比</strong>，查找的平均时间复杂度在O(logN)数量级上。<br>当先后插入的关键字有序时，<strong>BST退化成单支树结构（退化成链表）</strong>。此时树高n。平均查找长度为(n+1)&#x2F;2，查找的平均时间复杂度在O(N)数量级上。</p>
+<h3 id="插入代价"><a href="#插入代价" class="headerlink" title="插入代价"></a>插入代价</h3><p>新结点插入到树的叶子上，完全不需要改变树中原有结点的组织结构。当树中**每个节点左右子树高度大致相同时，插入的平均时间复杂度是O(logN)**；若退化成单链表了，插入的时间复杂度是O(N)。</p>
+<h3 id="删除代价"><a href="#删除代价" class="headerlink" title="删除代价"></a>删除代价</h3><p>当删除一个结点P，首先需要定位到这个结点P，这个过程需要一个查找的代价。然后稍微改变一下树的形态。<strong>如果被删除结点的左、右子树只有一个存在</strong>，则改变形态的代价仅为O(1)。如果被<strong>删除结点的左、右子树均存在</strong>，只需要将当P的左孩子的右孩子的右孩子的…的右叶子结点与P互换，在改变一些左右子树即可。因此删除操作的**时间复杂度最大不会超过O(logN)**。</p>
+<h3 id="BST效率总结"><a href="#BST效率总结" class="headerlink" title="BST效率总结 :"></a><strong>BST效率总结</strong> :</h3><p>查找最好时间复杂度O(logN)，最坏时间复杂度O(N)。<br>插入删除操作算法简单，时间复杂度与查找差不多。</p>
+<h1 id="平衡二叉查找树-Balanced-Binary-Search-Tree"><a href="#平衡二叉查找树-Balanced-Binary-Search-Tree" class="headerlink" title="平衡二叉查找树 ( Balanced Binary Search Tree )"></a>平衡二叉查找树 ( Balanced Binary Search Tree )</h1><p>二叉查找树在最差情况（退化成链表）下竟然和顺序查找效率相当，这是无法仍受的。事实也证明，当存储数据足够大的时候，树的结构对某些关键字的查找效率影响很大。当然，造成这种情况的**主要原因就是BST不够平衡(左右子树高度差太大)**。既然如此，那么我们就需要通过一定的算法，将不平衡树改变成平衡树。因此，AVL树就诞生了。</p>
+<h2 id="AVL-的操作代价分析："><a href="#AVL-的操作代价分析：" class="headerlink" title="AVL 的操作代价分析："></a>AVL 的操作代价分析：</h2><h3 id="查找代价"><a href="#查找代价" class="headerlink" title="查找代价"></a>查找代价</h3><p>AVL是严格平衡的BST（平衡因子不超过1）。那么查找过程与BST一样，只是AVL不会出现最差情况的BST(单支树)。因此查找效率最好，最坏情况都是O(logN)数量级的。</p>
+<h3 id="插入代价-1"><a href="#插入代价-1" class="headerlink" title="插入代价"></a>插入代价</h3><p>AVL必须要保证严格平衡(|bf|&lt;&#x3D;1)，那么每一次插入数据使得AVL中某些结点的平衡因子超过1就必须进行旋转操作。事实上，<strong>AVL的每一次插入结点操作最多只需要旋转1次(**单旋转或双旋转)。因此，总体上插入操作的代价仍然在</strong>O(logN)**级别上(插入结点需要首先查找插入的位置)。</p>
+<h3 id="删除代价："><a href="#删除代价：" class="headerlink" title="删除代价："></a><strong>删除代价</strong>：</h3><p>AVL删除结点的算法可以参见BST的删除结点，但是<strong>删除之后必须检查从删除结点开始到根结点路径上的所有结点的平衡因子</strong>。因此删除的代价稍微要大一些。每一次删除操作最多需要O(logN)次旋转。因此，删除操作的时间复杂度为O(logN)+O(logN)&#x3D;O(2logN)。</p>
+<h3 id="AVL-效率总结"><a href="#AVL-效率总结" class="headerlink" title="AVL 效率总结 :"></a><strong>AVL 效率总结</strong> :</h3><p><strong>查找</strong>的时间复杂度维持在O(logN)，不会出现最差情况<br>AVL树在执行每个<strong>插入</strong>操作时最多需要1次旋转，其时间复杂度在O(logN)左右。<br>AVL树在执行<strong>删除</strong>时代价稍大，执行每个删除操作的时间复杂度需要O(2logN)。</p>
+<h1 id="红黑树-Red-Black-Tree"><a href="#红黑树-Red-Black-Tree" class="headerlink" title="红黑树 (Red-Black Tree )"></a>红黑树 (Red-Black Tree )</h1><p>二叉平衡树的严格平衡策略以牺牲建立查找结构(插入，删除操作)的代价，换来了稳定的O(logN) 的查找时间复杂度。但是这样做是否值得呢？<br>能不能找一种折中策略，即不牺牲太大的建立查找结构的代价，也能保证稳定高效的查找效率呢？ 答案就是：红黑树。</p>
+<h2 id="性质"><a href="#性质" class="headerlink" title="性质"></a>性质</h2><p>红黑树性质：</p>
+<ul>
+<li>每个节点不是红色就是黑色</li>
+<li>根结点是黑色</li>
+<li>不可能有连在一起的红色结点</li>
+<li>对于每个结点，从该结点到其所有后代叶节点的简单路径上，均包含相同数目的黑色结点</li>
+<li>每个叶子结点都是黑色的（此处的叶子结点指的是空结点）</li>
+</ul>
+<h2 id="RBT-的操作代价分析："><a href="#RBT-的操作代价分析：" class="headerlink" title="RBT 的操作代价分析："></a>RBT 的操作代价分析：</h2><h3 id="查找代价：-1"><a href="#查找代价：-1" class="headerlink" title="查找代价："></a><strong>查找代价</strong>：</h3><p>由于红黑树的性质(<strong>最长路径长度不超过最短路径长度的2倍</strong>)，可以说明红黑树虽然不像AVL一样是严格平衡的，但平衡性能还是要比BST要好。其查找代价基本维持在O(logN)左右，但在最差情况下(最长路径是最短路径的2倍少1)，比AVL要略逊色一点。</p>
+<h3 id="插入代价："><a href="#插入代价：" class="headerlink" title="插入代价："></a><strong>插入代价</strong>：</h3><p>RBT插入结点时，需要旋转操作和变色操作。但由于只需要保证RBT基本平衡就可以了。因此插入结点最多只需要2次旋转，这一点和AVL的插入操作一样。虽然变色操作需要O(logN)，但是变色操作十分简单，代价很小。</p>
+<h3 id="删除代价：-1"><a href="#删除代价：-1" class="headerlink" title="删除代价："></a><strong>删除代价</strong>：</h3><p>RBT的删除操作代价要比AVL要好的多，删除一个结点最多只需要3次旋转操作。</p>
+<h3 id="RBT-效率总结"><a href="#RBT-效率总结" class="headerlink" title="RBT 效率总结"></a>RBT 效率总结</h3><p>查找 效率最好情况下时间复杂度为O(logN)，但在最坏情况下比AVL要差一些，但也远远好于BST。<br>插入和删除操作改变树的平衡性的概率要远远小于AVL（RBT不是高度平衡的）。因此需要的旋转操作的可能性要小，而且一旦需要旋转，插入一个结点最多只需要旋转2次，删除最多只需要旋转3次(小于AVL的删除操作所需要的旋转次数)。虽然变色操作的时间复杂度在O(logN)，但是实际上，这种操作由于简单所需要的代价很小。</p>
+<h1 id="B树-B-树-B-Tree"><a href="#B树-B-树-B-Tree" class="headerlink" title="B树&#x2F;B+树 (B-Tree )"></a>B树&#x2F;B+树 (B-Tree )</h1><p>对于在内存中的查找结构而言，红黑树的效率已经非常好了(实际上很多实际应用还对RBT进行了优化)。但是如果是数据量非常大的查找呢？将这些数据全部放入内存组织成RBT结构显然是不实际的（内存昂贵）。实际上，像OS中的文件目录存储，数据库中的文件索引结构的存储…. 都不可能在内存中建立查找结构。必须在磁盘中建立好这个结构。那么在这个背景下，RBT还是一种好的选择吗？<br>在磁盘中组织查找结构，从任何一个结点指向其他结点都有可能读取一次磁盘数据，再将数据写入内存进行比较。大家都知道，频繁的磁盘IO操作，效率是很低下的(机械运动比电子运动要慢不知道多少)。<strong>显而易见，所有的二叉树的查找结构在磁盘中都是低效的。因此，B树很好的解决了这一个问题。</strong></p>
+<h2 id="B-Tree的操作代价分析："><a href="#B-Tree的操作代价分析：" class="headerlink" title="B-Tree的操作代价分析："></a>B-Tree的操作代价分析：</h2><h3 id="查找代价-1"><a href="#查找代价-1" class="headerlink" title="查找代价"></a>查找代价</h3><p>B-Tree作为一个平衡多路查找树(m-叉)。B树的查找分成两种：一种是从一个结点查找另一结点的地址的时候，需要定位磁盘地址(查找地址)，查找代价极高。另一种是将结点中的有序关键字序列放入内存，进行优化查找(可以用折半)，相比查找代价极低。而<strong>B树的高度很小，因此在这一背景下，B树比任何二叉结构查找树的效率都要高很多。而且B+树作为B树的变种，其查找效率更高。</strong></p>
+<h3 id="插入代价-2"><a href="#插入代价-2" class="headerlink" title="插入代价"></a>插入代价</h3><p>B-Tree的插入会发生结点的分裂操作。当插入操作引起了s个节点的分裂时，磁盘访问的次数为h(读取搜索路径上的节点)＋2s(回写两个分裂出的新节点)＋1（回写新的根节点或插入后没有导致分裂的节点）。因此，所需要的磁盘访问次数是h+2s+1，最多可达到3h+1。因此插入的代价是很大的。</p>
+<h3 id="删除代价-1"><a href="#删除代价-1" class="headerlink" title="删除代价"></a>删除代价</h3><p>B-Tree的删除会发生结点合并操作。最坏情况下磁盘访问次数是3h＝（找到包含被删除元素需要h次读访问）+（获取第2至h层的最相邻兄弟需要h-1次读访问）+（在第3至h层的合并需要h-2次写访问）+（对修改过的根节点和第2层的两个节点进行3次写访问）。</p>
+<h3 id="B-Tree效率总结"><a href="#B-Tree效率总结" class="headerlink" title="B-Tree效率总结"></a><strong>B-Tree效率总结</strong></h3><p>由于考虑磁盘储存结构，B树的查找、删除、插入的代价都远远要小于任何二叉结构树(读写磁盘次数的降低)。</p>
+<h1 id="动态查找树结构的对比"><a href="#动态查找树结构的对比" class="headerlink" title="动态查找树结构的对比"></a>动态查找树结构的对比</h1><h2 id="平衡二叉树和红黑树-AVL-PK-RBT"><a href="#平衡二叉树和红黑树-AVL-PK-RBT" class="headerlink" title="平衡二叉树和红黑树 [AVL PK RBT]"></a>平衡二叉树和红黑树 [AVL PK RBT]</h2><p>AVL 和RBT 都是二叉查找树的优化。其性能要远远好于二叉查找树。他们之间都有自己的优势，其应用上也有不同。<br><strong>结构对比：</strong> AVL的结构高度平衡，RBT的结构基本平衡。平衡度AVL &gt; RBT.<br><strong>查找对比：</strong> AVL 查找时间复杂度最好，最坏情况都是O(logN)。RBT 查找时间复杂度最好为O(logN)，最坏情况下比AVL略差。<br><strong>插入删除对比：</strong></p>
+<ol>
+<li>AVL的插入和删除结点很容易造成树结构的不平衡，而RBT的平衡度要求较低。因此在大量数据插入的情况下，RBT需要通过旋转变色操作来重新达到平衡的频度要小于AVL。</li>
+<li>如果需要平衡处理时，RBT比AVL多一种变色操作，而且变色的时间复杂度在O(logN)数量级上。但是由于操作简单，所以在实践中这种变色仍然是非常快速的。</li>
+<li>当插入一个结点都引起了树的不平衡，AVL和RBT都最多需要2次旋转操作。但删除一个结点引起不平衡后，AVL最多需要logN 次旋转操作，而RBT最多只需要3次。因此两者插入一个结点的代价差不多，但删除一个结点的代价RBT要低一些。</li>
+<li>AVL和RBT的插入删除代价主要还是消耗在查找待操作的结点上。因此时间复杂度基本上都是与O(logN) 成正比的。</li>
+</ol>
+<p><strong>总体评价：大量数据实践证明，RBT的总体统计性能要好于平衡二叉树</strong>。</p>
+<h2 id="B-树和B-树-B-Tree-PK-B-Tree"><a href="#B-树和B-树-B-Tree-PK-B-Tree" class="headerlink" title="B-树和B+树 [ B-Tree PK B+Tree]"></a>B-树和B+树 [ B-Tree PK B+Tree]</h2><p>B+树是B-树的一种变体，在磁盘查找结构中，B+树更适合文件系统的磁盘存储结构。<br><strong>结构对比：</strong><br>B-树是平衡多路查找树，所有结点中都包含了待查关键字的有效信息(比如文件磁盘指针)。每个结点若有n个关键字，则有n+1个指向其他结点的指针。</p>
+<p>B+树相比B-树的特点：</p>
+<ul>
+<li>数据只出现在叶子结点，B-树每个结点都包含了数据；</li>
+<li>叶子结点之间用指针连接；</li>
+<li>B+树的高度一般是3；</li>
+</ul>
+<p><strong>查找对比：</strong></p>
+<ul>
+<li><p>在相同数量的待查数据下，B+树查找过程中需要调用的磁盘IO操作要少于普通B-树。由于B+树所在的磁盘存储背景下，因此B+树的查找性能要好于B-树。</p>
+</li>
+<li><p>B+树的查找效率更加稳定，因为所有叶子结点都处于同一层中，而且查找所有关键字都必须走完从根结点到叶子结点的全部历程。因此同一颗B+树中，任何关键字的查找比较次数都是一样的。而B树就不一定了，可能查找到某一个非终结点就结束了。</p>
+<p>​</p>
+</li>
+</ul>
+<p><strong>插入删除对比</strong>： B+树与B-树在插入删除操作中的效率是差不多的。</p>
+<p><strong>总体评价：在应用背景下，特别是文件结构存储中。B+树的应用要更多，其效率也要比B树好</strong>。</p>
+<h1 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h1><p><a target="_blank" rel="noopener" href="https://blog.csdn.net/z702143700/article/details/49079107">二叉查找树、平衡二叉树、红黑树、B-&#x2F;B+树性能对比</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" class="print-no-link">#数据结构</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>二叉搜索树、平衡二叉树、红黑树、B+树性能对比</div>
+      <div>http://example.com/2021/07/29/二叉搜索树、平衡二叉树、红黑树、B-树性能对比/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年7月29日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/08/05/%E7%99%BE%E5%BA%A6%E6%8F%90%E5%89%8D%E6%89%B9%E4%B8%80%E9%9D%A2/" title="百度提前批一面">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">百度提前批一面</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/07/28/%E5%AD%97%E8%8A%82%E4%B8%80%E9%9D%A2%E5%87%89%E7%BB%8F/" title="字节一面凉经">
+                        <span class="hidden-mobile">字节一面凉经</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

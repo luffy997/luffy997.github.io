@@ -1,0 +1,728 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="SpringBoot之AOP的使用spring核心思想分三大类：控制反转（IOC），依赖注入（DI）和面向切面（AOP） 1.什么是面向切面编程 AOP简介 AOP为Aspect Oriented Programming的缩写，意为：面向切面编程，通过预编译方式和运行期间动态代理实现程序功能的统一维护的一种技术。  为什么使用AOP编程范式？ 分离功能性需求和非功能性需求 集中处理某一关注点 侵入">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot之AOP的使用">
+<meta property="og:url" content="http://example.com/2021/01/06/SpringBoot%E4%B9%8BAOP%E7%9A%84%E4%BD%BF%E7%94%A8/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="SpringBoot之AOP的使用spring核心思想分三大类：控制反转（IOC），依赖注入（DI）和面向切面（AOP） 1.什么是面向切面编程 AOP简介 AOP为Aspect Oriented Programming的缩写，意为：面向切面编程，通过预编译方式和运行期间动态代理实现程序功能的统一维护的一种技术。  为什么使用AOP编程范式？ 分离功能性需求和非功能性需求 集中处理某一关注点 侵入">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s3.ax1x.com/2021/01/23/s73EFO.jpg">
+<meta property="article:published_time" content="2021-01-06T03:40:48.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:03.167Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="SpringBoot">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s3.ax1x.com/2021/01/23/s73EFO.jpg">
+  
+  
+  
+  <title>SpringBoot之AOP的使用 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="SpringBoot之AOP的使用"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-01-06 11:40" pubdate>
+          2021年1月6日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          15 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">SpringBoot之AOP的使用</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="SpringBoot之AOP的使用"><a href="#SpringBoot之AOP的使用" class="headerlink" title="SpringBoot之AOP的使用"></a>SpringBoot之AOP的使用</h1><p>spring核心思想分三大类：<strong>控制反转（IOC），依赖注入（DI）和面向切面（AOP）</strong></p>
+<h2 id="1-什么是面向切面编程"><a href="#1-什么是面向切面编程" class="headerlink" title="1.什么是面向切面编程"></a>1.什么是面向切面编程</h2><ul>
+<li><p>AOP简介</p>
+<p>AOP为Aspect Oriented Programming的缩写，意为：面向切面编程，通过预编译方式和运行期间动态代理实现程序功能的统一维护的一种技术。</p>
+</li>
+<li><p>为什么使用AOP编程范式？</p>
+<p>分离功能性需求和非功能性需求</p>
+<p>集中处理某一关注点</p>
+<p>侵入性少，增强代码可读性及可维护性</p>
+</li>
+<li><p>AOP应用场景</p>
+<p>权限控制、缓存控制、事务控制、分布式追踪、异常处理等</p>
+<p>总之，在程序运行时，动态地将代码切入到类的指定方法或位置上的思想，就是面向切面编程。</p>
+<p>​</p>
+</li>
+</ul>
+<h2 id="2-AOP常用术语"><a href="#2-AOP常用术语" class="headerlink" title="2.AOP常用术语"></a>2.AOP常用术语</h2><p>Spring的AOP中有几个重要概念搞清楚就行</p>
+<ul>
+<li>执行点（Executepoint） - 类初始化，方法调用。</li>
+<li>连接点（Joinpoint） - 执行点+方位的组合，可确定Joinpoint，比如类开始初始化前，类初始化后，方法调用前，方法调用后。</li>
+<li>切点（Pointcut） - 在众多执行点中，定位感兴趣的执行点。Executepoint相当于数据库表中的记录，而Pointcut相当于查询条件。</li>
+<li>增强（Advice） - 织入到目标类连接点上的一段程序代码。除了一段程序代码外，还拥有执行点的方位信息。</li>
+<li>目标对象（Target） - 增强逻辑的织入目标类</li>
+<li>引介（Introduction） - 一种特殊的增强（advice），它为类添加一些额外的属性和方法，动态为业务类添加其他接口的实现逻辑，让业务类成为这个接口的实现类。</li>
+<li>代理（Proxy） - 一个类被AOP织入后，产生一个结果类，它便是融合了原类和增强逻辑的代理类。</li>
+<li>切面（Aspect） - 切面由切点（Pointcut）和增强（Advice&#x2F;Introduction）组成，既包括横切逻辑定义，也包括连接点定义。</li>
+</ul>
+<p>AOP工作重点：</p>
+<ul>
+<li>如何通过切点（Pointcut）和增强（Advice）定位到连接点（Jointpoint）上；</li>
+<li>如何在增强（Advice）中编写切面的代码。</li>
+</ul>
+<h2 id="3-Advice-五种增强方式"><a href="#3-Advice-五种增强方式" class="headerlink" title="3.Advice-五种增强方式"></a>3.Advice-五种增强方式</h2><p>例如在执行某个特定方法的时候，我们可以选择不同的增强方式（如前置通知&#x2F;增强，在方法运行前执行），达到我们织入后的不同效果。</p>
+<ul>
+<li>前置通知:在我们执行目标方法之前运行(@Before)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Pointcut(&quot;within(com.example.demo.Service.\*)&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">matchType</span><span class="hljs-params">()</span>&#123;&#125;<br><span class="hljs-meta">@Before(&quot;matchType()&quot;)</span> <span class="hljs-comment">//可在此加入JoinPoint打印切点信息</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">before</span><span class="hljs-params">(JoinPoint joinPoint)</span>&#123;<br>System.out.println(<span class="hljs-string">&quot;------【前置通知】------&quot;</span> + joinPoint);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>后置通知:在我们目标方法运行结束之后 ,不管有没有异常(@After)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@After(value=&quot;execution(\* com.example.aspectJ.demo1.ProductDao.findAll(..))&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">after</span><span class="hljs-params">()</span>&#123;<br>System.out.println(<span class="hljs-string">&quot;最终通知==================&quot;</span>);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>返回通知:在我们的目标方法正常返回值后运行(@AfterReturning)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@AfterReturning(value=&quot;execution(\* com.example.aspectJ.demo1.ProductDao.update(..))&quot; ,returning = &quot;result&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">afterReturning</span><span class="hljs-params">(Object result)</span>&#123; <span class="hljs-comment">//通过returning属性，定义方法返回值作为参数</span><br>System.out.println(<span class="hljs-string">&quot;后置通知=========&quot;</span>+result);<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://imgchr.com/i/sVsXeU"><img src="https://s3.ax1x.com/2021/01/06/sVsXeU.md.png" srcset="/img/loading.gif" lazyload alt="sVsXeU.md.png"></a></p>
+<ul>
+<li>异常通知:在我们的目标方法出现异常后运行(@AfterThrowing)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//通过设置throwing属性，可以设置发生异常对象参数</span><br><span class="hljs-meta">@AfterThrowing(value = &quot;execution(\* com.example.aspectJ.demo1.ProductDao.findOne(..))&quot;,throwing = &quot;e&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">afterThrowing</span><span class="hljs-params">(Throwable e)</span>&#123;<br>System.out.println(<span class="hljs-string">&quot;抛出异常通知&quot;</span>+e.getMessage());<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>环绕通知:动态代理, 需要手动执行joinPoint.procced()(其实就是执行我们的目标方法执行之前相当于前置通知, 执行之后就相当于我们后置通知(@Around)</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Around(value = &quot;execution(\* com.example.aspectJ.demo1.ProductDao.delete(..))&quot;)</span><br><span class="hljs-keyword">public</span> Object <span class="hljs-title function_">around</span><span class="hljs-params">(ProceedingJoinPoint joinPoint)</span> <span class="hljs-keyword">throws</span> Throwable &#123;<br>System.out.println(<span class="hljs-string">&quot;环绕前通知&quot;</span>);<br><span class="hljs-type">Object</span> <span class="hljs-variable">obj</span> <span class="hljs-operator">=</span> joinPoint.proceed(); <span class="hljs-comment">//执行目标方法</span><br>System.out.println(<span class="hljs-string">&quot;环绕后通知&quot;</span>);<br><span class="hljs-keyword">return</span> obj;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://imgchr.com/i/sVsrid"><img src="https://s3.ax1x.com/2021/01/06/sVsrid.md.png" srcset="/img/loading.gif" lazyload alt="sVsrid.md.png"></a></p>
+<h2 id="4-SpringAOP使用详解"><a href="#4-SpringAOP使用详解" class="headerlink" title="4.SpringAOP使用详解"></a>4.SpringAOP使用详解</h2><p><strong>切面表达式</strong></p>
+<p><a target="_blank" rel="noopener" href="https://imgchr.com/i/sVcsJJ"><img src="https://s3.ax1x.com/2021/01/06/sVcsJJ.jpg" srcset="/img/loading.gif" lazyload alt="sVcsJJ.jpg"></a></p>
+<p><strong>excution表达式</strong></p>
+<ul>
+<li><p>execution(</p>
+</li>
+<li><p>修饰符pattern</p>
+</li>
+<li><p>返回值pattern</p>
+</li>
+<li><p>描述包名</p>
+</li>
+<li><p>方法名(参数)</p>
+</li>
+<li><p>方法抛出异常pattern</p>
+<p>)</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-meta">@Pointcut(&quot;execution(public \* com.example.controller.\*Controller.\*(..))&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">match</span><span class="hljs-params">()</span>&#123;&#125;<br><span class="hljs-meta">@Before(&quot;match()&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">before</span><span class="hljs-params">()</span>&#123;<br><span class="hljs-comment">//前置通知...</span><br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>within表达式</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//匹配StudentService类里所有方法</span><br><span class="hljs-meta">@Pointcut(&quot;within(com.example.service.StudentService)&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">matchType</span><span class="hljs-params">()</span>&#123;&#125;<br><span class="hljs-comment">//匹配com.example包及子包下所有类方法</span><br><span class="hljs-meta">@Pointcut(&quot;within(com.example..\*)&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">matchPackage</span><span class="hljs-params">()</span>&#123;&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>对象匹配</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs java">/\*<span class="hljs-keyword">public</span> <span class="hljs-keyword">class</span> <span class="hljs-title class_">serviceImpl</span> <span class="hljs-keyword">implements</span> <span class="hljs-title class_">service</span>\*/<br><span class="hljs-comment">//匹配AOP对象的目标对象为指定类型方法，即serviceImpl的aop代理对象方法</span><br><span class="hljs-meta">@Pointcut(&quot;this(com.example.serviceImpl)&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">thisDemo</span><span class="hljs-params">()</span>&#123;&#125;<br><span class="hljs-comment">//匹配实现service接口的目标对象（非aop代理后的对象）方法，这里指的就是serviceImpl的方法</span><br><span class="hljs-meta">@Pointcut(&quot;target(com.example.service)&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">targetDemo</span><span class="hljs-params">()</span>&#123;&#125;<br><span class="hljs-comment">//匹配所有以Service结尾的bean中方法</span><br><span class="hljs-meta">@Pointcut(&quot;bean(\*Service)&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">beanDemo</span><span class="hljs-params">()</span>&#123;&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>参数匹配</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//匹配任何以find开头且只有一个Long参数的方法</span><br><span class="hljs-meta">@Pointcut(&quot;execution(\* \*..find\*(Long))&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">argsDemo1</span><span class="hljs-params">()</span>&#123;&#125;<br><span class="hljs-comment">//匹配任何只有一个Long参数的方法</span><br><span class="hljs-meta">@Pointcut(&quot;args(Long)&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">argsDemo2</span><span class="hljs-params">()</span>&#123;&#125;<br><span class="hljs-comment">//匹配任何以find开头且第一个参数为Long的方法</span><br><span class="hljs-meta">@Pointcut(&quot;execution(\* \*..find\*(Long,..))&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">argsDemo3</span><span class="hljs-params">()</span>&#123;&#125;<br><span class="hljs-comment">//匹配第一个参数为Long的方法</span><br><span class="hljs-meta">@Pointcut(&quot;args(Long,..)&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">argsDemo4</span><span class="hljs-params">()</span>&#123;&#125;<br></code></pre></td></tr></table></figure>
+
+<p><strong>注解匹配（自定义注解）</strong></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-comment">//匹配方法注解有@AdminOnly的方法</span><br><span class="hljs-meta">@Pointcut(&quot;@annotation(com.example.security.AdminOnly)&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">annoDemo</span><span class="hljs-params">()</span>&#123;&#125;<br><span class="hljs-comment">//匹配注解有@Test1的类下所有方法，要求注解的RetentionPolicy级别为CLASS</span><br><span class="hljs-meta">@Pointcut(&quot;@within(com.example.annotation.Test1)&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">annoWithinDemo</span><span class="hljs-params">()</span>&#123;&#125;<br><span class="hljs-comment">//匹配注解有@Test2类下所有方法，要求注解的RetentionPolicy级别为RUNTIME</span><br><span class="hljs-meta">@Pointcut(&quot;@target(com.example.repository.Test2)&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">annoTargetDemo</span><span class="hljs-params">()</span>&#123;&#125;<br><span class="hljs-comment">//匹配传入参数类具有@Test3的注解的方法（例如student实体类有注解@Test3，只要方法传入student类就会被拦截）</span><br><span class="hljs-meta">@Pointcut(&quot;@args(org.example.repository.Test3)&quot;)</span><br><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title function_">annoArgsDemo</span><span class="hljs-params">()</span>&#123;&#125;<br></code></pre></td></tr></table></figure>
+
+<p>两个aop切面类都工作了，顺序呢就是下面的：</p>
+<p><a target="_blank" rel="noopener" href="https://imgchr.com/i/sVrzxP"><img src="https://s3.ax1x.com/2021/01/06/sVrzxP.png" srcset="/img/loading.gif" lazyload alt="sVrzxP.png"></a></p>
+<p>spring aop就是一个同心圆，要执行的方法为圆心，最外层的order最小。从最外层按照AOP1、AOP2的顺序依次执行doAround方法，doBefore方法。然后执行method方法，最后按照AOP2、AOP1的顺序依次执行doAfter、doAfterReturn方法。也就是说对多个AOP来说，先before的，一定后after。</p>
+<p>对于上面的例子就是，先外层的就是对所有controller的切面，内层就是自定义注解的。 那不同的切面，顺序怎么决定呢，尤其是同格式的切面处理，譬如两个execution的情况，那spring就是随机决定哪个在外哪个在内了。</p>
+<p>所以大部分情况下，我们需要指定顺序，最简单的方式就是在Aspect切面类上加上@Order(1)注解即可，order越小最先执行，也就是位于最外层。像一些全局处理的就可以把order设小一点，具体到某个细节的就设大一点。</p>
+<h2 id="5-参考文档"><a href="#5-参考文档" class="headerlink" title="5.参考文档"></a>5.参考文档</h2><p><a target="_blank" rel="noopener" href="https://www.515code.com/posts/egs95cdu/">SpringAOP-什么是面向切面编程？</a></p>
+<p><a target="_blank" rel="noopener" href="https://www.xncoding.com/2017/07/24/spring/sb-aop.html">SpringBoot系列 - 使用AOP</a></p>
+<h2 id="6-GitHub源码"><a href="#6-GitHub源码" class="headerlink" title="6.GitHub源码"></a>6.GitHub源码</h2><p><a target="_blank" rel="noopener" href="https://github.com/luffy997/SpringBootBucket/tree/main/springboot-aop">springboot-aop</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/SpringBoot/" class="print-no-link">#SpringBoot</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>SpringBoot之AOP的使用</div>
+      <div>http://example.com/2021/01/06/SpringBoot之AOP的使用/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年1月6日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/01/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" title="计算机网络学习笔记">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">计算机网络学习笔记</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/01/03/JWT%E4%BB%8B%E7%BB%8D%E5%92%8C%E5%AE%89%E5%85%A8%E9%98%B2%E8%8C%83%E4%BB%A5%E5%8F%8ASpringBoot%E6%95%B4%E5%90%88JWT%E5%AE%9E%E7%8E%B0%E6%8E%A5%E5%8F%A3%E6%9D%83%E9%99%90%E8%AE%A4%E8%AF%81/" title="JWT介绍和安全防范以及SpringBoot整合JWT实现接口权限认证">
+                        <span class="hidden-mobile">JWT介绍和安全防范以及SpringBoot整合JWT实现接口权限认证</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,725 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1.运行时数据区 粗略的讲下Java的内存结构，要想深入的讲还需要把JVM的知识拿来，但我们现在的核心是比较&#x3D;&#x3D;和equals的区别以及常见数据类型在取等和调用equals时产生的结果和原因。 如上图，很重要的就是栈，堆，方法区，下面简单介绍他们的作用： 栈（stack）：位于通用RAM中，但通过它的“栈指针”可以从处理器哪里获得支持。栈指针若向下移动，则分配新的内存；若向上移">
+<meta property="og:type" content="article">
+<meta property="og:title" content="浅谈&#x3D;&#x3D;和equals">
+<meta property="og:url" content="http://example.com/2021/02/27/%E6%B5%85%E8%B0%88-%E5%92%8Cequals/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="1.运行时数据区 粗略的讲下Java的内存结构，要想深入的讲还需要把JVM的知识拿来，但我们现在的核心是比较&#x3D;&#x3D;和equals的区别以及常见数据类型在取等和调用equals时产生的结果和原因。 如上图，很重要的就是栈，堆，方法区，下面简单介绍他们的作用： 栈（stack）：位于通用RAM中，但通过它的“栈指针”可以从处理器哪里获得支持。栈指针若向下移动，则分配新的内存；若向上移">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/02/27/cR6Idim853x2EK1.png">
+<meta property="article:published_time" content="2021-02-27T04:42:00.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:05.167Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="Java">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.loli.net/2021/02/27/cR6Idim853x2EK1.png">
+  
+  
+  
+  <title>浅谈==和equals - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="浅谈==和equals"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-02-27 12:42" pubdate>
+          2021年2月27日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          21 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">浅谈==和equals</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="1-运行时数据区"><a href="#1-运行时数据区" class="headerlink" title="1.运行时数据区"></a>1.运行时数据区</h1><p><img src="https://i.loli.net/2021/02/27/ZpzPiYEoBR9GSns.png" srcset="/img/loading.gif" lazyload></p>
+<p>粗略的讲下Java的内存结构，要想深入的讲还需要把JVM的知识拿来，但我们现在的核心是<strong>比较&#x3D;&#x3D;和equals的区别</strong>以及<strong>常见数据类型</strong>在取等和调用equals时产生的结果和原因。</p>
+<p>如上图，很重要的就是栈，堆，方法区，下面简单介绍他们的作用：</p>
+<p>栈（stack）：位于通用RAM中，但通过它的“栈指针”可以从处理器哪里获得支持。栈指针若向下移动，则分配新的内存；若向上移动，则释放那些 内存。这是一种快速有效的分配存储方法，仅次于寄存器。创建程序时候，JAVA编译器必须知道存储在栈内所有数据的确切大小和生命周期，因为它必须生成 相应的代码，以便上下移动栈指针。这一约束限制了程序的灵活性，所以虽然某些JAVA数据存储在栈中——特别是对象引用，但是JAVA对象不存储其中。</p>
+<p>– 存放基本类型的变量数据和对象，数组的<strong>引用</strong>，但对象本身不存放在栈中，而是存放在堆（new 出来的对象）或者常量池中（字符串常量对象存放在常量池中）。</p>
+<p>堆（heap）：一种通用性的内存池（也存在于RAM中），用于存放所以的JAVA对象。堆不同于栈的好处是：编译器不需要知道要从堆里分配多少存储区 域，也不必知道存储的数据在堆里存活多长时间。因此，在堆里分配存储有很大的灵活性。当你需要创建一个对象的时候，只需要new写一行简单的代码，当执行 这行代码时，会自动在堆里进行存储分配。当然，为这种灵活性必须要付出相应的代码。用堆进行存储分配比用栈进行存储存储需要更多的时间。</p>
+<p>— 存放所有new出来的对象，GC会调用垃圾回收算法回收过期的对象。</p>
+<p>方法区：里面存储运行时<strong>常量池</strong>，已被虚拟机加载的<strong>类信息、常量、静态变量</strong>，及时编译器编译后的代码等数据，常量以HashSet的策略存储。</p>
+<p>以上三者，速度最快的是方法区，其次是堆，最后的栈，</p>
+<h1 id="2-和-equals比较的到底是什么？"><a href="#2-和-equals比较的到底是什么？" class="headerlink" title="2.&#x3D;&#x3D; 和 equals比较的到底是什么？"></a>2.&#x3D;&#x3D; 和 equals比较的到底是什么？</h1><p>很多朋友可能和我一样，大一才学Java，老师就只说&#x3D;&#x3D; 比较的是数据储存的地址，equals比较的是内容，举个例子：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">String</span> <span class="hljs-variable">s1</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;123&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">s2</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;123&quot;</span>;<br>System.out.println(s1 == s2);<br>System.out.println(s1.equals(s2));<br></code></pre></td></tr></table></figure>
+
+<p>按照老师的说法，这两个应该都是正确的，确实我们运行代码与我们预期相符，那么现在又来了个兄弟</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-type">String</span> <span class="hljs-variable">s1</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;123&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">s2</span> <span class="hljs-operator">=</span> <span class="hljs-string">&quot;123&quot;</span>;<br><span class="hljs-type">String</span> <span class="hljs-variable">s3</span> <span class="hljs-operator">=</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">String</span>(<span class="hljs-string">&quot;123&quot;</span>);<br>System.out.println(s1 == s3);<br>System.out.println(s1.equals(s3));<br></code></pre></td></tr></table></figure>
+
+<p>可以思考下结果，我们即将进入今天的正题！</p>
+<p>运行程序结果发现是</p>
+<p>false</p>
+<p>true</p>
+<p>s3不也是字符串“123”吗为什么是false？</p>
+<p>为了理清楚里面的奥妙，我们需要记住下面关于&#x3D;&#x3D;和equals的规则：</p>
+<p>1.&#x3D;&#x3D;<br> 比较基本数据类型时，比较的是数值 byte，short，char，int，float，double，long，boolean<br> 他们作为常量在方法区中的常量池以<strong>HashSet的策略存储</strong>,栈中的数据可以共享,所以基本数据类型和String常量是可以之间通过&#x3D;&#x3D;来比较的<br> 比较引用类型：比较引用指向的地址<br> 2.equals<br> 默认比较地址，该方法最初定义在Object上，默认的实现就是比较地址<br> 自定义的类，如果需要比较的是内容，就需要重写String的equals方法</p>
+<p>&#x3D;&#x3D;对于基本数据类型比较的就是值，因为他们存储在方法区的常量池，对于应用类型（如String）就是比较的地址，equals默认是比较的地址，也就是说默认和&#x3D;&#x3D;是没区别的，但String重写了equals方法，比较字符串的内容！而对于基本数据就只能通过&#x3D;&#x3D;来比较，用equals连编译都无法通过！</p>
+<p>要想知道s3不是字符串“123”吗？为什么是false，我们要一步一步的来！</p>
+<h1 id="3-关于String不得不清楚的八大情况"><a href="#3-关于String不得不清楚的八大情况" class="headerlink" title="3.关于String不得不清楚的八大情况"></a>3.关于String不得不清楚的八大情况</h1><p><strong>1. String str &#x3D; “abc”; &#x2F;&#x2F;引用常量池的对象</strong></p>
+<blockquote>
+<p>String str &#x3D; “abc” 的创建过程：<br> 1 首先在常量池中查找是否存在内容为”abc”字符串对象<br> 2 如果不存在则在常量池中创建”abc”，并让str引用该对象<br> 3 如果存在则直接让str引用该对象</p>
+</blockquote>
+<p><strong>2.String str1 &#x3D; “abc”;</strong></p>
+<p><strong>String str2 &#x3D; new String(“abc”).intern();</strong></p>
+<p><strong>System.out.println(str1 &#x3D;&#x3D; str2);</strong></p>
+<blockquote>
+<p>String str &#x3D; new String(“abc”)创建实例的过程：<br>1.首先在堆中（不是常量池）创建一个指定的对象”abc”，并让str引用指向该对象<br>在字符串常量池中查看，是否存在内容为”abc”字符串对象<br>若存在，则将new出来的字符串对象与字符串常量池中的对象联系起来<br>若不存在，则在字符串常量池中创建一个内容为”abc”的字符串对象，并将堆中的对象与之联系起来<br>intern 方法可以返回该字符串在常量池中的对象的引用，可以通过下面代码简单的测试<br>当调用 intern 方法时，如果池已经包含一个等于此 String 对象的字符串（用 equals(Object) 方法确定），则返回池中的字符串。否则，将此 String 对<br>它遵循以下规则：对于任意两个字符串 s 和 t ，当且仅当 s.equals(t) 为 true 时，s.intern() &#x3D;&#x3D; t.intern() 才为 true 。</p>
+</blockquote>
+<p>到这里我们就可以介绍上面的问题s3是字符串“123”为什么是false，因为s3是new出来的，首先就在堆中创建了“123”，即使后面再常量池中查找“123”是存在的，但&#x3D;&#x3D;始终是比较的地址，所以即使取等内容相同的s1和s3也是返回false；</p>
+<p><strong>3.String str3 &#x3D; “ab” + “c”;</strong></p>
+<p>​ <strong>System.out.println(str1 &#x3D;&#x3D; str3);</strong></p>
+<blockquote>
+<p>str2会找常量池中是否存在”abc”，如果存在就把str2指向str1，显然str1已经在常量区创建了”abc”,&#x3D;&#x3D; 是对于引用类型是比较地址，所以str1 和str2 都指向”abc”,结果为true。</p>
+</blockquote>
+<p><strong>4.String str4 &#x3D; “ab”;</strong></p>
+<p><strong>String str5 &#x3D; str4 + “c”;</strong></p>
+<p><strong>System.out.println(str5 &#x3D;&#x3D; str1);</strong></p>
+<blockquote>
+<p>是因为String str5 &#x3D; str4 + “c”涉及到变量（不全是常量）的相加，所以会生成新的对象，其内部实现是先new一个StringBuilder，然后 append(str4),append(“c”);然后让str5引用toString()返回的对象。</p>
+</blockquote>
+<p>简单的说就是new了一个StringBuilder，产生了新对象。</p>
+<p><strong>5.System.out.println(str1 &#x3D;&#x3D; str2);</strong></p>
+<blockquote>
+<p>我们知道用equals比较str1和str2是毫无疑问返回true的，因为equal默认比较的是引用地址<br> &#x3D;&#x3D;对于引用类型也是比较地址，str1 str2 常量存放在常量区，上文也已经提到str1和str2的创建过程，先看常量区是否存在”abc”,若有就不创建了，之间让str2应用该地址，若无则创建，可以看到str1和str2都是指向的该地址，故&#x3D;&#x3D;返回</p>
+</blockquote>
+<p><strong>6.str1 &#x3D; “bcd”;</strong></p>
+<p><strong>System.out.println(str1 &#x3D;&#x3D; str2);</strong></p>
+<blockquote>
+<p>赋值的变化导致了类对象引用的变化，str1指向了另外一个新对象！而str2仍旧指向原来的对象。上例中，当我们将str1的值改为”bcd”时，</p>
+<p>JVM发现在 常量池中没有存放该值的地址，便开辟了这个地址，并创建了一个新的对象，其字符串的值指向这个地址。</p>
+</blockquote>
+<p><strong>7.String str6 &#x3D; str1;</strong></p>
+<p><strong>System.out.println(str6);</strong></p>
+<p><strong>String str7 &#x3D; “bcd”;</strong></p>
+<p><strong>System.out.println(str1 &#x3D;&#x3D; str7);</strong></p>
+<blockquote>
+<p>常量池中不仅仅是对于基本数据类型是以HashSer策略存储的，对于String也是一样，一个常量只会对于一个地址</p>
+</blockquote>
+<p><strong>8.String str8 &#x3D; new String(“abc”);</strong></p>
+<p><strong>String str9 &#x3D; “abc”;</strong></p>
+<p><strong>System.out.println(str8 &#x3D;&#x3D; str9);</strong></p>
+<blockquote>
+<p>new会之间在堆中创建对象，所以str8的引用也是指向的堆中的对象<br> str8是常量区的，即使数据相同，也不会返回true</p>
+</blockquote>
+<h1 id="4-Integer的缓存机制、自带拆箱"><a href="#4-Integer的缓存机制、自带拆箱" class="headerlink" title="4.Integer的缓存机制、自带拆箱"></a>4.Integer的缓存机制、自带拆箱</h1><p><strong>1.Integer i1 &#x3D; new Integer(12);</strong></p>
+<p><strong>Integer i2 &#x3D; new Integer(12);</strong></p>
+<p><strong>System.out.println(i1 &#x3D;&#x3D; i2); &#x2F;&#x2F;false</strong></p>
+<blockquote>
+<p>这里很简单，new了新的对象，在堆中开辟新的空间，&#x3D;&#x3D;对于引用类型比较的是地址，很显然两者地址不一样(数值相同)</p>
+</blockquote>
+<p><strong>2.Integer i3 &#x3D; 14;</strong></p>
+<p><strong>Integer i4 &#x3D; 14;</strong></p>
+<p><strong>int i5 &#x3D; 14;</strong></p>
+<p><strong>System.out.println(i3 &#x3D;&#x3D; i4);</strong> &#x2F;&#x2F;true</p>
+<p><strong>System.out.println(i3 &#x3D;&#x3D; i5);</strong> &#x2F;&#x2F;true</p>
+<blockquote>
+<p>对于i3 &#x3D;&#x3D; i4是返回true，很多人可能觉得是存放在常量区的原因，其实不然，这是Integer的缓存机制，我们将在下一个示例中得到验证</p>
+<p>i3 &#x3D;&#x3D; i4 返回true是自动拆箱机制，Integer转int &#x3D;&#x3D;对于基本数据类型比较的是值</p>
+</blockquote>
+<p><strong>3.Integer i6 &#x3D; 128;</strong></p>
+<p><strong>Integer i7 &#x3D; 128;</strong></p>
+<p><strong>int i8 &#x3D; 128;</strong></p>
+<p><strong>System.out.println(i6 &#x3D;&#x3D; i7);</strong> &#x2F;&#x2F; false 超出Integer缓存范围，</p>
+<p>**System.out.println(i6 &#x3D;&#x3D; i8); **&#x2F;&#x2F;true</p>
+<blockquote>
+<p>可以看到即使i6 和 i7 数值相同，但取&#x3D;&#x3D;并不返回true，这时我们可以翻阅Integer的源码：</p>
+</blockquote>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Integer <span class="hljs-title function_">valueOf</span><span class="hljs-params">(<span class="hljs-type">int</span> i)</span> &#123;<br><span class="hljs-keyword">if</span> (i &gt;= IntegerCache.low &amp;&amp; i &lt;= IntegerCache.high)<br><span class="hljs-keyword">return</span> IntegerCache.cache[i + (-IntegerCache.low)];<br><span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> <span class="hljs-title class_">Integer</span>(i);<br>&#125;<br><span class="hljs-comment">//若数值在-127 - 128之间则会从缓存中拿，不会new 也就不会</span><br><span class="hljs-comment">//存在的值而已</span><br><span class="hljs-comment">//若不在，则会new 开辟新的堆空间</span><br></code></pre></td></tr></table></figure>
+
+<p>其实，Integer是个大坑，在阿里开发手册就明确写道：</p>
+<p><strong>整型包装类对象之间值的比较，全部使用 equals 方法比较！</strong></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Java/" class="print-no-link">#Java</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>浅谈==和equals</div>
+      <div>http://example.com/2021/02/27/浅谈-和equals/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年2月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/03/04/HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" title="HashMap源码分析">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">HashMap源码分析</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/02/18/%E5%85%AB%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%EF%BC%88%E4%B8%8A%EF%BC%89/" title="八大排序算法（上）">
+                        <span class="hidden-mobile">八大排序算法（上）</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

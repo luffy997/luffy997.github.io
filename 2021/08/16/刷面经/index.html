@@ -1,0 +1,866 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="线程池七大参数：  核心线程数量大小  最大线程数量大小  等待时间  等待时间单位  阻塞队列 ArrayBlockingQueue（基于数组），LinkedBlockingQueue（基于链表，无界队列，可传入参数构建有界队列），PriorityBlockingQueue（支持优先级的无界阻塞队列，因为是无界，所以put不会阻塞）  构建工厂 一般都是默认  拒绝策略（四大策略） 满了就抛异常">
+<meta property="og:type" content="article">
+<meta property="og:title" content="刷面经">
+<meta property="og:url" content="http://example.com/2021/08/16/%E5%88%B7%E9%9D%A2%E7%BB%8F/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="线程池七大参数：  核心线程数量大小  最大线程数量大小  等待时间  等待时间单位  阻塞队列 ArrayBlockingQueue（基于数组），LinkedBlockingQueue（基于链表，无界队列，可传入参数构建有界队列），PriorityBlockingQueue（支持优先级的无界阻塞队列，因为是无界，所以put不会阻塞）  构建工厂 一般都是默认  拒绝策略（四大策略） 满了就抛异常">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg">
+<meta property="article:published_time" content="2021-08-16T05:08:27.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:06.882Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="面经">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg">
+  
+  
+  
+  <title>刷面经 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="刷面经"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-08-16 13:08" pubdate>
+          2021年8月16日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          5.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          49 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">刷面经</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="线程池"><a href="#线程池" class="headerlink" title="线程池"></a>线程池</h1><p><strong>七大参数：</strong></p>
+<ul>
+<li><p>核心线程数量大小</p>
+</li>
+<li><p>最大线程数量大小</p>
+</li>
+<li><p>等待时间</p>
+</li>
+<li><p>等待时间单位</p>
+</li>
+<li><p>阻塞队列</p>
+<p>ArrayBlockingQueue（基于数组），LinkedBlockingQueue（基于链表，无界队列，可传入参数构建有界队列），PriorityBlockingQueue（支持优先级的无界阻塞队列，因为是无界，所以put不会阻塞）</p>
+</li>
+<li><p>构建工厂 一般都是默认</p>
+</li>
+<li><p>拒绝策略（<strong>四大策略</strong>）</p>
+<p>满了就抛异常（默认），满了就不管，满了就抛弃队列最早的，满了就由调用该方法的线程去执行</p>
+<p>​</p>
+</li>
+</ul>
+<p><strong>为什么不用Excutor创建线程？</strong></p>
+<p><strong>Excutor</strong>是创建线程池的工具类，有四个</p>
+<ul>
+<li>SingleThreadPool</li>
+<li>FixedThreadPool</li>
+<li>CacheThreadPool</li>
+<li>ScheduleThreadPool</li>
+</ul>
+<p>前两个是会创建固定的线程数，但是阻塞队列是无边界的，会导致请求的堆积，最终OOM</p>
+<p>后两个会创建Integer.MAX_VALUE个线程，导致OOM</p>
+<p><strong>向线程池添加任务后线程池的处理逻辑</strong></p>
+<ol>
+<li>首先判断当前线程池任务量有没有达到核心线程数大小，没有达到就创建线程来执行任务</li>
+<li>到达了，就看阻塞队列满没满，没满就放到阻塞队列里</li>
+<li>满了，就判断当前线程数是不是达到最大线程数，没有就创建线程去执行</li>
+<li>达到最大线程数了，那就要执行拒绝策略了</li>
+</ol>
+<h1 id="HashMap老八股文"><a href="#HashMap老八股文" class="headerlink" title="HashMap老八股文"></a>HashMap老八股文</h1><p><strong>底层数据结构？</strong></p>
+<blockquote>
+<p>JDK1.7 数组+链表 —&gt;JDK1.8数组+链表+红黑树</p>
+</blockquote>
+<p>头插法—&gt;尾插法</p>
+<blockquote>
+<p>头插法在单线程下不会让链表变成环状，多线程下可能会发生节点的互相引用，造成链表的环状，以至于再get()时会发生死循环</p>
+<p>尾插法就不会，但这并不是HashMap的BUG，因为HashMap并不是线程安全的，要在多线程环境下就用ConcurentMap</p>
+</blockquote>
+<p><strong>转红黑树的条件？</strong></p>
+<blockquote>
+<p>链表长度大于8并且桶的大小达到64才会转红黑树，即使链表长度大于8，桶的大小未达到64，是先扩容的</p>
+</blockquote>
+<p><strong>put()操作</strong></p>
+<blockquote>
+<p>1.获取hash，扰动函数，高16位&amp;低16位，更加散列，减少hash碰撞</p>
+<p>2.寻址算法：hash&amp;bin.length-1，找到桶的位置</p>
+<p>3.hashmap是懒加载机制，用到才会初始化，所以第一步是检查hashmao有不有初始化，没有就先初始化，默认16</p>
+<p>4.已经初始化的hashmap，下面就是put的操作了，当找到的桶的位置为空，那就直接放上去即可</p>
+<p>5.桶的位置不为空，桶的第一个元素与插入的key一样，那就进行替换操作（用&#x3D;&#x3D;或者equals()）</p>
+<p>6.当前已经树化了，创造树型节点插入红黑树中，这个我就不深究了，红黑树还是难</p>
+<p>7.当前已经链化了，那就next，一个一个找，一个一个equals()去比较，直到最后也没发现相同的key，那就直接把Node放在链表尾部，也就是尾插法，判断链表长度是否大于 8， 大于的话链表转换为红黑树</p>
+<p>8.++size，如果++size()&gt;扩容阈值，就立即进行resize()</p>
+</blockquote>
+<p><strong>get()操作</strong></p>
+<blockquote>
+<p>1.如果链表为空或者对应桶为是空的，那就直接返回null</p>
+<p>2.如果不为空，并且桶的头元素就是要找的key，那就直接返回value</p>
+<p>3.桶已经树化了，就在红黑树上找</p>
+<p>4.桶已经链化了，就在链表上找，找到就直接返回，到最后也没找到，就直接返回null</p>
+</blockquote>
+<p><strong>resize()操作</strong></p>
+<blockquote>
+<ol>
+<li><p>如果链表已经到底Integer.MAX_VALUE，就不再进行扩容了</p>
+</li>
+<li><p>否则就翻倍扩容*2</p>
+<p>rehash()</p>
+</li>
+<li><p>现在就要进行数组的迁移操作了，头节点不为空，就把当前桶位置为空</p>
+</li>
+<li><p>当前桶只有一个原始，直接进行寻址算法，找到新的桶位置</p>
+</li>
+<li><p>已经树化了，也是重新找桶的位置</p>
+</li>
+<li><p>已经链化了，就分高位链表和低位链表，低位链表存放在扩容之后的数组下标的位置，与当前数组下标位置一致的元素，高位链表存放在扩容之后的数组下标的位置为当前数组下标位置+ 扩容之前数组长度的元素，进行链表的拼接</p>
+</li>
+</ol>
+</blockquote>
+<p><strong>如果是一个Object作为hashMap的key的话这个对象需要满足什么条件？</strong></p>
+<blockquote>
+<p>Hashmap不允许有重复的key，所以要重写它的hashcode和equals方法，以便确认key是否重复。重写hashCode()是因为需要计算存储数据的存储位置，重写equals()方法目的是为了保证key在哈希表中的唯一性</p>
+</blockquote>
+<p><strong>红黑树查找和插入时间复杂度</strong></p>
+<blockquote>
+<p>查找和插入都是O(logN)</p>
+</blockquote>
+<h1 id="ConcurrentHashMap老八股文"><a href="#ConcurrentHashMap老八股文" class="headerlink" title="ConcurrentHashMap老八股文"></a>ConcurrentHashMap老八股文</h1><p>线程安全的HashMap</p>
+<p><strong>底层数据结构？</strong></p>
+<blockquote>
+<p>JDK1.7 Segment+HashEntry分段锁实现</p>
+<p>JDK1.8抛弃Segment，采用CAS+Sync+数组+链表+红黑树，</p>
+</blockquote>
+<p><strong>详细讲解分段锁吧</strong></p>
+<blockquote>
+<p>Segment继承于ReentrantLock，Segment则包含HashEntry的数组，HashEntry本身就是⼀个链表的结构，具有保存key、value的能⼒能指向下⼀个节点的指针。</p>
+<p>Segment就是HashMap，默认是16个，也就是说支持16个线程的并发写，Segment之间相互不受到影响,每一段都使用分段锁，当一个线程占用锁访问其中一段数据时，其他端数据也能被其他线程访问。</p>
+</blockquote>
+<p><strong>get()会加锁吗？（JDK1.7）</strong></p>
+<blockquote>
+<p>不会，通过Key定位到Segment，再遍历链表上的元素，获取到的value是volatile的，所以get是不需要加锁的</p>
+</blockquote>
+<p><strong>put()操作？</strong></p>
+<blockquote>
+<p>1.和hashmap类锁，先通过计算hash，定位到Segment，如果当前Segment是空的，就初始化</p>
+<p>2.使用ReentrantLock加锁，如果尝试获取锁失败就尝试自选，如果自旋锁超过一定次数就阻塞，保证一定能获取到锁</p>
+<p>3.遍历HashEntry，和HashMap一样，有就替换，没有就加上</p>
+</blockquote>
+<p><strong>JDK1.8中具体怎么实现ConcurrentHashMap再说详细点</strong></p>
+<blockquote>
+<p>采用CAS+Syn来保证并发的线程安全，put时，通过hash计算数组位置，若为空，就通过CAS操作直接添加。若不为空就Sync加锁，进行添加操作。Sync之锁定当前链表或红黑树的首节点，只要Hash不冲突，就不会产生并发，效率大大提示</p>
+<p>get没有进行同步操作，支持不并发操作</p>
+</blockquote>
+<p><strong>说说为什么1.8抛弃了1.7的分段锁吧</strong></p>
+<blockquote>
+<ol>
+<li>Segment继承自ReentrantLock，有了锁的功能，是分段的，当Segment越来越大，锁的粒度也越来越大</li>
+<li>分段锁优势在于操作不同的Segment是并发的，不需要锁，操作同一个Segment是需要锁的，相对于对整个map加锁是有优势的</li>
+<li>缺点在于分成很多段是会比较浪费内存空间（不连续，碎片化）；操作map时竞争同一个分段锁的概率非常小时，分段锁反而会造成更新等操作的长时间等待; 当某个段很大时，分段锁的性能会下降。</li>
+</ol>
+</blockquote>
+<p><strong>为什么不用ReentrantLock而用Sync?</strong></p>
+<blockquote>
+<ol>
+<li>减少内存开销:如果使用ReentrantLock则需要节点继承AQS来获得同步支持，增加内存开销，而1.8中只有头节点需要进行同步。</li>
+<li>内部优化:synchronized则是JVM直接支持的，JVM能够在运行时作出相应的优化措施：锁粗化、锁消除、锁自旋等等。</li>
+</ol>
+</blockquote>
+<h1 id="SQL优化"><a href="#SQL优化" class="headerlink" title="SQL优化"></a>SQL优化</h1><blockquote>
+<p>这个基本上也是必问的一道题，先说思路和维度</p>
+</blockquote>
+<ul>
+<li>分析语句，是否加载了不必要的字段和数据</li>
+<li>分析SQL执行计划，是否命中索引？这时候可以讲讲适合创建索引的字段，索引失效的情况，</li>
+<li>如果SQL很复杂，优化SQL结构</li>
+<li>如果单表数据数据量过大，可以考虑分表？水平分表？hash或者range</li>
+</ul>
+<h2 id="1-优化表结构"><a href="#1-优化表结构" class="headerlink" title="1. 优化表结构"></a>1. 优化表结构</h2><ul>
+<li><p>尽量使用数字型字段</p>
+<p>若只含数值信息的字段尽量不要设计为字符型，这会降低查询和连接的性能，并会增加存储开销。这是因为引擎在处理查询和连接时会逐个比较字符型，而对数字型只需要一次比较即可</p>
+</li>
+<li><p>能用char就用char，存取更快（会问char和varchar的区别，char是固定长度，英文1个字节，中文2个字节，varchar是变长的，中英文都是2个字节）</p>
+</li>
+<li><p>当索引列出现大量重复数据，离散性不好，比如性别，状态等，就需要删掉索引</p>
+</li>
+</ul>
+<h2 id="2-优化查询"><a href="#2-优化查询" class="headerlink" title="2. 优化查询"></a>2. 优化查询</h2><p><strong>适合创建索引的列</strong></p>
+<ol>
+<li>主键(默认就是聚簇索引)</li>
+<li>经常查</li>
+<li>非空</li>
+<li>需要order by，group by</li>
+<li>非空、唯一</li>
+<li>经常范围查询</li>
+</ol>
+<p><strong>不适合创建索引的列</strong></p>
+<ol>
+<li>很少查询的列</li>
+<li>定义为text，bit，image的数据类型</li>
+<li>有null的</li>
+<li>修改性能远远大于检索时，不应该创建索引</li>
+</ol>
+<p><strong>索引失效的情况</strong></p>
+<ol>
+<li>where中存在函数类型转换，比如select * from news where year(publish_time) &lt; 2017</li>
+<li>遇到null</li>
+<li>！&#x3D; ，not in ，not exits会走索引，in也不一定都会走索引，假如in中的集合包含了很多数据，innodb判断性能还不如直接扫表，那就不会走索引了</li>
+<li>like，对于where filed like ‘%luffy%’，不会走索引，但where filed like ‘luffy%’会走索引，取决于%的位置</li>
+<li>遇到运行 比如where id * 3 &#x3D; 100，不会走，可以优化成where id &#x3D; 100 &#x2F; 3</li>
+</ol>
+<p>需要注意<strong>覆盖查询</strong>，防止回表查询。复合索引符合最<strong>左前缀原则</strong></p>
+<h2 id="3-优化索引"><a href="#3-优化索引" class="headerlink" title="3.优化索引"></a>3.优化索引</h2><ul>
+<li>对作为查询条件和order by的字段建立索引</li>
+<li>避免过多的建立索引，多使用组合索引</li>
+</ul>
+<p>接下是个重头戏了，<strong>分析执行计划Expain SQL</strong></p>
+<ol>
+<li>id 查询的序号</li>
+<li>select_type 简单查询还是复杂查询</li>
+<li>table 在哪个表上进行操作</li>
+<li>type 最重要的一个参考之一，表示关联类型或者访问类型，即返回MySql决定如何查找表中的数据。从最优到最差分别为：system—&gt;const—&gt;eq_ref—&gt; ref—&gt; fulltext—&gt; ref_or_null—&gt; index_merge—&gt; unique_subquery—&gt; index_subquery—&gt; range—&gt; index—&gt;All</li>
+<li>pussible_keys 显示查询可能使用哪些索引来查询</li>
+<li>key 实际采用了哪个索引</li>
+<li>key_len 显示mysql在索引中使用的字节数，通过这个值可以算出具体使用了索引中的哪些列</li>
+<li>ref 显示了在key列记录的索引中，表查找值所用到的列或常量。常见的有：const(常量)、func，NULL，字段名</li>
+<li>rows mysql估计要读取并检测的行数，不是结果集的行数</li>
+<li>Extra 显示额外信息，Using index,Using where,Using temporary等</li>
+</ol>
+<h1 id="Linux常用命令"><a href="#Linux常用命令" class="headerlink" title="Linux常用命令"></a>Linux常用命令</h1><p>这个东西这没啥好说的，多敲就行，但一段时间不用，基本上全忘了，面试也会问开发环境，那就一定要说下Linux，毕竟企业部署都是在Linux上，这里也只是说下Java工程师常用命令，多的感觉没必要去记，用到去查就是</p>
+<blockquote>
+<p>切换root用户</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">sudo -i<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>文件常用操作</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br></pre></td><td class="code"><pre><code class="hljs shell">~~ 新建文件夹<br>[root@centos7-luffy ~]# mkdir /root/testLinux<br>~~ 进入文件夹<br>[root@centos7-luffy ~]# cd testLinux/<br>~~ 显示当前文件夹内的文件信息<br>[root@centos7-luffy testLinux]# ls<br>~~ 打印当前路径<br>[root@centos7-luffy testLinux]# pwd<br>/root/testLinux<br>~~ 平铺文件信息<br>[root@centos7-luffy testLinux]# ll<br>总用量 0<br>~~ 创建文件，若文件存在就更新文件访问时间和修改时间<br>[root@centos7-luffy testLinux]# touch a.txt<br>~~ 编辑文件<br>[root@centos7-luffy testLinux]# vim a.txt<br>~~ 预览文件<br>[root@centos7-luffy testLinux]# cat a.txt<br>&quot;I love Linux&quot;<br>~~ 显示文件前10行<br>[root@centos7-luffy testLinux]# head -10 a.txt<br>&quot;I love Linux&quot;<br>~~ 显示文件后10行<br>[root@centos7-luffy testLinux]# tail -10 a.txt<br>&quot;I love Linux&quot;<br>~~ 把数据写入文件<br>[root@centos7-luffy testLinux]# echo &quot;wdnmd&quot; &gt;&gt; a.txt<br>[root@centos7-luffy testLinux]# cat a.txt<br>&quot;I love Linux&quot;<br>wdnmd<br>[root@centos7-luffy testLinux]# cd ../<br>[root@centos7-luffy ~]# ls<br>anaconda-ks.cfg initial-setup-ks.cfg msql mysql temp test testLinux 公共 模板 视频 图片 文档 下载 音乐 桌面<br>[root@centos7-luffy ~]# cd test<br>[root@centos7-luffy test]# ls<br>b.txt<br>~~ 删除文件 -f 强制删除，不用确认 rm -r 文件夹名字，用来删除文件夹<br>[root@centos7-luffy test]# rm -f b.txt<br>[root@centos7-luffy test]# cd ../testLinux/<br>[root@centos7-luffy testLinux]# ls<br>a.txt<br>~~ 复制文件 cp 文件 复制到的路径<br>[root@centos7-luffy testLinux]# cp a.txt /root/test<br>[root@centos7-luffy testLinux]# cd /root/test<br>[root@centos7-luffy test]# ls<br>a.txt<br>[root@centos7-luffy test]# cat a.txt<br>&quot;I love Linux&quot;<br>wdnmd<br>~~ 移动文件 可以用来重命名哟 mv 指定文件路径 目标文件路径<br>[root@centos7-luffy test]# mv a.txt rename.txt<br>[root@centos7-luffy test]# ls<br>rename.txt<br>[root@centos7-luffy test]# mv rename.txt /root/testLinux/<br>[root@centos7-luffy test]# ls<br>[root@centos7-luffy test]# cd ../testLinux/<br>[root@centos7-luffy testLinux]# ls<br>a.txt rename.txt<br>[root@centos7-luffy testLinux]# cat rename.txt<br>&quot;I love Linux&quot;<br>wdnmd<br>~~ 重启系统<br>[root@centos7-luffy testLinux]# reboot<br>~~ 传了个压缩包到该文件夹，用来演示文件解压和压缩操作<br>[root@centos7-luffy testLinux]# ls<br>apache-maven-3.6.3-bin.tar.gz a.txt rename.txt<br>~~ 文件解压<br>[root@centos7-luffy testLinux]# tar zxvf apache-maven-3.6.3-bin.tar.gz<br>apache-maven-3.6.3/README.txt<br>apache-maven-3.6.3/LICENSE<br>apache-maven-3.6.3/NOTICE<br>apache-maven-3.6.3/lib/<br>apache-maven-3.6.3/lib/cdi-api.license<br>apache-maven-3.6.3/lib/commons-cli.license<br>apache-maven-3.6.3/lib/commons-io.license<br>apache-maven-3.6.3/lib/commons-lang3.license<br>apache-maven-3.6.3/lib/guava.license<br>······<br>[root@centos7-luffy testLinux]# ls<br>apache-maven-3.6.3 apache-maven-3.6.3-bin.tar.gz a.txt rename.txt<br>~~ 删除之前的压缩包，用文件夹压缩得到压缩包<br>[root@centos7-luffy testLinux]# rm -f apache-maven-3.6.3-bin.tar.gz<br>[root@centos7-luffy testLinux]# ls<br>apache-maven-3.6.3 a.txt rename.txt<br>~~ 文件压缩 tar -zvcf 压缩包文件名 要压缩的文件夹<br>[root@centos7-luffy testLinux]# tar -zcvf apache-maven-3.6.3.tar.gz apache-maven-3.6.3<br>apache-maven-3.6.3/<br>apache-maven-3.6.3/README.txt<br>apache-maven-3.6.3/LICENSE<br>apache-maven-3.6.3/NOTICE<br>apache-maven-3.6.3/lib/<br>apache-maven-3.6.3/lib/cdi-api.license<br>apache-maven-3.6.3/lib/commons-cli.license<br>apache-maven-3.6.3/lib/commons-io.license<br>apache-maven-3.6.3/lib/commons-lang3.license<br>apache-maven-3.6.3/lib/guava.license<br>apache-maven-3.6.3/lib/guice.license<br>apache-maven-3.6.3/lib/jansi.license<br>apache-maven-3.6.3/lib/javax.inject.license<br>apache-maven-3.6.3/lib/jcl-over-slf4j.license<br>apache-maven-3.6.3/lib/jsoup.license<br>apache-maven-3.6.3/lib/jsr250-api.license<br>apache-maven-3.6.3/lib/org.eclipse.sisu.inject.license<br>apache-maven-3.6.3/lib/org.eclipse.sisu.plexus.license<br>apache-maven-3.6.3/lib/plexus-cipher.license<br>apache-maven-3.6.3/lib/plexus-component-annotations.license<br>apache-maven-3.6.3/lib/plexus-interpolation.license<br>······<br>[root@centos7-luffy testLinux]# ls<br>apache-maven-3.6.3 apache-maven-3.6.3.tar.gz a.txt rename.txt<br>[root@centos7-luffy testLinux]#<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>关于网络的</p>
+</blockquote>
+<p>netstat 命令用于显示各种网络相关信息，如网络连接，路由表，网络连接状态。命令格式：<code>netstat [-options]</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs plain">options 参数解析<br>-a (all)显示所有选项，默认不显示 Listen 相关<br>-t (tcp)仅显示tcp相关选项<br>-u (udp)仅显示udp相关选项<br>-n 拒绝显示别名，能显示数字的全部转化成数字。<br>-l 仅列出有在 Listen (监听) 的服務状态<br>-p 显示建立相关链接的程序名<br>-r 显示路由信息，路由表<br>-e 显示扩展信息，例如uid等<br>-s 按各个协议进行统计<br>-c 每隔一个固定时间，执行该netstat命令<br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">netstat -pt</span><br>Proto Recv-Q Send-Q Local Address Foreign Address State PID/Program name<br>tcp 0 0 localhost:30037 \*:\* LISTEN 2109/firefox<br>....<br>------各项指标解析----------------------------------------<br>Proto 协议<br>Recv-Q 接收队列 ，一般都应该是0。如果不是则表示软件包正在队列中堆积<br>Send-Q 发送队列，一般都应该是0。如果不是则表示软件包正在队列中堆积<br>Local Address 本地地址+port<br>Foreign Address 远端地址+port<br>State 状态<br>PID 进程pid<br>Program name 进程名<br></code></pre></td></tr></table></figure>
+
+<p>netstat 常用命令</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plain"># netstat -anp<br># netstat -tunlp<br></code></pre></td></tr></table></figure>
+
+<p>lsof（List Open Files） 用于查看你进程开打的文件，打开文件的进程，进程打开的端口(TCP、UDP)。命令格式 <code>lsof ［options］ filename</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs shell">options 参数解释<br>-a 列出打开文件存在的进程<br>-c&lt;进程名&gt; 列出指定进程所打开的文件(常用)<br>-p&lt;进程号&gt; 列出指定进程号所打开的文件(常用)<br>-g 列出属于gid的进程详情<br>-u&lt;uname/uid&gt; 显示归属uname或uid的进程情况<br>-d&lt;fd文件号&gt; 列出占用该文件号的进程<br>+d&lt;目录&gt; 列出目录下被打开的文件<br>+D&lt;目录&gt; 递归列出目录下被打开的文件<br>-n&lt;目录&gt; 列出使用NFS的文件<br>-i&lt;条件&gt; 列出符合条件的进程。（ip4/ip6协议、端口、 @ip ）<br>-u 列出UID号进程详情<br></code></pre></td></tr></table></figure>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs plain"># lsof<br>command PID USER FD type DEVICE SIZE NODE NAME<br>init 1 root txt REG 8,2 43496 6121706 /sbin/init<br>---------各项指标解析-----------------------<br>COMMAND 进程的名称<br>PID 进程标识符<br>USER 进程所有者<br>FD 文件描述符，应用程序通过文件描述符识别该文件。如cwd、txt等<br>TYPE 文件类型，如DIR、REG等<br>DEVICE 指定磁盘的名称<br>SIZE 文件的大小<br>NODE 索引节点（文件在磁盘上的标识）<br>NAME 打开文件的确切名称<br></code></pre></td></tr></table></figure>
+
+<p>lsof 示例</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs plain">~~ 显示所有打开80端口的进程<br># lsof -i:80<br>~~ 那个进程在占用/etc/passwd<br># lsof /etc/passwd<br>~~ 显示使用fd为1211的进程<br># lsof -d 1211<br>~~ 显示那些文件被pid为 1211 的进程打开<br># lsof -p 1211<br>~~ 查看sendmail进程的文件使用情况<br># lsof -c sendmail<br></code></pre></td></tr></table></figure>
+<blockquote>
+<p>系统状况</p>
+</blockquote>
+<p>top 命令是用来监控Linux系统状况，比如cpu、内存，进程等资源使用情况。命令格式：<code>top [-options]</code></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plain">options 选项参数<br>-i&lt;时间&gt; 设置刷新间隔时间<br>-u&lt;用户名&gt; 指定用户名<br>-p&lt;进程号&gt; 指定进程<br>-H 开启线程查看<br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">top</span><br>top - 18:20:27 up 26 days, 8:30, 2 users, load average: 0.04, 0.09, 0.13<br>Tasks: 168 total, 1 running, 167 sleeping, 0 stopped, 0 zombie<br><span class="hljs-meta prompt_">%</span><span class="language-bash">Cpu(s): 0.3 us, 0.5 sy, 0.0 ni, 99.1 <span class="hljs-built_in">id</span>, 0.0 wa, 0.0 hi, 0.1 si, 0.0 st</span><br>KiB Mem: 32762356 total, 14675196 used, 18087160 free, 884 buffers<br>KiB Swap: 2103292 total, 0 used, 2103292 free. 6580028 cached Mem<br>PID USER PR NI VIRT RES SHR S %CPU %MEM TIME+ COMMAND<br>1260 root 20 0 7933492 1.173g 14004 S 0.333 3.753 58:20.74 java<br>1503 root 20 0 69172 2240 1412 S 0.333 0.007 0:48.05 httpd<br>1520 daemon 20 0 358140 3980 776 S 0.333 0.012 6:19.55 httpd<br>2323 mysql 20 0 19.918g 4.538g 9404 S 0.333 14.52 352:51.44 mysqld<br>.......<br>---------各项指标解析---------------------------------------------------<br>第一行统计信息区<br>18:20:27 当前时间<br>up 25 days, 17:29 系统运行时间，格式为时:分<br>1 user 当前登录用户数<br>load average: 0.04, 0.09, 0.13 系统负载，三个数值分别为 1分钟、5分钟、15分钟前到现在的平均值<br>Tasks：进程相关信息<br>running 正在运行的进程数<br>sleeping 睡眠的进程数<br>stopped 停止的进程数<br>zombie 僵尸进程数<br>Cpu(s)：CPU相关信息<br><span class="hljs-meta prompt_">%</span><span class="language-bash">us：表示用户空间程序的cpu使用率（没有通过<span class="hljs-built_in">nice</span>调度）</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash">sy：表示系统空间的cpu使用率，主要是内核程序</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash">ni：表示用户空间且通过<span class="hljs-built_in">nice</span>调度过的程序的cpu使用率</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash"><span class="hljs-built_in">id</span>：空闲cpu</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash">wa：cpu运行时在等待io的时间</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash">hi：cpu处理硬中断的数量</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash">si：cpu处理软中断的数量</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash">st：被虚拟机偷走的cpu</span><br>Mem 内存信息<br>total 物理内存总量<br>used 使用的物理内存总量<br>free 空闲内存总量<br>buffers 用作内核缓存的内存量<br>Swap 内存信息<br>total 交换区总量<br>used 使用的交换区总量<br>free 空闲交换区总量<br>cached 缓冲的交换区总量<br>~~ 常用的指标<br>PID 进程id<br>PPID 父进程id<br>UID 进程所有者的用户id<br>USER 进程所有者的用户名<br>GROUP 进程所有者的组名<br>TTY 启动进程的终端名。不是从终端启动的进程则显示为 ?<br>PR 优先级<br>NI nice值。负值表示高优先级，正值表示低优先级<br>P 最后使用的CPU，仅在多CPU环境下有意义<br><span class="hljs-meta prompt_">%</span><span class="language-bash">CPU 上次更新到现在的CPU时间占用百分比</span><br>TIME 进程使用的CPU时间总计，单位秒<br>TIME+ 进程使用的CPU时间总计，单位1/100秒<br><span class="hljs-meta prompt_">%</span><span class="language-bash">MEM 进程使用的物理内存百分比</span><br>VIRT 进程使用的虚拟内存总量，单位kb。VIRT=SWAP+RES<br>SWAP 进程使用的虚拟内存中，被换出的大小，单位kb。<br>RES 进程使用的、未被换出的物理内存大小，单位kb。RES=CODE+DATA<br>CODE 可执行代码占用的物理内存大小，单位kb<br>DATA 可执行代码以外的部分(数据段+栈)占用的物理内存大小，单位kb<br>SHR 共享内存大小，单位kb<br>S 进程状态; 相关枚举值解释查看 ps -ef S 项解释<br>COMMAND 进程启动执行的命令行<br></code></pre></td></tr></table></figure>
+
+<p>top 命令下，查看信息常用快捷键</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs plain">h 显示快捷键帮助<br>k 终止一个进程<br>i 开/关忽略闲置和僵死进程<br>q 退出程序<br>r 重新安排一个进程的优先级别<br>S 切换到累计模式<br>s 更改刷新间隔时间，单位秒<br>f,F 从当前显示中添加或者删除项目<br>o,O 改变显示项目的顺序<br>l 切换显示平均负载和启动时间信息<br>m 切换显示内存信息<br>t 切换显示进程和CPU状态信息<br>c 切换显示命令名称和完整命令行<br>M 根据内存使用大小排序<br>P 根据CPU使用率进行排序 （默认排序）<br>T 根据时间/累计时间进行排序<br>1 展开多核cpu显示<br>H 线程查看模式切换为开或关<br></code></pre></td></tr></table></figure>
+
+<p>文件的读写情况、系统调用的使用情况、磁盘I&#x2F;O、CPU效率、内存使用状况、进程活动及 IPC 有关的活动等。命令格式：<code>sar [options] [-A] [-o file] delay [count]</code>。delay 为采样间隔，count 为采样次数，默认值是1</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs plain">options 选项参数<br>-A 所有报告的总和<br>-o file 表示将命令结果以二进制格式存放在文件中，file 是文件名<br>-u 输出CPU使用情况的统计信息<br>-v 输出inode、文件和其他内核表的统计信息<br>-d 输出每一个块设备的活动信息<br>-b 显示I/O和传送速率的统计信息（相对-d 是汇总信息）<br>-r 输出内存和交换空间的统计信息<br>-R 输出内存页面的统计信息<br>-a 文件读写情况<br>-q 队列长度和平均负载<br>-c 输出进程统计信息，每秒创建的进程数<br>-y 终端设备活动情况<br>-w 输出系统交换活动信息<br>-x &lt;pid&gt; 显示给定进程的统计信息<br>-n &lt;关键词&gt; 统计网络信息<br>关键词可以是：<br>DEV 网卡<br>EDEV 网卡 (错误)<br>NFS NFS 客户端<br>NFSD NFS 服务器<br>SOCK Sockets (套接字) (v4)<br>SOCK6 Sockets (套接字) (v6)<br>IP IP 流 (v4)<br>EIP IP 流 (v4) (失败信息)<br>ICMP ICMP 流 (v4)<br>EICMP ICMP 流 (v4) (失败信息)<br>TCP TCP 流 (v4)<br>ETCP TCP 流 (v4) (失败信息)<br>UDP UDP 流 (v4)<br>IP6 IP 流 (v6)<br>EIP6 IP 流 (v6) (失败信息)<br>ICMP6 ICMP 流 (v6)<br>EICMP6 ICMP 流 (v6) (失败信息)<br>UDP6 UDP 流 (v6)<br></code></pre></td></tr></table></figure>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">sar -u 1 2</span><br>Linux 3.10.0-862.el7.x86\_64 (8f57ec39327b) 07/11/2021 \_x86\_64\_ (6 CPU)<br>07:02:04 PM CPU %user %nice %system %iowait %steal %idle<br>07:02:05 PM all 23.90 3.22 7.97 5.25 0.00 59.66<br>07:02:06 PM all 26.53 4.76 8.84 5.95 0.00 53.91<br>Average: all 25.21 3.99 8.40 5.60 0.00 56.79<br>------各项指标解析---------------------------------<br><span class="hljs-meta prompt_">%</span><span class="language-bash">user 用户空间的CPU使用</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash"><span class="hljs-built_in">nice</span> 改变过优先级的进程的CPU使用率</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash">system 内核空间的CPU使用率</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash">iowait CPU等待IO的百分比</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash">steal 虚拟机的虚拟机CPU使用的CPU</span><br><span class="hljs-meta prompt_">%</span><span class="language-bash">idle 空闲的CPU</span><br></code></pre></td></tr></table></figure>
+
+<p>查看内存使用情况 <code>sar -r</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">sar -r 1 2</span><br>Linux 3.10.0-862.el7.x86\_64 (8f57ec39327b) 07/11/2021 \_x86\_64\_ (6 CPU)<br>07:05:16 PM kbmemfree kbmemused %memused kbbuffers kbcached kbcommit %commit kbactive kbinact kbdirty<br>07:05:17 PM 299596 32398396 99.08 2084 7615088 37900868 115.91 27267692 3809860 672<br>07:05:18 PM 298932 32399060 99.09 2084 7615848 37900100 115.91 27267828 3810252 488<br>Average: 299264 32398728 99.08 2084 7615468 37900484 115.91 27267760 3810056 580<br>------各项指标解析--------------------<br>kbmemfree 空闲的物理内存大小<br>kbmemused 使用中的物理内存大小<br><span class="hljs-meta prompt_">%</span><span class="language-bash">memused 物理内存使用率</span><br>kbbuffers 内核中作为缓冲区使用的物理内存大小，kbbuffers和kbcached:这两个值就是free命令中的buffer和cache.<br>kbcached 缓存的文件大小<br>kbcommit 保证当前系统正常运行所需要的最小内存，即为了确保内存不溢出而需要的最少内存（物理内存+Swap分区）<br>commit 这个值是kbcommit与内存总量（物理内存+swap分区）的一个百分比的值<br></code></pre></td></tr></table></figure>
+
+<p>查看 IO 和传递速率：<code>sar -b</code></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs shell"><span class="hljs-meta prompt_"># </span><span class="language-bash">sar -b 1 2</span><br>Linux 3.10.0-862.el7.x86\_64 (8f57ec39327b) 07/11/2021 \_x86\_64\_ (6 CPU)<br>07:06:08 PM tps rtps wtps bread/s bwrtn/s<br>07:06:09 PM 171.00 0.00 171.00 0.00 3431.00<br>07:06:10 PM 163.00 0.00 163.00 0.00 2620.00<br>Average: 167.00 0.00 167.00 0.00 3025.50<br>------各项指标解析--------------------<br>tps 磁盘每秒钟的IO总数，等于iostat中的tps<br>rtps 每秒钟从磁盘读取的IO总数<br>wtps 每秒钟从写入到磁盘的IO总数<br>bread/s 每秒钟从磁盘读取的块总数<br>bwrtn/s 每秒钟此写入到磁盘的块总数<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E9%9D%A2%E7%BB%8F/" class="print-no-link">#面经</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>刷面经</div>
+      <div>http://example.com/2021/08/16/刷面经/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年8月16日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/09/02/%E7%BB%BF%E7%9B%9F%E7%A0%94%E5%8F%91%E4%B8%80%E4%BA%8C%E4%B8%89%E9%9D%A2-%E5%B7%B2OC/" title="绿盟研发一二三面 已OC">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">绿盟研发一二三面 已OC</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/05/%E7%99%BE%E5%BA%A6%E6%8F%90%E5%89%8D%E6%89%B9%E4%B8%80%E9%9D%A2/" title="百度提前批一面">
+                        <span class="hidden-mobile">百度提前批一面</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

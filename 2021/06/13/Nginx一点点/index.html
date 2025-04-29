@@ -1,0 +1,677 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. Nginx介绍Nginx是一款轻量级的Web服务器、反向代理服务器，由于它的内存占用少，启动极快，高并发能力强，在互联网项目中广泛应用。  上图基本上说明了当下流行的技术架构，其中Nginx有点入口网关的味道。 说了这么多，我们先安装玩玩吧 2. 安装Nginx一般都是项目都是部署在linux上，这里我们采用Docker的方式启动Nginx，关于Docker的，上一篇有详细介绍 Docke">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Nginx一点点">
+<meta property="og:url" content="http://example.com/2021/06/13/Nginx%E4%B8%80%E7%82%B9%E7%82%B9/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="1. Nginx介绍Nginx是一款轻量级的Web服务器、反向代理服务器，由于它的内存占用少，启动极快，高并发能力强，在互联网项目中广泛应用。  上图基本上说明了当下流行的技术架构，其中Nginx有点入口网关的味道。 说了这么多，我们先安装玩玩吧 2. 安装Nginx一般都是项目都是部署在linux上，这里我们采用Docker的方式启动Nginx，关于Docker的，上一篇有详细介绍 Docke">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/06/12/pOVkBsKWd5c4GPI.png">
+<meta property="article:published_time" content="2021-06-12T19:26:07.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:06.430Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="nginx">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.loli.net/2021/06/12/pOVkBsKWd5c4GPI.png">
+  
+  
+  
+  <title>Nginx一点点 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Nginx一点点"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-06-13 03:26" pubdate>
+          2021年6月13日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Nginx一点点</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p><img src="https://i.loli.net/2021/06/12/pOVkBsKWd5c4GPI.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="1-Nginx介绍"><a href="#1-Nginx介绍" class="headerlink" title="1. Nginx介绍"></a>1. Nginx介绍</h1><p>Nginx是一款轻量级的Web服务器、反向代理服务器，由于它的内存占用少，启动极快，高并发能力强，在互联网项目中广泛应用。</p>
+<p><img src="https://i.loli.net/2021/06/12/Eqcp7mT9v46ARyX.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>上图基本上说明了当下流行的技术架构，其中Nginx有点入口网关的味道。</p>
+<p>说了这么多，我们先安装玩玩吧</p>
+<h1 id="2-安装Nginx"><a href="#2-安装Nginx" class="headerlink" title="2. 安装Nginx"></a>2. 安装Nginx</h1><p>一般都是项目都是部署在linux上，这里我们采用Docker的方式启动Nginx，关于Docker的，上一篇有详细介绍</p>
+<p><a target="_blank" rel="noopener" href="https://luffy997.github.io/2021/06/12/Docker/">Docker</a></p>
+<p>下面记录centos7利用Docker安装Nginx的命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><code class="hljs shell">[root@hspEdu01 nginx]# docker pull nginx<br>Using default tag: latest<br>Trying to pull repository docker.io/library/nginx ...<br>latest: Pulling from docker.io/library/nginx<br>69692152171a: Already exists<br>30afc0b18f67: Pull complete<br>596b1d696923: Pull complete<br>febe5bd23e98: Pull complete<br>8283eee92e2f: Pull complete<br>351ad75a6cfa: Pull complete<br>Digest: sha256:6d75c99af15565a301e48297fa2d121e15d80ad526f8369c526324f0f7ccb750<br>Status: Downloaded newer image for docker.io/nginx:latest<br>[root@hspEdu01 nginx]# ls<br>conf logs www<br>[root@hspEdu01 nginx]# cd conf/<br>[root@hspEdu01 conf]# ls<br>nginx.conf<br>[root@hspEdu01 conf]# cd ../<br>[root@hspEdu01 nginx]# cd ../<br>[root@hspEdu01 ~]# rm -rf nginx/<br>[root@hspEdu01 ~]# ls<br>anaconda-ks.cfg data data2 initial-setup-ks.cfg mysql 公共 模板 视频 图片 文档 下载 音乐 桌面<br>[root@hspEdu01 ~]# docker run --name nginx-test -p 80:80 -d nginx<br>608ed67163e091695eb14f964cff6f4d24f2818275845f34254eff49e24fe770<br>[root@hspEdu01 ~]# docker ps -a<br>CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS<br>608ed67163e0 nginx &quot;/docker-entrypoin...&quot; 4 seconds ago Up 2 seconds 0.0.0.0:80-&gt;80/tcp<br>760a2956258e a8e34 &quot;java -jar app.jar&quot; About an hour ago Up About an hour 0.0.0.0:8010-&gt;8010/tcp<br>95628d5d89c5 mysql:5.7 &quot;docker-entrypoint...&quot; About an hour ago Up About an hour 0.0.0.0:3306-&gt;3306/tcp, 33060/tc<br>[root@hspEdu01 ~]# mkdir -p /root/nginx/www /root/nginx/logs /root/nginx/conf<br>[root@hspEdu01 ~]# cd nginx/<br>[root@hspEdu01 nginx]# cd conf/<br>[root@hspEdu01 conf]# ls<br>[root@hspEdu01 conf]# docker cp 608e:/etc/nginx/nginx.conf /root/nginx/conf<br>[root@hspEdu01 conf]# ls<br>nginx.conf<br>[root@hspEdu01 conf]# docker rm -f 608e<br>608e<br>[root@hspEdu01 conf]# docker run -d -p 80:80 --name nginx-web -v /root/nginx/www:/usr/share/nginx/html -v /root/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v /root/nginx/logs:/var/log/nginx nginx<br>987bc07bc4eb474332766dfe6409d957e07bf94fc24153222cf8bf99147df717<br>[root@hspEdu01 conf]# docker ps -a<br>CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES<br>987bc07bc4eb nginx &quot;/docker-entrypoin...&quot; 10 seconds ago Exited (1) 9 seconds ago nginx-web<br>760a2956258e a8e34 &quot;java -jar app.jar&quot; About an hour ago Up About an hour 0.0.0.0:8010-&gt;8010/tcp adoring\_pare<br>95628d5d89c5 mysql:5.7 &quot;docker-entrypoint...&quot; About an hour ago Up About an hour 0.0.0.0:3306-&gt;3306/tcp, 33060/tcp mysql<br>[root@hspEdu01 conf]# docker logs -f 987b<br>/docker-entrypoint.sh: /docker-entrypoint.d/ is not empty, will attempt to perform configuration<br>/docker-entrypoint.sh: Looking for shell scripts in /docker-entrypoint.d/<br>/docker-entrypoint.sh: Launching /docker-entrypoint.d/10-listen-on-ipv6-by-default.sh<br>10-listen-on-ipv6-by-default.sh: info: Getting the checksum of /etc/nginx/conf.d/default.conf<br>10-listen-on-ipv6-by-default.sh: info: Enabled listen on IPv6 in /etc/nginx/conf.d/default.conf<br>/docker-entrypoint.sh: Launching /docker-entrypoint.d/20-envsubst-on-templates.sh<br>/docker-entrypoint.sh: Launching /docker-entrypoint.d/30-tune-worker-processes.sh<br>/docker-entrypoint.sh: Configuration complete; ready for start up<br>nginx: [alert] could not open error log file: open() &quot;/var/log/nginx/error.log&quot; failed (13: Permission denied)<br>2021/06/12 02:26:39 [emerg] 1#1: open() &quot;/etc/nginx/nginx.conf&quot; failed (13: Permission denied)<br>[root@hspEdu01 conf]# docker ps -a<br>CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES<br>987bc07bc4eb nginx &quot;/docker-entrypoin...&quot; About a minute ago Exited (1) About a minute ago nginx-web<br>760a2956258e a8e34 &quot;java -jar app.jar&quot; About an hour ago Up About an hour 0.0.0.0:8010-&gt;8010/tcp adoring\_pare<br>95628d5d89c5 mysql:5.7 &quot;docker-entrypoint...&quot; About an hour ago Up About an hour 0.0.0.0:3306-&gt;3306/tcp, 33060/tcp mysql<br>[root@hspEdu01 conf]# docker rm -f 987<br>987<br>[root@hspEdu01 conf]# docker run -d -p 80:80 --name nginx-web -v /root/nginx/www:/usr/share/nginx/html -v /root/nginx/conf/nginx.conf:/etc/nginx/nginx.conf -v /root/nginx/logs:/var/log/nginx --privileged=true nginx<br>6593ed8866071e1865217f58c627005aa8f3e9b3c8db6f5ff1aec22653503d1a<br>[root@hspEdu01 conf]# docker ps -a<br>CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES<br>6593ed886607 nginx &quot;/docker-entrypoin...&quot; 5 seconds ago Up 3 seconds 0.0.0.0:80-&gt;80/tcp nginx-web<br>760a2956258e a8e34 &quot;java -jar app.jar&quot; About an hour ago Up About an hour 0.0.0.0:8010-&gt;8010/tcp adoring\_pare<br>95628d5d89c5 mysql:5.7 &quot;docker-entrypoint...&quot; About an hour ago Up About an hour 0.0.0.0:3306-&gt;3306/tcp, 33060/tcp mysql<br>[root@hspEdu01 conf]# cd ../<br>[root@hspEdu01 nginx]# cd www/<br>[root@hspEdu01 www]# touch a.html<br>[root@hspEdu01 www]# vim a.html<br>[root@hspEdu01 www]#<br></code></pre></td></tr></table></figure>
+
+<p>这里我们创建了一个nginx-web的容器，并把它的网页目录，日志目录和配置文件目录挂载到宿主机，新建了一个a.html，因为Nginx的热部署的，所以我们直接在浏览器请求a.html即可</p>
+<p><img src="https://i.loli.net/2021/06/12/mUoaTBXV9Y1yJ23.png" srcset="/img/loading.gif" lazyload></p>
+<h1 id="3-负载均衡"><a href="#3-负载均衡" class="headerlink" title="3. 负载均衡"></a>3. 负载均衡</h1><p>在第二张图上，已经提到Nginx可以实现负载均衡，什么叫负载均衡呢？</p>
+<p>如果请求数过大，单个服务器解决不了，我们增加服务器的数量，然后将请求分发到各个服务器上，将原先请求集中到单个服务器的情况改为请求分发到多个服务器上，就是负载均衡。</p>
+<p>实现方式也很简单，在nginx.conf中upstream 指定后端服务器地址列表，在 server 中拦截响应请求，并将请求转发到 Upstream 中配置的服务器列表。</p>
+<h2 id="1-轮询"><a href="#1-轮询" class="headerlink" title="1. 轮询"></a>1. 轮询</h2><p>这里我们利用Docker多端口启动3台Tomcat服务器，里面Nginx实现请求的负载均衡，下面记录详细命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br></pre></td><td class="code"><pre><code class="hljs shell">[root@VM-0-15-centos conf]# docker run -p 8010:8080 -v /root/tomcat8010/webapps:/usr/local/tomcat/webapps -d --name tomcat8081 bcf990bea01a<br>a386923c309b971e5c09c1656f706313d074d62f1a898844513594f662463c07<br><span class="hljs-meta prompt_">#</span><span class="language-bash">三台Tomcat启动方式都是一样的 只是参数和数据卷不一样而已，这里以最后一台为例子</span><br>[root@VM-0-15-centos conf]# docker ps -a<br>CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES<br>a386923c309b bcf990bea01a &quot;catalina.sh run&quot; 4 seconds ago Up 3 seconds 0.0.0.0:8010-&gt;8080/tcp tomcat8081<br>5dbbb4db6e00 bcf990bea01a &quot;catalina.sh run&quot; 20 hours ago Up 20 hours 0.0.0.0:8881-&gt;8080/tcp tomcat-8881<br>216a2e8f1c90 bcf990bea01a &quot;catalina.sh run&quot; 20 hours ago Up 20 hours 0.0.0.0:8888-&gt;8080/tcp tomcat-8888<br>8499b0e39d0f bcf990bea01a &quot;catalina.sh run&quot; 21 hours ago Up 21 hours 0.0.0.0:8080-&gt;8080/tcp mytomcat<br>7dd71eee737f mysql:5.7 &quot;docker-entrypoint...&quot; 43 hours ago Up 43 hours 0.0.0.0:3306-&gt;3306/tcp, 33060/tcp mysql<br>52aa02d195d9 nginx &quot;/docker-entrypoin...&quot; 2 days ago Up 2 minutes 0.0.0.0:80-&gt;80/tcp nginx-web<br>[root@VM-0-15-centos conf]# cd /root<br>[root@VM-0-15-centos ~]# ls<br>aa.txt apps data demo dockerfile images meiyan mysql nginx RUNNING.txt test tomcat8010 tomcat-8881 tomcat8888 webapps<br>[root@VM-0-15-centos ~]# cd tomcat8010<br>[root@VM-0-15-centos tomcat8010]# ls<br>webapps<br>[root@VM-0-15-centos tomcat8010]# cd webapps<br>[root@VM-0-15-centos webapps]# mkdir edu<br>[root@VM-0-15-centos webapps]# cd edu<br>[root@VM-0-15-centos edu]# ouch a.html<br>-bash: ouch: command not found<br>[root@VM-0-15-centos edu]# touch a.html<br>[root@VM-0-15-centos edu]# vim a.html<br>[root@VM-0-15-centos edu]# cat a.html<br>&lt;!DOCTYPE html&gt;<br>&lt;html&gt;<br>&lt;head&gt;<br>&lt;meta charset=&quot;utf-8&quot;&gt;<br>&lt;title&gt;&lt;/title&gt;<br>&lt;/head&gt;<br>&lt;body&gt;<br>&lt;h3&gt;Tomcat8010&lt;/h3&gt;<br>&lt;/body&gt;<br>&lt;/html&gt;<br>[root@VM-0-15-centos edu]# cd /root/nginx/conf/<br>[root@VM-0-15-centos conf]# vim nginx.conf<br><span class="hljs-meta prompt_">#</span><span class="language-bash">配置完nginx.conf 记得重启nginx服务</span><br>[root@VM-0-15-centos conf]# docker restart nginx-web<br>nginx-web<br>[root@VM-0-15-centos conf]#<br></code></pre></td></tr></table></figure>
+
+<p>这时候，我们可以在浏览器中访问<a target="_blank" rel="noopener" href="http://118.195.164.41/edu/a.html%EF%BC%8C%E4%BC%9A%E5%8F%91%E7%8E%B0%E5%AE%83%E6%98%AF%E8%B7%B3%E8%BD%AC%E5%88%B0%E4%B8%8D%E5%90%8C%E7%9A%84Tomcat%E4%B8%8A%EF%BC%8C%E5%8D%B3%E5%AE%9E%E7%8E%B0%E4%BA%86%E8%B4%9F%E8%BD%BD%E5%9D%87%E8%A1%A1%EF%BC%8C%E8%BF%99%E9%87%8C%E5%8F%AA%E6%98%AF%E7%AC%AC%E4%B8%80%E7%A7%8D%EF%BC%8C%E6%88%91%E4%BB%AC%E5%B9%B6%E6%B2%A1%E8%AE%BE%E8%AE%A1%E7%BB%86%E5%88%99%EF%BC%8C%E4%B8%8B%E9%9D%A2%E6%88%91%E4%BB%AC%E5%86%8D%E5%B1%95%E7%A4%BA%E8%AE%B2%E8%BF%B0%E4%B8%8B%E5%85%B6%E5%AE%83%E5%87%A0%E7%A7%8D%EF%BC%9A">http://118.195.164.41/edu/a.html，会发现它是跳转到不同的Tomcat上，即实现了负载均衡，这里只是第一种，我们并没设计细则，下面我们再展示讲述下其它几种：</a></p>
+<h2 id="2-优先级"><a href="#2-优先级" class="headerlink" title="2. 优先级"></a>2. 优先级</h2><p>修改nginx.conf即可</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs shell">[root@VM-0-15-centos conf]# cat nginx.conf<br>user nginx;<br>worker\_processes auto;<br>error\_log /var/log/nginx/error.log notice;<br>pid /var/run/nginx.pid;<br>events &#123;<br>worker\_connections 1024;<br>&#125;<br>http &#123;<br>include /etc/nginx/mime.types;<br>default\_type application/octet-stream;<br>log\_format main &#x27;$remote\_addr - $remote\_user [$time\_local] &quot;$request&quot; &#x27;<br>&#x27;$status $body\_bytes\_sent &quot;$http\_referer&quot; &#x27;<br>&#x27;&quot;$http\_user\_agent&quot; &quot;$http\_x\_forwarded\_for&quot;&#x27;;<br>access\_log /var/log/nginx/access.log main;<br>upstream myserver &#123;<br>server 118.195.164.41:8080 weight=1;<br>server 118.195.164.41:8888 weight=10;<br>server 118.195.164.41:8881 weight=15;<br>server 118.195.164.41:8010 weight=20;<br>&#125;<br>server&#123;<br>listen 80;<br>charset utf-8;<br>server\_name 118.195.164.41;<br>location / &#123;<br>proxy\_pass http://myserver;<br>&#125;<br>&#125;<br>sendfile on;<br><span class="hljs-meta prompt_">#</span><span class="language-bash">tcp\_nopush on;</span><br>keepalive\_timeout 65;<br><span class="hljs-meta prompt_">#</span><span class="language-bash">gzip on;</span><br>include /etc/nginx/conf.d/\*.conf;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-ip-hash"><a href="#3-ip-hash" class="headerlink" title="3.ip_hash"></a>3.ip_hash</h2><p>每个请求按访问ip的hash结果分配，这样每个访客固定访问一个后端服务器，可以解决session的问题。</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs shell">[root@VM-0-15-centos conf]# cat nginx.conf<br>user nginx;<br>worker\_processes auto;<br>error\_log /var/log/nginx/error.log notice;<br>pid /var/run/nginx.pid;<br>events &#123;<br>worker\_connections 1024;<br>&#125;<br>http &#123;<br>include /etc/nginx/mime.types;<br>default\_type application/octet-stream;<br>log\_format main &#x27;$remote\_addr - $remote\_user [$time\_local] &quot;$request&quot; &#x27;<br>&#x27;$status $body\_bytes\_sent &quot;$http\_referer&quot; &#x27;<br>&#x27;&quot;$http\_user\_agent&quot; &quot;$http\_x\_forwarded\_for&quot;&#x27;;<br>access\_log /var/log/nginx/access.log main;<br>upstream myserver &#123;<br>ip\_hash;<br>server 118.195.164.41:8080 ;<br>server 118.195.164.41:8888 ;<br>server 118.195.164.41:8881 ;<br>server 118.195.164.41:8010 ;<br>&#125;<br>server&#123;<br>listen 80;<br>charset utf-8;<br>server\_name 118.195.164.41;<br>location / &#123;<br>proxy\_pass http://myserver;<br>&#125;<br>&#125;<br>sendfile on;<br><span class="hljs-meta prompt_">#</span><span class="language-bash">tcp\_nopush on;</span><br>keepalive\_timeout 65;<br><span class="hljs-meta prompt_">#</span><span class="language-bash">gzip on;</span><br>include /etc/nginx/conf.d/\*.conf;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h2 id="4-fair-第三方"><a href="#4-fair-第三方" class="headerlink" title="4.fair(第三方)"></a>4.fair(第三方)</h2><p>按后端服务器的响应时间来分配请求，响应时间短的优先分配。</p>
+<p>需要安装其它依赖，这里就不测试了</p>
+<h1 id="4-反向代理"><a href="#4-反向代理" class="headerlink" title="4. 反向代理"></a>4. 反向代理</h1><p>经常听人说到一些术语，如反向代理，那么什么是反向代理，什么又是正向代理呢？</p>
+<p><img src="https://i.loli.net/2021/06/13/HNdostpFcQSUK7I.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>​ 正向代理示意图</p>
+<p><img src="https://i.loli.net/2021/06/13/Td9tcFv6CNwDiGB.jpg" srcset="/img/loading.gif" lazyload></p>
+<p>​ 反向代理示意图</p>
+<p>由于防火墙的原因，我们并不能直接访问谷歌，那么我们可以借助VPN来实现，这就是一个简单的正向代理的例子。这里你能够发现，正向代理“代理”的是客户端，而且客户端是知道目标的，而目标是不知道客户端是通过VPN访问的。</p>
+<p>当我们在外网访问百度的时候，其实会进行一个转发，代理到内网去，这就是所谓的反向代理，即反向代理“代理”的是服务器端，而且这一个过程对于客户端而言是透明的。</p>
+<p>Nginx实现反向代理是很容易的，下面记录详细命令：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><code class="hljs shell">[root@VM-0-15-centos conf]# docker ps -a<br>CONTAINER ID IMAGE COMMAND CREATED STATUS PORTS NAMES<br>a386923c309b bcf990bea01a &quot;catalina.sh run&quot; 22 hours ago Up 22 hours 0.0.0.0:8010-&gt;8080/tcp tomcat8081<br>5dbbb4db6e00 bcf990bea01a &quot;catalina.sh run&quot; 42 hours ago Up 42 hours 0.0.0.0:8881-&gt;8080/tcp tomcat-8881<br>216a2e8f1c90 bcf990bea01a &quot;catalina.sh run&quot; 43 hours ago Up 43 hours 0.0.0.0:8888-&gt;8080/tcp tomcat-8888<br>8499b0e39d0f bcf990bea01a &quot;catalina.sh run&quot; 43 hours ago Up 43 hours 0.0.0.0:8080-&gt;8080/tcp mytomcat<br>7dd71eee737f mysql:5.7 &quot;docker-entrypoint...&quot; 2 days ago Up 2 days 0.0.0.0:3306-&gt;3306/tcp, 33060/tcp mysql<br>52aa02d195d9 nginx &quot;/docker-entrypoin...&quot; 2 days ago Up 39 seconds 0.0.0.0:80-&gt;80/tcp nginx-web<br>[root@VM-0-15-centos conf]# vim nginx.conf<br>[root@VM-0-15-centos conf]# cat nginx.conf<br>user nginx;<br>worker\_processes auto;<br>error\_log /var/log/nginx/error.log notice;<br>pid /var/run/nginx.pid;<br>events &#123;<br>worker\_connections 1024;<br>&#125;<br>http &#123;<br>include /etc/nginx/mime.types;<br>default\_type application/octet-stream;<br>log\_format main &#x27;$remote\_addr - $remote\_user [$time\_local] &quot;$request&quot; &#x27;<br>&#x27;$status $body\_bytes\_sent &quot;$http\_referer&quot; &#x27;<br>&#x27;&quot;$http\_user\_agent&quot; &quot;$http\_x\_forwarded\_for&quot;&#x27;;<br>access\_log /var/log/nginx/access.log main;<br>upstream myserver &#123;<br>server 118.195.164.41:8080 ;<br>server 118.195.164.41:8888 ;<br>server 118.195.164.41:8881 ;<br>server 118.195.164.41:8010 ;<br>&#125;<br>server&#123;<br>listen 80;<br>charset utf-8;<br>server\_name 118.195.164.41;<br>location / &#123;<br>proxy\_pass http://118.195.164.41:8888/edu/a.html;<br>proxy\_redirect default;<br>&#125;<br>&#125;<br>sendfile on;<br><span class="hljs-meta prompt_">#</span><span class="language-bash">tcp\_nopush on;</span><br>keepalive\_timeout 65;<br><span class="hljs-meta prompt_">#</span><span class="language-bash">gzip on;</span><br>include /etc/nginx/conf.d/\*.conf;<br>&#125;<br>[root@VM-0-15-centos conf]# docker restart nginx-web<br>nginx-web<br>[root@VM-0-15-centos conf]# vim nginx.conf<br>[root@VM-0-15-centos conf]# docker restart nginx-web<br>nginx-web<br>[root@VM-0-15-centos conf]#<br></code></pre></td></tr></table></figure>
+
+<p>使用方向代理，让访问80端口的请求重定向到8888端口下的一个页面，测试成功！</p>
+<p>关于location的配置，主要就是对访问路径进行设置，有很多，下面这篇博文讲的很好：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/tjcyjd/article/details/50897959">nginx的location配置详解</a></p>
+<h1 id="5-动静分离"><a href="#5-动静分离" class="headerlink" title="5. 动静分离"></a>5. 动静分离</h1><p><img src="https://i.loli.net/2021/06/13/xCJVvKSAT5j3PGu.png" srcset="/img/loading.gif" lazyload></p>
+<p>Nginx 动静分离简单来说就是把动态跟静态请求分开，不能理解成只是单纯的把动态页面和静态页面物理分离。严格意义上说应该是动态请求跟静态请求分开，可以理解成使用 Nginx处理静态页面，Tomcat 处理动态页面。动静分离从目前实现角度来讲大致分为两种，一种是纯粹把静态文件独立成单独的域名，放在独立的服务器上，也是目前主流推崇的方案；</p>
+<p>另外一种方法就是动态跟静态文件混合在一起发布，通过 nginx 来分开。通过 location 指定不同的后缀名实现不同的请求转发。通过 expires 参数设置，可以使浏览器缓存过期时间，减少与服务器之前的请求和流量。具体 Expires 定义：是给一个资源设定一个过期时间，也就是说无需去服务端验证，直接通过浏览器自身确认是否过期即可，</p>
+<p>所以不会产生额外的流量。此种方法非常适合不经常变动的资源。（如果经常更新的文件，不建议使用 Expires 来缓存），我这里设置 3d，表示在这 3 天之内访问这个 URL，发送一个请求，比对服务器该文件最后更新时间没有变化，则不会从服务器抓取，返回状态码 304，如果有修改，则直接从服务器重新下载，返回状态码 200。</p>
+<p>对于这个配置，其实就是在location配置下路径，但我一直没成功，不知道为什么！！配置如下：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><code class="hljs shell">user nginx;<br>worker\_processes auto;<br>error\_log /var/log/nginx/error.log notice;<br>pid /var/run/nginx.pid;<br>events &#123;<br>worker\_connections 1024;<br>&#125;<br>http &#123;<br>include /etc/nginx/mime.types;<br>default\_type application/octet-stream;<br>log\_format main &#x27;$remote\_addr - $remote\_user [$time\_local] &quot;$request&quot; &#x27;<br>&#x27;$status $body\_bytes\_sent &quot;$http\_referer&quot; &#x27;<br>&#x27;&quot;$http\_user\_agent&quot; &quot;$http\_x\_forwarded\_for&quot;&#x27;;<br>upstream static &#123;<br>server 118.195.164.41:80;<br>&#125;<br>upstream dynamic &#123;<br>server 118.195.164.41:8080 ;<br><span class="hljs-meta prompt_"># </span><span class="language-bash">server 118.195.164.41:8888 ;</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">server 118.195.164.41:8881 ;</span><br><span class="hljs-meta prompt_"># </span><span class="language-bash">server 118.195.164.41:8010 ;</span><br>&#125;<br>server&#123;<br>listen 80;<br>charset utf-8;<br>server\_name 118.195.164.41;<br><span class="hljs-meta prompt_"># </span><span class="language-bash">拦截动态资源</span><br>location ~ .\*\.(php|jsp)$ &#123;<br>proxy\_pass http://dynamic;<br>&#125;<br><span class="hljs-meta prompt_"># </span><span class="language-bash">拦截静态资源</span><br>location ~ .\*\.(jpg|png|htm|html|css|js)$ &#123;<br>root /data/; #html目录<br>proxy\_pass http://static;<br>autoindex on; #自动打开文件列表<br>&#125;<br>&#125;<br>sendfile on;<br><span class="hljs-meta prompt_">#</span><span class="language-bash">tcp\_nopush on;</span><br>keepalive\_timeout 65;<br><span class="hljs-meta prompt_">#</span><span class="language-bash">gzip on;</span><br>include /etc/nginx/conf.d/\*.conf;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<p>后面有时间再更新Nginx的~</p>
+<h1 id="6-参考文章"><a href="#6-参考文章" class="headerlink" title="6. 参考文章"></a>6. 参考文章</h1><p><a target="_blank" rel="noopener" href="https://zhuanlan.zhihu.com/p/34943332">8分钟带你深入浅出搞懂Nginx</a></p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/nginx/" class="print-no-link">#nginx</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Nginx一点点</div>
+      <div>http://example.com/2021/06/13/Nginx一点点/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年6月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/06/25/SpringCloudAlibaba%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" title="SpringCloudAlibaba快速入门">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">SpringCloudAlibaba快速入门</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/06/12/Docker/" title="Docker">
+                        <span class="hidden-mobile">Docker</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,249 +1,805 @@
+
+
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
 <head>
-  <meta charset="utf-8">
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
   
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
   
-  <title>Hexo</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="ABC">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Luffy997&#39;s Blog">
 <meta property="og:url" content="http://example.com/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:locale" content="en_US">
-<meta property="article:author" content="John Doe">
-<meta name="twitter:card" content="summary">
-  
-    <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
-  
-  
-    <link rel="shortcut icon" href="/favicon.png">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="ABC">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Luffy997">
+<meta name="twitter:card" content="summary_large_image">
   
   
   
-<link rel="stylesheet" href="/css/style.css">
+  <title>Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
 
   
-    
-<link rel="stylesheet" href="/fancybox/jquery.fancybox.min.css">
-
-  
-  
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fork-awesome@1.2.0/css/fork-awesome.min.css">
-
 <meta name="generator" content="Hexo 7.3.0"></head>
 
+
 <body>
-  <div id="container">
-    <div id="wrap">
-      <header id="header">
-  <div id="banner"></div>
-  <div id="header-outer" class="outer">
-    <div id="header-title" class="inner">
-      <h1 id="logo-wrap">
-        <a href="/" id="logo">Hexo</a>
-      </h1>
-      
-    </div>
-    <div id="header-inner" class="inner">
-      <nav id="main-nav">
-        <a id="main-nav-toggle" class="nav-icon"><span class="fa fa-bars"></span></a>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 100vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
         
-          <a class="main-nav-link" href="/">Home</a>
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
         
-          <a class="main-nav-link" href="/archives">Archives</a>
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
         
-      </nav>
-      <nav id="sub-nav">
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
         
         
-          <a class="nav-icon" href="/atom.xml" title="RSS Feed"><span class="fa fa-rss"></span></a>
-        
-        <a class="nav-icon nav-search-btn" title="Search"><span class="fa fa-search"></span></a>
-      </nav>
-      <div id="search-form-wrap">
-        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="http://example.com"></form>
-      </div>
-    </div>
-  </div>
-</header>
-
-      <div class="outer">
-        <section id="main">
-  
-    <article id="post-first-blog" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/04/29/first-blog/" class="article-date">
-  <time class="dt-published" datetime="2025-04-29T13:36:27.000Z" itemprop="datePublished">2025-04-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/04/29/first-blog/">first blog</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2025/04/29/first-blog/" data-id="cma2jwrk00000p0vm3631644g" data-title="first blog" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-    <article id="post-hello-world" class="h-entry article article-type-post" itemprop="blogPost" itemscope itemtype="https://schema.org/BlogPosting">
-  <div class="article-meta">
-    <a href="/2025/04/29/hello-world/" class="article-date">
-  <time class="dt-published" datetime="2025-04-29T12:30:57.065Z" itemprop="datePublished">2025-04-29</time>
-</a>
-    
-  </div>
-  <div class="article-inner">
-    
-    
-      <header class="article-header">
-        
-  
-    <h1 itemprop="name">
-      <a class="p-name article-title" href="/2025/04/29/hello-world/">Hello World</a>
-    </h1>
-  
-
-      </header>
-    
-    <div class="e-content article-entry" itemprop="articleBody">
-      
-        <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
-    </div>
-    <footer class="article-footer">
-      <a data-url="http://example.com/2025/04/29/hello-world/" data-id="cma2hnbgk00007wvm7m7hau24" data-title="Hello World" class="article-share-link"><span class="fa fa-share">Share</span></a>
-      
-      
-      
-    </footer>
-  </div>
-  
-</article>
-
-
-
-  
-
-
-</section>
-        
-          <aside id="sidebar">
-  
-    
-
-  
-    
-
-  
-    
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Archives</h3>
-    <div class="widget">
-      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2025/04/">April 2025</a></li></ul>
-    </div>
-  </div>
-
-
-  
-    
-  <div class="widget-wrap">
-    <h3 class="widget-title">Recent Posts</h3>
-    <div class="widget">
-      <ul>
-        
-          <li>
-            <a href="/2025/04/29/first-blog/">first blog</a>
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
           </li>
+          
         
-          <li>
-            <a href="/2025/04/29/hello-world/">Hello World</a>
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
           </li>
         
       </ul>
     </div>
   </div>
+</nav>
 
   
-</aside>
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="一个有梦想的字符人"></span>
+          
+        </div>
+
         
       </div>
-      <footer id="footer">
-  
-  <div class="outer">
-    <div id="footer-info" class="inner">
+
       
-      &copy; 2025 John Doe<br>
-      Powered by <a href="https://hexo.io/" target="_blank">Hexo</a>
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
     </div>
   </div>
-</footer>
+</div>
 
-    </div>
-    <nav id="mobile-nav">
-  
-    <a href="/" class="mobile-nav-link">Home</a>
-  
-    <a href="/archives" class="mobile-nav-link">Archives</a>
-  
-</nav>
+</div>
+
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div id="board"
+          style="margin-top: 0">
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2025/04/30/Linux-%E5%BC%80%E6%9C%BA%E6%B5%81%E7%A8%8B/" target="_self">
+          Linux 开机流程
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2025/04/30/Linux-%E5%BC%80%E6%9C%BA%E6%B5%81%E7%A8%8B/" target="_self">
+        <div>
+          🧠 Linux 开机流程总体分为 4 个阶段： 第一阶段：BIOS&#x2F;UEFI 初始化 🔌 触发点：按下电源键  📦 工作内容：   加载 BIOS&#x2F;UEFI，执行硬件自检（POST） 读取启动顺序，找到第一个可启动设备   💥 常见问题点：   找不到启动设备（BIOS 设置错） 硬件检测失败（内存条没插好等）     第二阶段：Boot Loader（如 grub2）
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2025-04-30 00:19" pubdate>
+              2025-04-30
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/linux/">#linux</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/08/21/Django-Rest-Framework%E5%85%AB%E5%A4%A7%E7%BB%84%E4%BB%B6/" target="_self">
+          <img src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" srcset="/img/loading.gif" lazyload alt="Django Rest Framework八大组件">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2022/08/21/Django-Rest-Framework%E5%85%AB%E5%A4%A7%E7%BB%84%E4%BB%B6/" target="_self">
+          Django Rest Framework八大组件
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2022/08/21/Django-Rest-Framework%E5%85%AB%E5%A4%A7%E7%BB%84%E4%BB%B6/" target="_self">
+        <div>
+          DRF整合了非常多的开发常用组件，认证，授权、限流等等，简单配置即可使用 认证和授权全局配置开启全局配置，只要请求后端接口，都需要进行认证才可以请求成功 settings.py 12345678910111213# DRF 组件配置REST\_FRAMEWORK = &#123;# 内部循环遍历注册的认证类，一旦成功，结束循环&#x27;DEFAULT\_AUTHENTICATION\_CLASS
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-08-21 06:46" pubdate>
+              2022-08-21
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/DRF/">#DRF</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/" target="_self">
+          <img src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" srcset="/img/loading.gif" lazyload alt="Django Rest Framework请求响应视图路由">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/" target="_self">
+          Django Rest Framework请求响应视图路由
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/" target="_self">
+        <div>
+          DRF封装了很多关于请求信息的参数，我们可以通过 request获取，响应 Response 也有着规定的模板，让接口响应更加规范。 在视图中，封装了非常多的视图类，便于简化视图层操作。  APIView是DRF中提供的所有视图类的积累，它继承于django.views.View，传入的请求是DRF的 Request实例，任何APIException异常都会被捕获，并且传递给合适的响应 ，业务代码
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-08-21 06:44" pubdate>
+              2022-08-21
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/DRF/">#DRF</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/08/21/Django-Rest-Framework%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8/" target="_self">
+          <img src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" srcset="/img/loading.gif" lazyload alt="Django Rest Framework序列化器">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2022/08/21/Django-Rest-Framework%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8/" target="_self">
+          Django Rest Framework序列化器
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2022/08/21/Django-Rest-Framework%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8/" target="_self">
+        <div>
+          在返回json数据时，整合DRF后并没有取出QuerySet中的数据，再转字典，也能直接返回json，这就是序列化器的功劳。  序列化，序列化器会把模型对象转换成字典，经过response以后变成json字符串 反序列化,把客户端发送过来的数据,经过request以后变成字典,序列化器可以把字典转成模型 反序列化,完成数据校验功能  12345678class StudentModelSerial
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-08-21 06:36" pubdate>
+              2022-08-21
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/DRF/">#DRF</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/08/21/Django-Rest-Framework%E5%85%A5%E9%97%A8/" target="_self">
+          <img src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" srcset="/img/loading.gif" lazyload alt="Django Rest Framework入门">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2022/08/21/Django-Rest-Framework%E5%85%A5%E9%97%A8/" target="_self">
+          Django Rest Framework入门
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2022/08/21/Django-Rest-Framework%E5%85%A5%E9%97%A8/" target="_self">
+        <div>
+          Python应用非常广泛，人工智能领域、自动化、Web开发中都有着不错的生态支持。 在Web开发领域，Djang和Flask作为目前主流的Web框架社区热度非常高，Django比Flask体积大很多，可以搭建大型的Web应用服务器，所以最近也在学这个框架。 其实Django东西并不多，相反写起来有点复杂。Django REST framework（后面简称DRF）就出现了，以RESTful作为接口
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-08-21 06:04" pubdate>
+              2022-08-21
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/DRF/">#DRF</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2022/03/16/Python%E7%8E%AF%E5%A2%83%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/" target="_self">
+          <img src="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png" srcset="/img/loading.gif" lazyload alt="Python环境相关的问题">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2022/03/16/Python%E7%8E%AF%E5%A2%83%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/" target="_self">
+          Python环境相关的问题
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2022/03/16/Python%E7%8E%AF%E5%A2%83%E7%9B%B8%E5%85%B3%E7%9A%84%E9%97%AE%E9%A2%98/" target="_self">
+        <div>
+          困扰我很多天的Python环境问题终于得到解决了，今天把遇到的问题做个复盘 Python库安装很慢这个问题其实很常见，当我们只是安装了Python3.X的基础运行环境，所拉取库镜像是在国外的，受网速的影响，下一些大一点的可以就很慢，常常下载失败。 常遇到： 1Could not fetch URL https://pypi.tuna.tsinghua.edu.cn/simple/numpy/  第
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2022-03-16 13:07" pubdate>
+              2022-03-16
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Python/">#Python</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/12/23/Python%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" target="_self">
+          <img src="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png" srcset="/img/loading.gif" lazyload alt="Python环境搭建">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/12/23/Python%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" target="_self">
+          Python环境搭建
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/12/23/Python%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" target="_self">
+        <div>
+          Python 是一种解释型、面向对象、动态数据类型的高级程序设计语言。 Python 由 Guido van Rossum 于 1989 年底发明，第一个公开发行版发行于 1991 年。 版本选择Python主要的版本分支是3.X和2.X，2.X和3.X分支是不兼容的，可以说是相互独立的，所以在安装环境的时候，一定要注意版本问题。 这里我选的3.6这个大版本 Python安装这里很简单，贴个官网连
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-12-23 06:01" pubdate>
+              2021-12-23
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Python/">#Python</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/10/23/%E4%BB%B0%E6%9C%9B%E6%98%9F%E7%A9%BA%EF%BC%8C%E8%84%9A%E8%B8%8F%E5%AE%9E%E5%9C%B0/" target="_self">
+          <img src="https://i.loli.net/2021/10/23/QVbnSFWUl9i3h4s.jpg" srcset="/img/loading.gif" lazyload alt="仰望星空，脚踏实地">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/10/23/%E4%BB%B0%E6%9C%9B%E6%98%9F%E7%A9%BA%EF%BC%8C%E8%84%9A%E8%B8%8F%E5%AE%9E%E5%9C%B0/" target="_self">
+          仰望星空，脚踏实地
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/10/23/%E4%BB%B0%E6%9C%9B%E6%98%9F%E7%A9%BA%EF%BC%8C%E8%84%9A%E8%B8%8F%E5%AE%9E%E5%9C%B0/" target="_self">
+        <div>
+          这几天闲的无聊，又不想看论文，索性就把自己这大半年的经历记录下来吧，希望对以后要校招的同学有用！ 分四个部分：考研or就业，专业素养的培养，求职历程和总结，技术相关的我就一笔带过了，让这篇随笔更具大众化。 考研or就业？这是每个本科生都会面临的一个选择，可能很多同学在大一都抱着考研的心态，甚至是更早。 那我想说的就是假如到大三了有这个困惑，不得不在考研和就业中做个选择，说明你还是有自己的想法，懂得
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-10-23 10:00" pubdate>
+              2021-10-23
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%9A%8F%E7%AC%94/">#随笔</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/09/02/%E7%BB%BF%E7%9B%9F%E7%A0%94%E5%8F%91%E4%B8%80%E4%BA%8C%E4%B8%89%E9%9D%A2-%E5%B7%B2OC/" target="_self">
+          <img src="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg" srcset="/img/loading.gif" lazyload alt="绿盟研发一二三面 已OC">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/09/02/%E7%BB%BF%E7%9B%9F%E7%A0%94%E5%8F%91%E4%B8%80%E4%BA%8C%E4%B8%89%E9%9D%A2-%E5%B7%B2OC/" target="_self">
+          绿盟研发一二三面 已OC
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/09/02/%E7%BB%BF%E7%9B%9F%E7%A0%94%E5%8F%91%E4%B8%80%E4%BA%8C%E4%B8%89%E9%9D%A2-%E5%B7%B2OC/" target="_self">
+        <div>
+          绿盟科技一面 2021年8月19日 10:00-10:42 HR电话提前约了面试时间，通过邮箱发了腾讯会议ID，面试官很准时，而且是个姐姐 哈哈哈   自我介绍+项目，这里讲了很久，讲了自己在每个项目的角色和任务分工，提到了数据库设计  就讲了下自己在开发中遇到的数据库设计，以及自己开发中遇到数据库设计遇到的坑  SQL优化，面试必问—&gt;查询字段，数据库设计，走索引，索引失效，创建索引，单表
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-09-02 02:24" pubdate>
+              2021-09-02
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%9D%A2%E7%BB%8F/">#面经</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/08/16/%E5%88%B7%E9%9D%A2%E7%BB%8F/" target="_self">
+          <img src="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg" srcset="/img/loading.gif" lazyload alt="刷面经">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/08/16/%E5%88%B7%E9%9D%A2%E7%BB%8F/" target="_self">
+          刷面经
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/08/16/%E5%88%B7%E9%9D%A2%E7%BB%8F/" target="_self">
+        <div>
+          线程池七大参数：  核心线程数量大小  最大线程数量大小  等待时间  等待时间单位  阻塞队列 ArrayBlockingQueue（基于数组），LinkedBlockingQueue（基于链表，无界队列，可传入参数构建有界队列），PriorityBlockingQueue（支持优先级的无界阻塞队列，因为是无界，所以put不会阻塞）  构建工厂 一般都是默认  拒绝策略（四大策略） 满了就抛异常
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-08-16 13:08" pubdate>
+              2021-08-16
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E9%9D%A2%E7%BB%8F/">#面经</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/5/#board">5</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+    </span>
+  </nav>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     
 
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
 
-<script src="/js/jquery-3.6.4.min.js"></script>
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
 
 
 
   
-<script src="/fancybox/jquery.fancybox.min.js"></script>
+    <script  src="/js/img-lazyload.js" ></script>
+  
 
 
 
 
-<script src="/js/script.js"></script>
+  <script  src="/js/local-search.js" ></script>
 
 
 
 
 
-  </div>
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
 </body>
 </html>

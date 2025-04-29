@@ -1,0 +1,683 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="在返回json数据时，整合DRF后并没有取出QuerySet中的数据，再转字典，也能直接返回json，这就是序列化器的功劳。  序列化，序列化器会把模型对象转换成字典，经过response以后变成json字符串 反序列化,把客户端发送过来的数据,经过request以后变成字典,序列化器可以把字典转成模型 反序列化,完成数据校验功能  12345678class StudentModelSerial">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django Rest Framework序列化器">
+<meta property="og:url" content="http://example.com/2022/08/21/Django-Rest-Framework%E5%BA%8F%E5%88%97%E5%8C%96%E5%99%A8/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="在返回json数据时，整合DRF后并没有取出QuerySet中的数据，再转字典，也能直接返回json，这就是序列化器的功劳。  序列化，序列化器会把模型对象转换成字典，经过response以后变成json字符串 反序列化,把客户端发送过来的数据,经过request以后变成字典,序列化器可以把字典转成模型 反序列化,完成数据校验功能  12345678class StudentModelSerial">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2022/08/21/vyYQMD.png">
+<meta property="article:published_time" content="2022-08-20T22:36:27.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:07.336Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="DRF">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s1.ax1x.com/2022/08/21/vyYQMD.png">
+  
+  
+  
+  <title>Django Rest Framework序列化器 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Django Rest Framework序列化器"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-21 06:36" pubdate>
+          2022年8月21日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Django Rest Framework序列化器</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>在返回json数据时，整合DRF后并没有取出QuerySet中的数据，再转字典，也能直接返回json，这就是序列化器的功劳。</p>
+<ul>
+<li>序列化，序列化器会把模型对象转换成字典，经过response以后变成json字符串</li>
+<li>反序列化,把客户端发送过来的数据,经过request以后变成字典,序列化器可以把字典转成模型</li>
+<li>反序列化,完成数据校验功能</li>
+</ul>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">StudentModelSerializer</span>(serializers.ModelSerializer):<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>model = Student<br><span class="hljs-comment"># 序列化字段</span><br><span class="hljs-comment"># 全部</span><br>fields = <span class="hljs-string">&#x27;\_\_all\_\_&#x27;</span><br><span class="hljs-comment"># 一个一个写</span><br><span class="hljs-comment"># fields =[&#x27;id&#x27;,&#x27;name&#x27;]</span><br></code></pre></td></tr></table></figure>
+
+<p>student序列化器继承了 <code>serializers.ModelSerializer</code>，这是转为数据库中的表设计的，一一对应，帮我们重写了create()和update()方法，所以与数据库中的表一一对应的字段我们可以直接继承该类，简化代码</p>
+<p>对于不是表对应的字段，我们则需要继承 <code>serializers.Serializer</code></p>
+<h2 id="序列化"><a href="#序列化" class="headerlink" title="序列化"></a>序列化</h2><p><strong>ModelSerializer</strong></p>
+<p>定义的序列化器，继承 <code>serializers.ModelSerializer</code>，在里面声明Meta类，通过指定对应的模型类和序列化字段即可完成最简单的序列化器编写。</p>
+<p>对于单表查询这是非常快的，但是很多情况下我们都是需要在多个表之间进行联合查询。我们对model进行补充，设计外键进行约束，方便联合查询</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Student</span>(models.Model):<br>SEX\_OPTION = (<br>(<span class="hljs-number">0</span>,<span class="hljs-string">&#x27;保密&#x27;</span>),<br>(<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;男&#x27;</span>),<br>(<span class="hljs-number">2</span>,<span class="hljs-string">&#x27;女&#x27;</span>),<br>)<br>name = models.CharField(<span class="hljs-built_in">max</span>\_length=<span class="hljs-number">20</span>,verbose\_name=<span class="hljs-string">&#x27;姓名&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;姓名&#x27;</span>)<br>age = models.SmallIntegerField(verbose\_name=<span class="hljs-string">&#x27;年龄&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;年龄&#x27;</span>)<br>sex = models.SmallIntegerField(choices=SEX\_OPTION,verbose\_name=<span class="hljs-string">&#x27;性别&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;性别，0-&gt;保密，1-&gt;男，2-&gt;女，&#x27;</span>)<br>classmate = models.CharField(db\_column=<span class="hljs-string">&#x27;classmate&#x27;</span>,<span class="hljs-built_in">max</span>\_length=<span class="hljs-number">13</span>,verbose\_name=<span class="hljs-string">&#x27;班级&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;班级&#x27;</span>)<br>description = models.TextField(null=<span class="hljs-literal">True</span>,blank=<span class="hljs-literal">True</span>,verbose\_name=<span class="hljs-string">&#x27;个性签名&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;个性签名，可以为空&#x27;</span>)<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>db\_table = <span class="hljs-string">&#x27;db\_student&#x27;</span><br>verbose\_name = <span class="hljs-string">&#x27;学生信息&#x27;</span><br>verbose\_name\_plural = verbose\_name<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Course</span>(models.Model):<br>name = models.CharField(<span class="hljs-built_in">max</span>\_length=<span class="hljs-number">52</span>,verbose\_name=<span class="hljs-string">&#x27;课程名称&#x27;</span>)<br>teacher = models.ForeignKey(<span class="hljs-string">&#x27;Teacher&#x27;</span>,on\_delete=models.DO\_NOTHING,related\_name=<span class="hljs-string">&#x27;course&#x27;</span>,db\_constraint=<span class="hljs-literal">False</span>)<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meat</span>:<br>db\_stable = <span class="hljs-string">&#x27;db\_course&#x27;</span><br><span class="hljs-keyword">def</span> \_\_<span class="hljs-built_in">str</span>\_\_(<span class="hljs-variable language_">self</span>):<br><span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.name<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Teacher</span>(models.Model):<br>name = models.CharField(<span class="hljs-built_in">max</span>\_length=<span class="hljs-number">50</span>,verbose\_name=<span class="hljs-string">&#x27;姓名&#x27;</span>)<br>sex = models.BooleanField(default=<span class="hljs-literal">False</span>)<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>db\_table = <span class="hljs-string">&#x27;db\_teacher&#x27;</span><br><span class="hljs-keyword">def</span> \_\_<span class="hljs-built_in">str</span>\_\_(<span class="hljs-variable language_">self</span>):<br><span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.name<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Achievement</span>(models.Model):<br>score = models.DecimalField(default=<span class="hljs-number">0</span>,<span class="hljs-built_in">max</span>\_digits=<span class="hljs-number">4</span>,decimal\_places=<span class="hljs-number">1</span>,verbose\_name=<span class="hljs-string">&#x27;成绩&#x27;</span>)<br>student = models.ForeignKey(Student,on\_delete=models.DO\_NOTHING,related\_name=<span class="hljs-string">&#x27;s\_achievement&#x27;</span>,db\_constraint=<span class="hljs-literal">False</span>)<br>course = models.ForeignKey(Course,on\_delete=models.DO\_NOTHING,related\_name=<span class="hljs-string">&#x27;c\_achievement&#x27;</span>,db\_constraint=<span class="hljs-literal">False</span>)<br>create\_time = models.DateTimeField(auto\_created=datetime.now)<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>db\_table = <span class="hljs-string">&#x27;db\_achievement&#x27;</span><br><span class="hljs-keyword">def</span> \_\_<span class="hljs-built_in">str</span>\_\_(<span class="hljs-variable language_">self</span>):<br><span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.score<br></code></pre></td></tr></table></figure>
+
+<p>重新进行模型迁移和数据导入，写入几条测试数据</p>
+<p><strong>功能编写：</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">CourseModelSerializer</span>(serializers.ModelSerializer):<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>model = Course<br>fields = [<span class="hljs-string">&#x27;name&#x27;</span>]<br><span class="hljs-comment"># 第一种外键查 外面写个序列化器</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">TeacherCourseModelSerializer</span>(serializers.ModelSerializer):<br>course = CourseModelSerializer(many=<span class="hljs-literal">True</span>)<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>model = Teacher<br>fields = [<span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-string">&#x27;course&#x27;</span>]<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get</span>\_teacher\_course(<span class="hljs-variable language_">self</span>,request):<br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">查询老师代课信息</span><br><span class="hljs-string">:param request:</span><br><span class="hljs-string">:return:</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br>teacher = Teacher.objects.<span class="hljs-built_in">all</span>()<br>serializer = TeacherCourseModelSerializer(instance=teacher,many=<span class="hljs-literal">True</span>)<br><span class="hljs-keyword">return</span> Response(data=serializer.data,status=status.HTTP\_200\_OK)<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/vyYvOe"><img src="https://s1.ax1x.com/2022/08/21/vyYvOe.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>这是第一种，需要外面写个序列化器，代码显得很冗余，第二种直接写里面，第三种是指明嵌套深度</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">TeacherCourseModelSerializer</span>(serializers.ModelSerializer):<br><span class="hljs-comment"># 第一种</span><br><span class="hljs-comment"># course = CourseModelSerializer(many=True)</span><br><span class="hljs-comment"># 第二种直接在里面写</span><br><span class="hljs-comment"># course =serializers.CharField(source=&#x27;course.name&#x27;)</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>model = Teacher<br>fields = [<span class="hljs-string">&#x27;id&#x27;</span>, <span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-string">&#x27;course&#x27;</span>]<br><span class="hljs-comment"># 第三种 写个嵌套深度即可</span><br>depth = <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<p>第四种是通过外键指明深度，直接访问</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 第四种</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">StudenAchievementModelSerializer</span>(serializers.ModelSerializer):<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>model = Student<br><span class="hljs-comment"># s\_achievement 外键名称</span><br>fields = [<span class="hljs-string">&#x27;id&#x27;</span>,<span class="hljs-string">&#x27;name&#x27;</span>,<span class="hljs-string">&#x27;s\_achievement&#x27;</span>]<br>depth = <span class="hljs-number">1</span><br></code></pre></td></tr></table></figure>
+
+<p>这四种实现的效果类似，都有层层嵌套，不好识别的问题</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Student</span>(models.Model):<br>SEX\_OPTION = (<br>(<span class="hljs-number">0</span>,<span class="hljs-string">&#x27;保密&#x27;</span>),<br>(<span class="hljs-number">1</span>,<span class="hljs-string">&#x27;男&#x27;</span>),<br>(<span class="hljs-number">2</span>,<span class="hljs-string">&#x27;女&#x27;</span>),<br>)<br>name = models.CharField(<span class="hljs-built_in">max</span>\_length=<span class="hljs-number">20</span>,verbose\_name=<span class="hljs-string">&#x27;姓名&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;姓名&#x27;</span>)<br>age = models.SmallIntegerField(verbose\_name=<span class="hljs-string">&#x27;年龄&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;年龄&#x27;</span>)<br>sex = models.SmallIntegerField(choices=SEX\_OPTION,verbose\_name=<span class="hljs-string">&#x27;性别&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;性别，0-&gt;保密，1-&gt;男，2-&gt;女，&#x27;</span>)<br>classmate = models.CharField(db\_column=<span class="hljs-string">&#x27;classmate&#x27;</span>,<span class="hljs-built_in">max</span>\_length=<span class="hljs-number">13</span>,verbose\_name=<span class="hljs-string">&#x27;班级&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;班级&#x27;</span>)<br>description = models.TextField(null=<span class="hljs-literal">True</span>,blank=<span class="hljs-literal">True</span>,verbose\_name=<span class="hljs-string">&#x27;个性签名&#x27;</span>,<span class="hljs-built_in">help</span>\_text=<span class="hljs-string">&#x27;个性签名，可以为空&#x27;</span>)<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>db\_table = <span class="hljs-string">&#x27;db\_student&#x27;</span><br>verbose\_name = <span class="hljs-string">&#x27;学生信息&#x27;</span><br>verbose\_name\_plural = verbose\_name<br><span class="hljs-keyword">def</span> \_\_<span class="hljs-built_in">str</span>\_\_(<span class="hljs-variable language_">self</span>):<br><span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.name<br><span class="hljs-meta">@property</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">achievement</span>(<span class="hljs-params">self</span>):<br>queryset = <span class="hljs-variable language_">self</span>.s\_achievement.<span class="hljs-built_in">all</span>()<br>ret = [&#123;<span class="hljs-string">&#x27;score&#x27;</span>: item.score, <span class="hljs-string">&#x27;course&#x27;</span>: item.course.name, <span class="hljs-string">&#x27;teacher&#x27;</span>: item.course.teacher.name&#125; <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span><br>queryset]<br><span class="hljs-keyword">return</span> ret<br></code></pre></td></tr></table></figure>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 第五种方法 自定义属性 更加灵活 不像上面嵌套太多了 套娃</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">StudentAchievement2ModelSerializer</span>(serializers.ModelSerializer):<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Meta</span>:<br>model = Student<br>fields = [<span class="hljs-string">&#x27;id&#x27;</span>,<span class="hljs-string">&#x27;name&#x27;</span>,<span class="hljs-string">&#x27;achievement&#x27;</span>]<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/vyYzeH"><img src="https://s1.ax1x.com/2022/08/21/vyYzeH.png" srcset="/img/loading.gif" lazyload></a></p>
+<h2 id="反序列化"><a href="#反序列化" class="headerlink" title="反序列化"></a>反序列化</h2><p><strong>Serializer</strong></p>
+<p>Serializer的数据并不是来自数据库，所以我们在使用该类时需要自己去声明</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 声明序列化器，所有的序列化器都要直接或者间接继承于Serializer</span><br><span class="hljs-comment"># 其中，ModelSerializer是Serializer的子类，ModerlSerializer在Serializer的基础上进行了代码简化</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">StudentSerializer</span>(serializers.Serializer):<br><span class="hljs-comment"># 学生序列转换器</span><br><span class="hljs-comment"># 1.需要进行数据转换的字段</span><br><span class="hljs-built_in">id</span> = serializers.IntegerField(read\_only=<span class="hljs-literal">True</span>) <span class="hljs-comment"># 用户提交数据进行反序列化时，序列化器进行序列化转换数据给客户端时才转给客户端</span><br>name = serializers.CharField(<span class="hljs-built_in">max</span>\_length=<span class="hljs-number">20</span>,required=<span class="hljs-literal">True</span>)<br>classmate = serializers.CharField(<span class="hljs-built_in">max</span>\_length=<span class="hljs-number">4</span>,required=<span class="hljs-literal">True</span>)<br>age = serializers.IntegerField()<br>sex = serializers.IntegerField(validators= [check\_sex,])<br>description = serializers.CharField(required=<span class="hljs-literal">False</span>,default=<span class="hljs-string">&#x27;这家伙很懒，什么也没写！&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<p>和ModelSerializer类似，因为ModelSerializer的数据来自数据库，所以直接与model关联即可，但Serializer的数据并不是来自数据库，需要手动声明。</p>
+<p>在进行添加和更新数据操作时，ModelSerializer已经帮我们实现了create()和update()方法，但Serializer并没有实现，需要我们手动实现。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment">#4. 编写模型的添加和更新代码</span><br><span class="hljs-comment"># 添加操作 save() 要实现save</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">create</span>(<span class="hljs-params">self, validated\_data</span>):<br><span class="hljs-comment"># 添加数据的实现方法</span><br>student = Student.objects.create(\*\*validated\_data)<br><span class="hljs-comment"># 要是字段多了，不匹配，就要拿出来</span><br><span class="hljs-comment"># student = Student.objects.create(</span><br><span class="hljs-comment"># name = validated\_data.get(&#x27;name&#x27;)</span><br><span class="hljs-comment"># .....</span><br><span class="hljs-comment"># )</span><br><span class="hljs-comment"># 返回添加后的模型</span><br><span class="hljs-keyword">return</span> student<br><span class="hljs-comment"># 更新操作要实现update()</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">update</span>(<span class="hljs-params">self, instance, validated\_data</span>):<br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">:param instance: 更新的模型对象数据</span><br><span class="hljs-string">:param validated\_data: 新数据</span><br><span class="hljs-string">:return:</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-keyword">if</span> validated\_data.get(<span class="hljs-string">&#x27;name&#x27;</span>):<br>instance.name = validated\_data.get(<span class="hljs-string">&#x27;name&#x27;</span>)<br><span class="hljs-keyword">if</span> validated\_data.get(<span class="hljs-string">&#x27;age&#x27;</span>):<br>instance.age = validated\_data.get(<span class="hljs-string">&#x27;age&#x27;</span>)<br><span class="hljs-keyword">if</span> validated\_data.get(<span class="hljs-string">&#x27;sex&#x27;</span>):<br>instance.sex = validated\_data.get(<span class="hljs-string">&#x27;sex&#x27;</span>)<br><span class="hljs-keyword">if</span> validated\_data.get(<span class="hljs-string">&#x27;classmate&#x27;</span>):<br>instance.classmate = validated\_data.get(<span class="hljs-string">&#x27;classmate&#x27;</span>)<br><span class="hljs-keyword">if</span> validated\_data.get(<span class="hljs-string">&#x27;description&#x27;</span>):<br>instance.description = validated\_data.get(<span class="hljs-string">&#x27;description&#x27;</span>)<br>instance.save()<br><span class="hljs-keyword">return</span> instance<br></code></pre></td></tr></table></figure>
+
+<h2 id="数据校验"><a href="#数据校验" class="headerlink" title="数据校验"></a>数据校验</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 3.验证代码</span><br><span class="hljs-comment"># 3.1 对单个字段进行验证</span><br><span class="hljs-comment"># 格式： 方法名必须以‘valiidate\_&lt;字段名&gt;’作为验证方法名，否则is\_valid找不到</span><br><span class="hljs-comment"># 验证方法执行时，is\_valid会把当前客户端提交的字段传递给验证方法，然后校验</span><br><span class="hljs-comment"># 验证方法把返回值回传给序列化，否则数据会丢失</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">validate</span>\_name(<span class="hljs-variable language_">self</span>,data):<br><span class="hljs-built_in">print</span>(<span class="hljs-string">f&#x27;验证参数：<span class="hljs-subst">&#123;data&#125;</span>&#x27;</span>)<br><span class="hljs-keyword">if</span> data == <span class="hljs-string">&#x27;Python&#x27;</span>:<br><span class="hljs-comment"># 抛异常</span><br><span class="hljs-keyword">raise</span> serializers.ValidationError(code=<span class="hljs-string">&#x27;name&#x27;</span>,detail=<span class="hljs-string">&#x27;当前输入存在敏感数据&#x27;</span>)<br><span class="hljs-keyword">return</span> data<br><span class="hljs-comment"># 3.2 对多个字段的数据进行验证</span><br><span class="hljs-comment"># 格式：一个序列化器只能有0or1个多字段校验，方法名位于</span><br><span class="hljs-comment"># 方法名必须叫 validate(self,data)，否则is\_valid找不到</span><br><span class="hljs-comment"># 步骤：接收参数 验证 返回</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">validate</span>(<span class="hljs-params">self, attrs</span>):<br>age = attrs.get(<span class="hljs-string">&#x27;age&#x27;</span>)<br>classmate = attrs.get(<span class="hljs-string">&#x27;classmate&#x27;</span>)<br><span class="hljs-keyword">if</span> (age &lt; <span class="hljs-number">20</span>) <span class="hljs-keyword">and</span> <span class="hljs-built_in">str</span>(classmate).startswith(<span class="hljs-string">&#x27;5&#x27;</span>):<br><span class="hljs-keyword">raise</span> serializers.ValidationError(<span class="hljs-string">&#x27;对不起！年龄20以下不能加入到5字开头的班级中&#x27;</span>)<br><span class="hljs-keyword">return</span> attrs<br></code></pre></td></tr></table></figure>
+
+<p>做校验的数据是从客户端发来的，有的并不和数据库中字段一一对应，所以就不能用model声明的约束去控制了，需要手动判断。</p>
+<h2 id="序列化器的使用"><a href="#序列化器的使用" class="headerlink" title="序列化器的使用"></a>序列化器的使用</h2><p>当编写完序列化器后，可以在视图层是直接视图</p>
+<p><strong>更新和删除</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">student = Student.objects.get(pk=pk)<br>serializer = StudentModelSerializer(instance=student,data=params)<br>serializer.<span class="hljs-keyword">is</span>\_valid(<span class="hljs-keyword">raise</span>\_exception=<span class="hljs-literal">True</span>)<br>serializer.save()<br></code></pre></td></tr></table></figure>
+
+<p>这段是更新student的代码，通过接受的id去查询原信息，然后把原信息和客户端提交的信息放入序列化器，<code>instance</code>传入数据库查到的数据，<code>data</code>传入客户端提交的信息，<code>is_valid</code>进行参数校验，<code>raise_exception=True</code>是设置抛出异常，最后调用序列化器的<code>save</code>保存数据。</p>
+<p>对于删除操作，很多时候并不是在数据库中把数据给删除掉，相反是修改<code>IsDeleted</code>的值，与更新操作类似</p>
+<p><strong>查询list和根据ID查询</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python">teacher = Teacher.objects.<span class="hljs-built_in">all</span>()<br>serializer = TeacherCourseModelSerializer(instance=teacher,many=<span class="hljs-literal">True</span>)<br></code></pre></td></tr></table></figure>
+
+<p>需要在放入序列化器的时候传入 <code>many=True</code>，内部会调用循环返回所有查询到的数据</p>
+<p>根据ID查询某单个数据，不传 <code>many</code>即可，默认是 <code>False</code></p>
+<p><strong>添加操作</strong></p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plain">param = request.data.dict()<br>serializer = TeacherModelSerializer(data=param)<br>serializer.is\_valid(raise\_exception=True)<br>serializer.save()<br></code></pre></td></tr></table></figure>
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/DRF/" class="print-no-link">#DRF</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Django Rest Framework序列化器</div>
+      <div>http://example.com/2022/08/21/Django-Rest-Framework序列化器/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年8月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/" title="Django Rest Framework请求响应视图路由">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Django Rest Framework请求响应视图路由</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/21/Django-Rest-Framework%E5%85%A5%E9%97%A8/" title="Django Rest Framework入门">
+                        <span class="hidden-mobile">Django Rest Framework入门</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

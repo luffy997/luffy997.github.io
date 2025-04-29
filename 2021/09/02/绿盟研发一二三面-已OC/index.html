@@ -1,0 +1,752 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="绿盟科技一面 2021年8月19日 10:00-10:42 HR电话提前约了面试时间，通过邮箱发了腾讯会议ID，面试官很准时，而且是个姐姐 哈哈哈   自我介绍+项目，这里讲了很久，讲了自己在每个项目的角色和任务分工，提到了数据库设计  就讲了下自己在开发中遇到的数据库设计，以及自己开发中遇到数据库设计遇到的坑  SQL优化，面试必问—&gt;查询字段，数据库设计，走索引，索引失效，创建索引，单表">
+<meta property="og:type" content="article">
+<meta property="og:title" content="绿盟研发一二三面 已OC">
+<meta property="og:url" content="http://example.com/2021/09/02/%E7%BB%BF%E7%9B%9F%E7%A0%94%E5%8F%91%E4%B8%80%E4%BA%8C%E4%B8%89%E9%9D%A2-%E5%B7%B2OC/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="绿盟科技一面 2021年8月19日 10:00-10:42 HR电话提前约了面试时间，通过邮箱发了腾讯会议ID，面试官很准时，而且是个姐姐 哈哈哈   自我介绍+项目，这里讲了很久，讲了自己在每个项目的角色和任务分工，提到了数据库设计  就讲了下自己在开发中遇到的数据库设计，以及自己开发中遇到数据库设计遇到的坑  SQL优化，面试必问—&gt;查询字段，数据库设计，走索引，索引失效，创建索引，单表">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg">
+<meta property="article:published_time" content="2021-09-01T18:24:50.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:06.910Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="面经">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://i.loli.net/2021/07/29/OQVh4UHdK1z2Lcy.jpg">
+  
+  
+  
+  <title>绿盟研发一二三面 已OC - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="绿盟研发一二三面 已OC"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2021-09-02 02:24" pubdate>
+          2021年9月2日 凌晨
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          24 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">绿盟研发一二三面 已OC</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h1 id="绿盟科技"><a href="#绿盟科技" class="headerlink" title="绿盟科技"></a>绿盟科技</h1><h2 id="一面"><a href="#一面" class="headerlink" title="一面"></a>一面</h2><blockquote>
+<p>2021年8月19日 10:00-10:42 HR电话提前约了面试时间，通过邮箱发了腾讯会议ID，面试官很准时，而且是个姐姐 哈哈哈</p>
+</blockquote>
+<ol>
+<li><p>自我介绍+项目，这里讲了很久，讲了自己在每个项目的角色和任务分工，提到了数据库设计</p>
+</li>
+<li><p>就讲了下自己在开发中遇到的数据库设计，以及自己开发中遇到数据库设计遇到的坑</p>
+</li>
+<li><p>SQL优化，面试必问—&gt;查询字段，数据库设计，走索引，索引失效，创建索引，单表数据过大要分表</p>
+</li>
+<li><p>绿盟主要业务？卧槽，这个真不知道，海投的，后面查了下是和阿里云，奇安信，深信服并列的网络安全公司</p>
+</li>
+<li><p>都是SpringBoot项目对吧，如何考虑一个SpringBoot项目的安全？（绿盟就是国内数一数二的做安全的企业），我就说了下平时注意的：</p>
+<ul>
+<li>server.port 不用常用端口</li>
+<li>数据库角色，不直接使用root</li>
+<li>密码，用网站随机生成</li>
+<li>token+拦截器</li>
+<li>统一异常返回</li>
+<li>假如有富文本编辑器输入，要转义，防止XSS</li>
+</ul>
+</li>
+<li><p>SpringBoot如何解决跨域？平时开发常常用，讲了下跨域就是对源地址和端口的限定，一般解决方案是在Controller的接口那加上@CorssOrigin（自己试过，没成功），自己一直是写的WebCorsConfig，配置全局跨域请求，就是设置源地址，请求头和方法的配置</p>
+</li>
+<li><p>那说说CSRF吧 ？解决方案? 跨站请求伪造</p>
+</li>
+<li><p>Mybatis分页插件用过吗？底层实现看过没？ PageHelper嘛，用过，不过没看过底层，不过知道Mysql如何分页：</p>
+<ul>
+<li>select * from table limit pageSize offset PageNo</li>
+<li>表的数据过多，借助id分页，select * from table where id &gt; pageNo * pageSize limit pageSize</li>
+</ul>
+<p>PageHelper底层应该也是这样的</p>
+</li>
+<li><p>存储过程是什么？我说了下，这个东西说实话应该是不会用了吧，所以复习的时候都没看，但自己写过存储过程，还是知道一点，下面详细解释下：</p>
+<p>一组为了完成特定功能的SOL语句集，存储在数据库中，经过一次编译后不需要再次编译。用户通过指定存储过程的名字并给出参数来执行它。存储过程是数据库中的对象。</p>
+<p>可以通过一个命令对象来调用存储过程；也可以供外部调用，比如java程序。</p>
+<p>其优点是：经过预编译，执行效率高；代码直接存在数据库，通过存储过程名调用，减少网络通信；安全性高，执行存储过程需要有一定权限的用户；可重复使用，减少开发人员工作量。</p>
+<p>其缺点是移植性差。</p>
+<p>存储过程中的优化思路有：</p>
+<ul>
+<li>尽量利用sql语句替代小循环</li>
+<li>中间结果存放于临时表，加索引</li>
+<li>少使用游标</li>
+<li>事务越短越好，事务过长或隔离级别过高会造成并发操作阻塞。死锁，导致查询及慢、CPU占用率极低</li>
+<li>使用trycatch处理错误异常</li>
+<li>查询语句尽量不要放在循环内</li>
+</ul>
+</li>
+<li><p>Redis缓存雪崩？解决方案？</p>
+</li>
+<li><p>考虑转语言？ 啥意思，面试官说看自愿，写了几年Java了，暂时不考虑转，但公司需要可以考虑</p>
+</li>
+<li><p>平时开发环境？ 代码是windows下编写，假如只是自己的demo，那就只是idea运行了，假如要让大家访问那就部署服务器了。什么服务器？最开始没学Linux的时候是Windows服务器，但一段时间就很卡，后面自学了Linux就买了阿里云的服务器。说说Liunx常用命令？新建文件，文件负责等等，其实部署主要是Docker？Docker用到什么地步？会DockerFile吗？ 这个还是没问题，之前实习就是DockerFile打包的。</p>
+</li>
+<li><p>现在需要把在一台服务器的应用镜像，运行在另一台服务器上，这么做？自己没试过，不过应该是把镜像下载下载下来，然后传到另外一台服务器上，docker load即可，感觉Docker还是需要多看看</p>
+</li>
+<li><p>讲讲自己运用专业知识解决的实际问题？讲了未开始的设置数据库连接编码UTF-8，然后再将最近抢红包的一个项目</p>
+</li>
+</ol>
+<p><strong>反问</strong></p>
+<ol>
+<li>面试官是什么部门的，什么业务？</li>
+<li>还是谈到转语言，说Java Python都有，其实想全栈，但这对校招生要求太高了，所以可以只管后台开发</li>
+<li>要是转会给时间吗？那肯定，Java转Python的，面试官说没见过没转成功的，我就说了自己的毕业设计是基于深度学习的TF开发的推荐系统</li>
+<li>然后面试官是后面会有二面，好好准备下，我说好，继续聊了会</li>
+<li>一共几面？1-2轮技术面，一轮总监面</li>
+<li>又聊了会，面试预定的是半小时，实际42分钟，面试体验非常好！</li>
+</ol>
+<blockquote>
+<p>PageHelper原理</p>
+</blockquote>
+<ol>
+<li>使用PageHelper.startPage()时在当前线程上下文中设置一个ThreadLocal变量</li>
+<li>在 ThreadLocal中设置了分页参数，之后在查询执行的时候，获取当前线程中的分页参数</li>
+<li>执行查询的时候通过拦截器在sql语句中添加分页参数，之后实现分页查询，查询结束后在 finally 语句中清除ThreadLocal中的查询参数</li>
+</ol>
+<p>PageHelper方法使用了静态的ThreadLocal参数，分页参数和线程是绑定的。只要可以保证在PageHelper方法调用后紧跟 MyBatis 查询方法，这就是安全的。因为PageHelper在finally代码段中自动清除了ThreadLocal存储的对象。</p>
+<h2 id="二面"><a href="#二面" class="headerlink" title="二面"></a>二面</h2><blockquote>
+<p>2021年8月23日 14:35-15:09 面试官迟到了几分钟，当时我有点急，因为预定就是半小时，然后奇安信15:00的笔试，哈哈，好在也就几分钟就来了，面试体验非常好！</p>
+</blockquote>
+<ol>
+<li>自我介绍？包括学校，专业，主修课程，掌握的技能，每次都要强调下我们学校的电子商务是偏技术的</li>
+<li>说说项目吧，都是学校的吗？没有实习吗？项目都是学校和同学打比赛写的，有实习，因为疫情管控和通勤时间太长了就辞了。挑一个说说项目中的难点，如何解决，当时的心情怎么样？这个就不说了，项目烂大街啊哈哈哈，但反映的是项目必须准备充分，有1-2个可以讲的，讲解你遇到的困难，怎么解决的，这个过程你去如何阐述，这其实不仅仅检查你的开发能力，还能考验语言表述能力。不然你说项目没啥，那就狂问基础，直到你趴下为止……</li>
+<li>挖了很久项目，那我们现在来聊聊基础，讲讲jvm中新生代和老年代的转换吧<ul>
+<li>大对象直接到老年代</li>
+<li>分配担保机制：当Eden区没有足够内存时，发起MinorGC，若此时存活对象无法存入Survivor区，这通过分配担保机制把新生代的对象提前转移到老年代去；</li>
+<li>Survivor To被填满，将所有的对象转移到老年代</li>
+<li>Survivor To中一半以上对象的年龄相等，直接转</li>
+<li>Survivor To中对象年龄达到阈值（默认15）</li>
+</ul>
+</li>
+<li>讲讲Spring，SpringMVC，SpringBoot，SpringCloud的区别和联系</li>
+<li>都是关系型数据库对吧，还有非关系型呢，那说说常用的关联查询？Mysql有内连接Inner Join，left Join，Right Join，没有全连接，Sql Server有全连接</li>
+<li>网络怎么样？正打算说OSI七层协议，面试官说给个场景，说说浏览器请求一个搜狐的网站，到用户显示用到的协议吧。首先，域名，搜狐是<strong>HTTPS</strong>的，拿到域名就要进行域名和IP的转换，<strong>IP协议</strong>，用到了<strong>DNS协议</strong>，底层是<strong>UDP协议</strong>，然后是<strong>TCP协议</strong>的三次握手建立连接，请求后端，拿到数据，渲染页面</li>
+<li>平时怎么学习提升自己的？千里培训—&gt;看b站视频学习—&gt;看博客和公众号(举了几个博主和美团技术团队的博客)—&gt;看书，因为前面的都是别人嚼碎的东西，要想深入底层，只有看书，最近在看《深入理解JVM》，平时看书也会做读书笔记（电子档的），这个是方便后面查找知识点</li>
+</ol>
+<p>反问：</p>
+<ol>
+<li>进去真的要转语言吗？其实我知道答案，我只是想继续聊会，语言只是工具，有学习能力才是最重要的</li>
+<li>请面试官评价下我今天的表现？记不太清他咋说了，反正没有直接说怎么怎么样</li>
+<li>又聊了会，说等会人事会通知你后面的面试流程，今天就这样吧</li>
+</ol>
+<h2 id="三面"><a href="#三面" class="headerlink" title="三面"></a>三面</h2><blockquote>
+<p>2021年8月27日 16:35-17:04 太紧张了，一想到是VP就紧张的要是，看牛客上说VP气场十足！搞得中午都没睡着，下午进腾讯会议，发现是面试官挺年轻啊，应该是部门老大吧，很和蔼的！全程基本上是聊天，面试体验巨好</p>
+</blockquote>
+<ol>
+<li>自我介绍+专业介绍+项目+比赛，期间也在问我一些东西</li>
+<li>说一下你觉得最有成就感的事？就讲了下自己自学经历，里面学到什么，面试官就笑了</li>
+<li>平时有关注什么技术论坛吗？美团技术团队，还有很多UP主，博主等等</li>
+<li>为什么选择武汉？</li>
+</ol>
+<p><strong>反问</strong></p>
+<ol>
+<li>面试官您在选候选人的时候，看重什么？ 一面二面三面不一样的，哈哈，记得最清楚的是一面就是看和简历匹配度，写了精通的话，那就不好意思了，那就要好好问问你，我当时也笑了，我说这是对技术的不尊重，他说没个10年这些精通的都是作死，笑死我了！</li>
+<li>对我的评价怎么样？</li>
+</ol>
+<p>然后聊了很久，面试官说，你有啥想聊的都可以跟我聊啊，哈哈哈，确实面试官技术人很好，技术广度很广的，反复强调数据结构和设计模式</p>
+<ol>
+<li>于是我就说这个数据结构和算法我还好，设计模式，因为没怎么写企业的项目，积累很少，他说这个是时间换来的，你已经很不错了</li>
+<li>公司培养体系？只能说非常完善！</li>
+<li>薪资？不是BAT那种企业，公司是自研软件，然后卖钱，盈利模式不一样，但薪资是中上游</li>
+</ol>
+<h2 id="OC"><a href="#OC" class="headerlink" title="OC"></a>OC</h2><p>HR给我打电话的时候，我还在深信服笔试，微信小程序把手机锁了，我猜想应该是绿盟的，还看了电话是武汉的，就接了，当时在自习室，我很小声，HR问我放不方便，我说等会吧，现在不方便，约定了半小时后她再打来。</p>
+<p>后面聊了15分钟，就发offer了~</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/%E9%9D%A2%E7%BB%8F/" class="print-no-link">#面经</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>绿盟研发一二三面 已OC</div>
+      <div>http://example.com/2021/09/02/绿盟研发一二三面-已OC/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2021年9月2日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2021/10/23/%E4%BB%B0%E6%9C%9B%E6%98%9F%E7%A9%BA%EF%BC%8C%E8%84%9A%E8%B8%8F%E5%AE%9E%E5%9C%B0/" title="仰望星空，脚踏实地">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">仰望星空，脚踏实地</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2021/08/16/%E5%88%B7%E9%9D%A2%E7%BB%8F/" title="刷面经">
+                        <span class="hidden-mobile">刷面经</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

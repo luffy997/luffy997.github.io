@@ -1,0 +1,798 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="ABC">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Luffy997&#39;s Blog">
+<meta property="og:url" content="http://example.com/page/5/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="ABC">
+<meta property="og:locale" content="zh_CN">
+<meta property="article:author" content="Luffy997">
+<meta name="twitter:card" content="summary_large_image">
+  
+  
+  
+  <title>Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 100vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="一个有梦想的字符人"></span>
+          
+        </div>
+
+        
+      </div>
+
+      
+        <div class="scroll-down-bar">
+          <i class="iconfont icon-arrowdown"></i>
+        </div>
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      <div class="container nopadding-x-md">
+        <div id="board"
+          style="margin-top: 0">
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-12 col-md-10 m-auto">
+                
+
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/01/12/SpringBoot%E9%9B%86%E6%88%90Mybatis%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s7eROO.jpg" srcset="/img/loading.gif" lazyload alt="SpringBoot集成Mybatis的使用">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/01/12/SpringBoot%E9%9B%86%E6%88%90Mybatis%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
+          SpringBoot集成Mybatis的使用
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/01/12/SpringBoot%E9%9B%86%E6%88%90Mybatis%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
+        <div>
+          SpringBoot集成Mybatis的使用 MyBatis 是一款优秀的持久层框架，它支持定制化 SQL、存储过程以及高级映射。MyBatis 避免了几乎所有的 JDBC 代码和手动设置参数以及获取结果集。 MyBatis 可以使用简单的 XML 或注解来配置和映射原生信息，将接口和 Java 的 POJOs映射成数据库中的记录。 这里我使用原生的Mybatis，不使用Mybatis插件，来讲解
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-01-12 03:46" pubdate>
+              2021-01-12
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/SpringBoot/">#SpringBoot</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/01/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s73EFO.jpg" srcset="/img/loading.gif" lazyload alt="计算机网络学习笔记">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/01/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_self">
+          计算机网络学习笔记
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/01/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_self">
+        <div>
+          计算机网络学习笔记1.TCP&#x2F;IP四层模型，OSI七层模型的理解为了增强通用性和兼容性，计算机网络都被设计成层次机构，每一层都遵守一定的规则。 因此有了OSI这样一个抽象的网络通信参考模型，按照这个标准使计算机网络系统可以互相连接。  物理层：通过网线、光缆等这种物理方式将电脑连接起来。传递的数据是比特流，0101010100。 数据链路层：首先，把比特流封装成数据帧的格式，对0、1进行
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-01-11 10:32" pubdate>
+              2021-01-11
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">#计算机网络</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/01/06/SpringBoot%E4%B9%8BAOP%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s73EFO.jpg" srcset="/img/loading.gif" lazyload alt="SpringBoot之AOP的使用">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/01/06/SpringBoot%E4%B9%8BAOP%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
+          SpringBoot之AOP的使用
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/01/06/SpringBoot%E4%B9%8BAOP%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
+        <div>
+          SpringBoot之AOP的使用spring核心思想分三大类：控制反转（IOC），依赖注入（DI）和面向切面（AOP） 1.什么是面向切面编程 AOP简介 AOP为Aspect Oriented Programming的缩写，意为：面向切面编程，通过预编译方式和运行期间动态代理实现程序功能的统一维护的一种技术。  为什么使用AOP编程范式？ 分离功能性需求和非功能性需求 集中处理某一关注点 侵入
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-01-06 11:40" pubdate>
+              2021-01-06
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/SpringBoot/">#SpringBoot</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/01/03/JWT%E4%BB%8B%E7%BB%8D%E5%92%8C%E5%AE%89%E5%85%A8%E9%98%B2%E8%8C%83%E4%BB%A5%E5%8F%8ASpringBoot%E6%95%B4%E5%90%88JWT%E5%AE%9E%E7%8E%B0%E6%8E%A5%E5%8F%A3%E6%9D%83%E9%99%90%E8%AE%A4%E8%AF%81/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s7QpQI.jpg" srcset="/img/loading.gif" lazyload alt="JWT介绍和安全防范以及SpringBoot整合JWT实现接口权限认证">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/01/03/JWT%E4%BB%8B%E7%BB%8D%E5%92%8C%E5%AE%89%E5%85%A8%E9%98%B2%E8%8C%83%E4%BB%A5%E5%8F%8ASpringBoot%E6%95%B4%E5%90%88JWT%E5%AE%9E%E7%8E%B0%E6%8E%A5%E5%8F%A3%E6%9D%83%E9%99%90%E8%AE%A4%E8%AF%81/" target="_self">
+          JWT介绍和安全防范以及SpringBoot整合JWT实现接口权限认证
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/01/03/JWT%E4%BB%8B%E7%BB%8D%E5%92%8C%E5%AE%89%E5%85%A8%E9%98%B2%E8%8C%83%E4%BB%A5%E5%8F%8ASpringBoot%E6%95%B4%E5%90%88JWT%E5%AE%9E%E7%8E%B0%E6%8E%A5%E5%8F%A3%E6%9D%83%E9%99%90%E8%AE%A4%E8%AF%81/" target="_self">
+        <div>
+          JWT介绍和安全防范以及SpringBoot集成JWT实现接口权限认证 1.什么是JWTJSON Web Token (JWT) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-01-03 03:45" pubdate>
+              2021-01-03
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/SpringBoot/">#SpringBoot</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/12/21/SSM%E5%AE%9E%E7%8E%B0%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%EF%BC%8C%E6%95%B4%E5%90%88html%E4%BD%9C%E4%B8%BA%E8%A7%86%E5%9B%BE%E5%BC%95%E6%93%8E%EF%BC%8C%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E5%92%8C%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s73VYD.jpg" srcset="/img/loading.gif" lazyload alt="SSM实现前后端分离，整合html作为视图引擎，解决跨域和拦截问题">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2020/12/21/SSM%E5%AE%9E%E7%8E%B0%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%EF%BC%8C%E6%95%B4%E5%90%88html%E4%BD%9C%E4%B8%BA%E8%A7%86%E5%9B%BE%E5%BC%95%E6%93%8E%EF%BC%8C%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E5%92%8C%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/" target="_self">
+          SSM实现前后端分离，整合html作为视图引擎，解决跨域和拦截问题
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2020/12/21/SSM%E5%AE%9E%E7%8E%B0%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%EF%BC%8C%E6%95%B4%E5%90%88html%E4%BD%9C%E4%B8%BA%E8%A7%86%E5%9B%BE%E5%BC%95%E6%93%8E%EF%BC%8C%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E5%92%8C%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/" target="_self">
+        <div>
+          SSM实现前后端分离，整合html作为视图引擎，解决跨域和拦截问题按照csdn查的说sping4.2以上的jar 跨域使用@CrosssOrgin注解就可以跨域了但我不知道为啥没有用。不过使用跨域过滤器工具类的方式解决的跨域问题，后端的json数据能够跨域被接收到。 1. 写CrossingFilter过滤器类，实现(Interfaces)本地ApacheTomcat的Filter接口123456
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-12-21 02:07" pubdate>
+              2020-12-21
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/SSM/">#SSM</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/11/13/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E7%9A%84%E5%AE%89%E5%85%A8%E4%B8%8A%E4%BC%A0%EF%BC%9F/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s73Fw6.jpg" srcset="/img/loading.gif" lazyload alt="如何实现文件的安全上传？">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2020/11/13/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E7%9A%84%E5%AE%89%E5%85%A8%E4%B8%8A%E4%BC%A0%EF%BC%9F/" target="_self">
+          如何实现文件的安全上传？
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2020/11/13/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E7%9A%84%E5%AE%89%E5%85%A8%E4%B8%8A%E4%BC%A0%EF%BC%9F/" target="_self">
+        <div>
+          介绍项目中常会遇到需要文件上传和下载的地方，其中文件上传的安全问题不可忽视，下面是我考虑到的文件上传安全问题和用编码实现的过程  对文件大小的判断，防止恶意上传大文件挤占服务器资源  对文件类型的判断，这里实现的是对图片的判断  对图片进行resize处理，防止图片嵌入恶意可执行的代码，通过压缩可以实现对嵌入可代码的破坏  文件保存的地址有两种，一个就是借助第三方服务器进行保存（七牛云），或者是放
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-11-13 11:16" pubdate>
+              2020-11-13
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E7%BD%91%E5%AE%89/">#网安</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/10/31/api-design-demo-%E5%90%8E%E7%AB%AF%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E8%84%9A%E6%89%8B%E6%9E%B6/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s73VYD.jpg" srcset="/img/loading.gif" lazyload alt="api-design-demo 后端快速开发脚手架">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2020/10/31/api-design-demo-%E5%90%8E%E7%AB%AF%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E8%84%9A%E6%89%8B%E6%9E%B6/" target="_self">
+          api-design-demo 后端快速开发脚手架
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2020/10/31/api-design-demo-%E5%90%8E%E7%AB%AF%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E8%84%9A%E6%89%8B%E6%9E%B6/" target="_self">
+        <div>
+          1.介绍 api-design-demo是我对之前所学框架的一个整合，基于SpringBoot整合Mybatis,Redis,Shiro，融合Swagger做接口文档，运用JSR303做数据校验,利用MybatisPlus简化数据访问层的操作，利用AutoGenerator自动代码生成器，减少代码的编写，更加专注业务逻辑的实现，从而提高开发效率。 自定义全局异常处理器，使controller层始终
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-10-31 16:10" pubdate>
+              2020-10-31
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/SpringBoot/">#SpringBoot</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/10/15/%E9%98%BF%E9%87%8C%E4%BA%91%E9%83%A8%E7%BD%B2SpringBoot%E9%A1%B9%E7%9B%AE-%E5%86%85%E7%BD%AETomcat-%EF%BC%8C%E9%85%8D%E7%BD%AEhttps%EF%BC%8C%E9%85%8D%E7%BD%AE%E9%82%AE%E7%AE%B1%E7%AB%AF%E5%8F%A3465%EF%BC%8C%E6%88%90%E5%8A%9F%E9%83%A8%E7%BD%B2%E5%8F%91%E5%B8%83/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s73EFO.jpg" srcset="/img/loading.gif" lazyload alt="阿里云部署SpringBoot项目(内置Tomcat)，配置https，配置邮箱端口465，成功部署发布">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2020/10/15/%E9%98%BF%E9%87%8C%E4%BA%91%E9%83%A8%E7%BD%B2SpringBoot%E9%A1%B9%E7%9B%AE-%E5%86%85%E7%BD%AETomcat-%EF%BC%8C%E9%85%8D%E7%BD%AEhttps%EF%BC%8C%E9%85%8D%E7%BD%AE%E9%82%AE%E7%AE%B1%E7%AB%AF%E5%8F%A3465%EF%BC%8C%E6%88%90%E5%8A%9F%E9%83%A8%E7%BD%B2%E5%8F%91%E5%B8%83/" target="_self">
+          阿里云部署SpringBoot项目(内置Tomcat)，配置https，配置邮箱端口465，成功部署发布
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2020/10/15/%E9%98%BF%E9%87%8C%E4%BA%91%E9%83%A8%E7%BD%B2SpringBoot%E9%A1%B9%E7%9B%AE-%E5%86%85%E7%BD%AETomcat-%EF%BC%8C%E9%85%8D%E7%BD%AEhttps%EF%BC%8C%E9%85%8D%E7%BD%AE%E9%82%AE%E7%AE%B1%E7%AB%AF%E5%8F%A3465%EF%BC%8C%E6%88%90%E5%8A%9F%E9%83%A8%E7%BD%B2%E5%8F%91%E5%B8%83/" target="_self">
+        <div>
+          配置https我是阿里云的服务器，里面有个白嫖的SSL证书，申请成功后把它和域名绑定就行，再下载证书就行了。 因为我用的内置的Tomcat，所以下载的还是Tomcat的证书：  现在就是配项目配置https，我的springboot版本是1.5.10.RELEASE，2.0X版本的就不知道了，我这个配置很简单，放到resources是文件夹下就行了  在application.properties
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-10-15 16:05" pubdate>
+              2020-10-15
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/SpringBoot/">#SpringBoot</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2020/10/14/hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s73EFO.jpg" srcset="/img/loading.gif" lazyload alt="hexo常用命令">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2020/10/14/hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" target="_self">
+          hexo常用命令
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2020/10/14/hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" target="_self">
+        <div>
+          hexo常用命令 初始化hexo  1# hexo init   启动hexo  1# hexo s   清楚缓存  1# hexo clean   生成静态网站  1# hexo g   将现在的文件部署到远端  1# hexo d
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-10-14 15:44" pubdate>
+              2020-10-14
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/hexo/">#hexo</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+    <article class="col-12 col-md-12 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2020/10/10/hello-world/" target="_self">
+          Hello World
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt index-excerpt__noimg" href="/2020/10/10/hello-world/" target="_self">
+        <div>
+          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2020-10-10 12:29" pubdate>
+              2020-10-10
+            </time>
+          </div>
+        
+        
+        
+      </div>
+    </article>
+  </div>
+
+
+
+  <nav aria-label="navigation">
+    <span class="pagination" id="pagination">
+      <a class="extend prev" rel="prev" href="/page/4/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><span class="page-number current">5</span>
+    </span>
+  </nav>
+
+
+
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

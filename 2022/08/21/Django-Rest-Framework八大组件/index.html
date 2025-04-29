@@ -1,0 +1,775 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="DRF整合了非常多的开发常用组件，认证，授权、限流等等，简单配置即可使用 认证和授权全局配置开启全局配置，只要请求后端接口，都需要进行认证才可以请求成功 settings.py 12345678910111213# DRF 组件配置REST\_FRAMEWORK &#x3D; &#123;# 内部循环遍历注册的认证类，一旦成功，结束循环&#x27;DEFAULT\_AUTHENTICATION\_CLASS">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django Rest Framework八大组件">
+<meta property="og:url" content="http://example.com/2022/08/21/Django-Rest-Framework%E5%85%AB%E5%A4%A7%E7%BB%84%E4%BB%B6/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="DRF整合了非常多的开发常用组件，认证，授权、限流等等，简单配置即可使用 认证和授权全局配置开启全局配置，只要请求后端接口，都需要进行认证才可以请求成功 settings.py 12345678910111213# DRF 组件配置REST\_FRAMEWORK &#x3D; &#123;# 内部循环遍历注册的认证类，一旦成功，结束循环&#x27;DEFAULT\_AUTHENTICATION\_CLASS">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s1.ax1x.com/2022/08/21/vyYQMD.png">
+<meta property="article:published_time" content="2022-08-20T22:46:07.000Z">
+<meta property="article:modified_time" content="2025-04-29T16:07:07.219Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="DRF">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s1.ax1x.com/2022/08/21/vyYQMD.png">
+  
+  
+  
+  <title>Django Rest Framework八大组件 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Django Rest Framework八大组件"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2022-08-21 06:46" pubdate>
+          2022年8月21日 早上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.7k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          23 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Django Rest Framework八大组件</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>DRF整合了非常多的开发常用组件，认证，授权、限流等等，简单配置即可使用</p>
+<h1 id="认证和授权"><a href="#认证和授权" class="headerlink" title="认证和授权"></a>认证和授权</h1><h2 id="全局配置"><a href="#全局配置" class="headerlink" title="全局配置"></a>全局配置</h2><p>开启全局配置，只要请求后端接口，都需要进行认证才可以请求成功</p>
+<p><code>settings.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># DRF 组件配置</span><br>REST\_FRAMEWORK = &#123;<br><span class="hljs-comment"># 内部循环遍历注册的认证类，一旦成功，结束循环</span><br><span class="hljs-string">&#x27;DEFAULT\_AUTHENTICATION\_CLASSES&#x27;</span>: (<br><span class="hljs-comment"># &#x27;dfdemo.authentication.CustomAuthentication&#x27;, # 自定义认证</span><br><span class="hljs-string">&#x27;rest\_framework.authentication.SessionAuthentication&#x27;</span>, <span class="hljs-comment"># session 认证</span><br><span class="hljs-string">&#x27;rest\_framework.authentication.BasicAuthentication&#x27;</span>, <span class="hljs-comment"># 基本认证</span><br>),<br><span class="hljs-comment"># 权限配置</span><br><span class="hljs-string">&#x27;DEFAULT\_PERMISSION\_CLASSES&#x27;</span>: (<br><span class="hljs-comment"># 要认证才能请求</span><br><span class="hljs-string">&#x27;rest\_framework.permissions.IsAuthenticated&#x27;</span>,<br>),<br></code></pre></td></tr></table></figure>
+
+<p>我们再去请求后端接口，在没有登录的情况下是无法请求成功的</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwhsg0"><img src="https://s1.ax1x.com/2022/03/27/qwhsg0.md.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>登录管理员后，再去请求就成功了，获得了登录信息</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwhyvV"><img src="https://s1.ax1x.com/2022/03/27/qwhyvV.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>但是，我们并不是后端所有接口都需要认证，比如在登录中的登录接口和验证码接口就不能要求认证，不然就是先有鸡先有蛋的问题出现了，这时候我们可以进行局部认证，让这两个接口不需要进行认证</p>
+<h2 id="局部配置"><a href="#局部配置" class="headerlink" title="局部配置"></a>局部配置</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 局部认证</span><br><span class="hljs-comment"># 登录接口，要取消所有的认证与权限规则，也就是要做局部禁用操作（空配置）</span><br>authentication\_classes = []<br>permission\_classes = []<br></code></pre></td></tr></table></figure>
+
+<p>此时我们再去请求不需要做认证的接口</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwhbDO"><img src="https://s1.ax1x.com/2022/03/27/qwhbDO.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>发现，没有进行登录也可以访问，访问没有做局部配置的接口，依旧需要认证</p>
+<p>除了需要登录这个认证，部分接口是只有管理员才能访问的，所以我们对管理员接口进行局部配置，即使登陆了，不是管理员也不能访问</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 局部权限配置方式 管理员</span><br>authentication\_classes = [SessionAuthentication]<br>permission\_classes = [IsAdminUser]<br></code></pre></td></tr></table></figure>
+
+<p><img src="https://s1.ax1x.com/2022/03/27/qwhyvV.png" srcset="/img/loading.gif" lazyload></p>
+<p>创建的csq账号，是没有管理员权限的，所以即使是登录也不能请求成功这个接口</p>
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/vyNYgf"><img src="https://s1.ax1x.com/2022/08/21/vyNYgf.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>换做luffy就可以了</p>
+<p>还可以自定义一个认证类，实现一个接口的自定义认证，如下</p>
+<p><code>authentication.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">CustomAuthentication</span>(<span class="hljs-title class_ inherited__">BaseAuthentication</span>):<br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">自定义认证</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">authenticate</span>(<span class="hljs-params">self, request</span>):<br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">认证方法</span><br><span class="hljs-string">:param request: 客户端发来的http对象</span><br><span class="hljs-string">:return:</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br>user = request.query\_params.get(<span class="hljs-string">&#x27;user&#x27;</span>)<br>pwd = request.query\_params.get(<span class="hljs-string">&#x27;pwd&#x27;</span>)<br><span class="hljs-keyword">if</span> user != <span class="hljs-string">&#x27;root&#x27;</span> <span class="hljs-keyword">or</span> pwd != <span class="hljs-string">&#x27;123456&#x27;</span>:<br><span class="hljs-keyword">return</span> <span class="hljs-literal">None</span><br><span class="hljs-comment"># get\_user\_model 获取当前系统中对应的用户模型类</span><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;调用用户自定义权限类&#x27;</span>)<br>user = get\_user\_model().objects.first()<br><span class="hljs-comment"># 按照固定的返回格式填写（用户模型，None）</span><br><span class="hljs-keyword">return</span> (user,<span class="hljs-literal">None</span>)<br></code></pre></td></tr></table></figure>
+
+<p>写的很简单，就是要再地址栏拼接上用户名和密码</p>
+<p>目前做了全局认证和权限配置，必须登录能访问接口，现在我们把自定义的配置传到接口中测试，测试在未登录的情况下拼接地址能不能请求成功。</p>
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/vyNGCt"><img src="https://s1.ax1x.com/2022/08/21/vyNGCt.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>发现请求成功，我们不这样拼接，直接登录超级管理员登录后，去请求该接口</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwhr3q"><img src="https://s1.ax1x.com/2022/03/27/qwhr3q.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>发现请求失败，我们在PyCharm中也发现打印信息：</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwh04s"><img src="https://s1.ax1x.com/2022/03/27/qwh04s.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>在全局配置中，配置的授权信息是认证就可以访问，现在我们可以自定义权限配置</p>
+<p><code>permission.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">IsXiaoMingPermissions</span>(<span class="hljs-title class_ inherited__">BasePermission</span>):<br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">自定义权限，可全局，也可局部</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">has</span>\_permission(<span class="hljs-variable language_">self</span>, request, view):<br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">试图权限 True 可以访问</span><br><span class="hljs-string">:param request:</span><br><span class="hljs-string">:param view:</span><br><span class="hljs-string">:return:</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br>role = request.query\_params.get(<span class="hljs-string">&#x27;role&#x27;</span>)<br><span class="hljs-keyword">return</span> role == <span class="hljs-string">&#x27;xiaoming&#x27;</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">has</span>\_<span class="hljs-built_in">object</span>\_permission(<span class="hljs-variable language_">self</span>, request, view, obj):<br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">模型权限</span><br><span class="hljs-string">:param request:</span><br><span class="hljs-string">:param view:</span><br><span class="hljs-string">:param obj:</span><br><span class="hljs-string">:return:</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-keyword">return</span> <span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure>
+
+<p><code>view.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">permission\_classes = [IsXiaoMingPermissions] <span class="hljs-comment"># 自定义权限</span><br></code></pre></td></tr></table></figure>
+
+<p>这样的局部配置完成后，要求请求这个类的接口都要符合 <code>IsXiaoMingPermissions.py</code>，否则即使是超级管理员也无法请求，测试如下：</p>
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/vyND5n"><img src="https://s1.ax1x.com/2022/08/21/vyND5n.png" srcset="/img/loading.gif" lazyload alt="vyND5n.png"></a></p>
+<p>用luffy这个超级管理员账户测试</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwhr3q"><img src="https://s1.ax1x.com/2022/03/27/qwhr3q.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>即使登录的是超级管理员，也无法请求成功！必须是通过自定义的授权程序才能请求成功。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><ol>
+<li>全局配置决定了程序所有接口的认证和授权信息，但可以通过局部配置进行覆盖，生效的就是局部配置了</li>
+<li>认证和授权联系紧密，在配置的时候要考虑两者之间的关系</li>
+</ol>
+<h1 id="限流"><a href="#限流" class="headerlink" title="限流"></a>限流</h1><h3 id="全局配置-1"><a href="#全局配置-1" class="headerlink" title="全局配置"></a>全局配置</h3><p><code>settings.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 节流的配置列表</span><br><span class="hljs-string">&#x27;DEFAULT\_THROTTLE\_CLASSES&#x27;</span>: (<br><span class="hljs-string">&#x27;rest\_framework.throttling.AnonRateThrottle&#x27;</span>, <span class="hljs-comment"># 匿名未认证用户，使用IP区分用户</span><br><span class="hljs-string">&#x27;rest\_framework.throttling.UserRateThrottle&#x27;</span> <span class="hljs-comment"># 使用User id 来区分</span><br><span class="hljs-comment"># &#x27;rest\_framework.throttling.ScopeRateThrottle&#x27;, # 特定域限流</span><br>),<br><span class="hljs-comment"># 节流率</span><br><span class="hljs-string">&#x27;DEFAULT\_THROTTLE\_RATES&#x27;</span>: &#123;<br><span class="hljs-string">&#x27;anon&#x27;</span>: <span class="hljs-string">&#x27;3/day&#x27;</span>, <span class="hljs-comment"># 匿名用户每天三次</span><br><span class="hljs-string">&#x27;user&#x27;</span>: <span class="hljs-string">&#x27;5/day&#x27;</span>, <span class="hljs-comment"># 登录用户每天五次</span><br>&#125;,<br></code></pre></td></tr></table></figure>
+
+<p>未认证用户使用IP区分，已认证用户使用ID用于生成唯一的密钥以进行限制 。</p>
+<p>节流率的时间可以用天，小时，分，秒等来进行限定</p>
+<p>分别测试未登录和登录用户去请求</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwhDCn"><img src="https://s1.ax1x.com/2022/03/27/qwhDCn.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>达到请求上限，得到预期效果</p>
+<h3 id="局部配置-1"><a href="#局部配置-1" class="headerlink" title="局部配置"></a>局部配置</h3><p>假设全局并没有做限流操作，只是在某个接口中需要做限流，可以采用局部限流的方法，做法有两种</p>
+<p>取消全局限流，保留限流率，对需要做限流的操作进行局部限流处理</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">StudentReadOnlyModelViewSet</span>(<span class="hljs-title class_ inherited__">ReadOnlyModelViewSet</span>):<br>queryset = Student.objects.<span class="hljs-built_in">all</span>()<br>serializer\_<span class="hljs-keyword">class</span> = StudentModelSerializer<br><span class="hljs-comment"># 局部限流</span><br>throttle\_classes = [AnonRateThrottle,UserRateThrottle]<br></code></pre></td></tr></table></figure>
+
+<p>发现配置了局部限流的接口会受限流率的操作，没有配置的接口则不受限制</p>
+<p>第二种方法是，在全局仍需限流操作的情况下，部分接口与全局限流率不一致，这是需要配置局部限流率了</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 节流的配置列表</span><br><span class="hljs-string">&#x27;DEFAULT\_THROTTLE\_CLASSES&#x27;</span>: (<br><span class="hljs-string">&#x27;rest\_framework.throttling.AnonRateThrottle&#x27;</span>, <span class="hljs-comment"># 匿名未认证用户，使用IP区分用户</span><br><span class="hljs-string">&#x27;rest\_framework.throttling.UserRateThrottle&#x27;</span> <span class="hljs-comment"># 使用User id 来区分</span><br><span class="hljs-comment"># &#x27;rest\_framework.throttling.ScopeRateThrottle&#x27;, # 自定义限流域</span><br>),<br><span class="hljs-comment"># 节流率</span><br><span class="hljs-string">&#x27;DEFAULT\_THROTTLE\_RATES&#x27;</span>: &#123;<br><span class="hljs-string">&#x27;anon&#x27;</span>: <span class="hljs-string">&#x27;3/day&#x27;</span>, <span class="hljs-comment"># 匿名用户每天三次</span><br><span class="hljs-string">&#x27;user&#x27;</span>: <span class="hljs-string">&#x27;5/day&#x27;</span>, <span class="hljs-comment"># 登录用户每天五次</span><br><span class="hljs-string">&#x27;Hom&#x27;</span>: <span class="hljs-string">&#x27;10/day&#x27;</span>,<br>&#125;,<br></code></pre></td></tr></table></figure>
+
+<p>局部限流配置10次&#x2F;day，全局限流配置登录用户3次&#x2F;day</p>
+<p><code>view.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> rest\_framework.throttling <span class="hljs-keyword">import</span> ScopedRateThrottle<br><span class="hljs-keyword">class</span> <span class="hljs-title class_">StudentReadOnlyModelViewSet</span>(<span class="hljs-title class_ inherited__">ReadOnlyModelViewSet</span>):<br>queryset = Student.objects.<span class="hljs-built_in">all</span>()<br>serializer\_<span class="hljs-keyword">class</span> = StudentModelSerializer<br><span class="hljs-comment"># 局部限流 10/day</span><br>throttle\_classes = [ScopedRateThrottle]<br>throttle\_scope = <span class="hljs-string">&#x27;Hom&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="过滤"><a href="#过滤" class="headerlink" title="过滤"></a>过滤</h1><p><code>settings.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">INSTALLED\_APPS = [<br>....<br><span class="hljs-string">&#x27;django\_filters&#x27;</span>,<span class="hljs-comment"># 注册主键</span><br>...<br>]<br><span class="hljs-comment"># 过滤查询，全局配置[过滤和排序公用一个配置项]</span><br><span class="hljs-string">&#x27;DEFAULT\_FILTER\_BACKENDS&#x27;</span>:<br>[<span class="hljs-string">&#x27;django\_filters.rest\_framework.DjangoFilterBackend&#x27;</span>],<br></code></pre></td></tr></table></figure>
+
+<p><code>view.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-built_in">filter</span>\_fields = [<span class="hljs-string">&#x27;sex&#x27;</span>,<span class="hljs-string">&#x27;classmate&#x27;</span>]<br></code></pre></td></tr></table></figure>
+
+<p>简单的配置就是这样，全局开启过滤配置，具备设置过滤字段，就可以发送带参过滤Get请求了</p>
+<p>还有很多强大的配置，等到时候工作用到了再去文档里看</p>
+<h1 id="排序"><a href="#排序" class="headerlink" title="排序"></a>排序</h1><p><code>setting.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 过滤查询，全局配置[过滤和排序公用一个配置项]</span><br><span class="hljs-string">&#x27;DEFAULT\_FILTER\_BACKENDS&#x27;</span>:[<br><span class="hljs-string">&#x27;django\_filters.rest\_framework.DjangoFilterBackend&#x27;</span>, <span class="hljs-comment"># 过滤</span><br><span class="hljs-string">&#x27;rest\_framework.filters.OrderingFilter&#x27;</span>, <span class="hljs-comment"># 排序</span><br>],<br></code></pre></td></tr></table></figure>
+
+<p><code>view.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 局部配置排序</span><br><span class="hljs-comment"># 请求格式 ordering=-id - 表示倒序</span><br><span class="hljs-comment"># 多字段排序 ?ordering = -id,age 多字段排序</span><br>ordering\_fields = [<span class="hljs-string">&#x27;id&#x27;</span>,<span class="hljs-string">&#x27;age&#x27;</span>]<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwhWE4"><img src="https://s1.ax1x.com/2022/03/27/qwhWE4.png" srcset="/img/loading.gif" lazyload></a></p>
+<h1 id="分页"><a href="#分页" class="headerlink" title="分页"></a>分页</h1><h2 id="全局配置-2"><a href="#全局配置-2" class="headerlink" title="全局配置"></a>全局配置</h2><p><code>settings.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 全局配置分页</span><br><span class="hljs-comment"># 页码分页器</span><br><span class="hljs-string">&#x27;DEFAULT\_PAGINATION\_CLASS&#x27;</span>: <span class="hljs-string">&#x27;rest\_framework.pagination.PageNumberPagination&#x27;</span>, <span class="hljs-comment"># page=页码&amp;page\_size=单页数据量</span><br><span class="hljs-comment"># 偏移量分页器</span><br><span class="hljs-comment"># &#x27;DEFAULT\_PAGINATION\_CLASS&#x27;: &#x27;rest\_framework.pagination.LimitOffsetPagination&#x27;, # limit=单页数据量&amp;offset=页码</span><br><span class="hljs-string">&#x27;PAGE\_SIZE&#x27;</span>: <span class="hljs-number">3</span>,<br></code></pre></td></tr></table></figure>
+
+<p>这样配置，视图层只要是返回list就会分页</p>
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/qwhgDU"><img src="https://s1.ax1x.com/2022/03/27/qwhgDU.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>但是通常不会设置全局分页，因为有很多业务是不需要分页的，我们需要配置局部分页</p>
+<h2 id="局部配置-2"><a href="#局部配置-2" class="headerlink" title="局部配置"></a>局部配置</h2><p>局部配置就是自己写个自己的分页器，然后在需要进行分页的时候引入即可</p>
+<p><code>pagiation.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">StudentPageNumberPagination</span>(<span class="hljs-title class_ inherited__">PageNumberPagination</span>):<br>page\_size = <span class="hljs-number">10</span> <span class="hljs-comment"># 默认分页的每一页数据量</span><br><span class="hljs-built_in">max</span>\_page\_size = <span class="hljs-number">20</span> <span class="hljs-comment"># 客户端可调整最大单页数据量</span><br>page\_query\_param = <span class="hljs-string">&#x27;page&#x27;</span> <span class="hljs-comment"># 页码</span><br>page\_size\_query\_param = <span class="hljs-string">&#x27;page\_size&#x27;</span> <span class="hljs-comment"># 单页数据量</span><br></code></pre></td></tr></table></figure>
+
+<p>在 <code>view.py</code>中引入自定义分页器</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 分页器局部分页</span><br><span class="hljs-comment"># 声明自定义的分页配置类</span><br>pagination\_<span class="hljs-keyword">class</span> = StudentPageNumberPagination<br></code></pre></td></tr></table></figure>
+
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/vyN2KU"><img src="https://s1.ax1x.com/2022/08/21/vyN2KU.png" srcset="/img/loading.gif" lazyload></a></p>
+<p><strong>注意：如果在视图内关闭分页功能，只需在视图内设置</strong></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">pagination\_<span class="hljs-keyword">class</span> = <span class="hljs-literal">None</span><br></code></pre></td></tr></table></figure>
+
+<h1 id="异常处理"><a href="#异常处理" class="headerlink" title="异常处理"></a>异常处理</h1><p>DRF的 <code>Respone</code>已经给我们封装了很多错误信息，比如下面限流的</p>
+<p>[<img src="https://s1.ax1x.com/2022/03/27/qwhDCn.png" srcset="/img/loading.gif" lazyload></p>
+<p>但是还是会有很多异常不能处理返回，一旦没有处理就之间返回错误页面，对前端是很不友好的，比如我们做一个除0操作</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwhh59"><img src="https://s1.ax1x.com/2022/03/27/qwhh59.png" srcset="/img/loading.gif" lazyload></a></p>
+<p>我们要对异常进行处理，就要自己去写个类，去处理 <code>Response</code>无法处理的异常</p>
+<p><code>execeptions.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> rest\_framework.views <span class="hljs-keyword">import</span> exception\_handler<br><span class="hljs-keyword">from</span> rest\_framework <span class="hljs-keyword">import</span> status<br><span class="hljs-keyword">from</span> rest\_framework.response <span class="hljs-keyword">import</span> Response<br><span class="hljs-keyword">from</span> django.db <span class="hljs-keyword">import</span> DatabaseError<br><span class="hljs-keyword">def</span> <span class="hljs-title function_">custom</span>\_exception\_handle(exc,context):<br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-string">自定义异常函数 要注册到setting中</span><br><span class="hljs-string">:param exc: 异常对象</span><br><span class="hljs-string">:param context: 上下文，字典</span><br><span class="hljs-string">:return:</span><br><span class="hljs-string">&#x27;&#x27;&#x27;</span><br><span class="hljs-comment"># 先让drf处理</span><br>response = exception\_handler(exc,context)<br><span class="hljs-comment"># drf未识别的再自己处理</span><br><span class="hljs-keyword">if</span> response <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>view = context[<span class="hljs-string">&#x27;view&#x27;</span>]<br>request = context[<span class="hljs-string">&#x27;request&#x27;</span>]<br><span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(exc,DatabaseError):<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&#x27;[%s]:%s&#x27;</span>%(view,exc))<br>response = Response(&#123;<span class="hljs-string">&#x27;detail&#x27;</span>:<span class="hljs-string">&#x27;服务器内部错误&#x27;</span>&#125;,status=status.HTTP\_507\_INSUFFICIENT\_STORAGE)<br><span class="hljs-keyword">elif</span> <span class="hljs-built_in">isinstance</span>(exc,ZeroDivisionError):<br>response = Response(&#123;<span class="hljs-string">&#x27;detail&#x27;</span>: <span class="hljs-string">&#x27;算术异常&#x27;</span>&#125;, status=status.HTTP\_500\_INTERNAL\_SERVER\_ERROR)<br><span class="hljs-keyword">else</span>:<br>response = Response(&#123;<span class="hljs-string">&#x27;detail&#x27;</span>: <span class="hljs-string">&#x27;未捕获异常&#x27;</span>&#125;, status=status.HTTP\_500\_INTERNAL\_SERVER\_ERROR)<br><span class="hljs-keyword">return</span> response<br></code></pre></td></tr></table></figure>
+
+<p>这个异常处理类最好写在父组件下，因为所有组件都需要这个全局异常处理</p>
+<p>配置自定义异常处理 <code>setting.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 自定义异常处理</span><br><span class="hljs-string">&#x27;EXCEPTION\_HANDLER&#x27;</span>: <span class="hljs-string">&#x27;drfdemo.exceptions.custom\_exception\_handle&#x27;</span>,<br></code></pre></td></tr></table></figure>
+
+<p>测试效果</p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwh5CR"><img src="https://s1.ax1x.com/2022/03/27/qwh5CR.png" srcset="/img/loading.gif" lazyload></a></p>
+<h1 id="自动生成接口文档"><a href="#自动生成接口文档" class="headerlink" title="自动生成接口文档"></a>自动生成接口文档</h1><h2 id="coreapi"><a href="#coreapi" class="headerlink" title="coreapi"></a>coreapi</h2><p>需要先下载库</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">pip install coreapi<br></code></pre></td></tr></table></figure>
+
+<p><code>settings.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 自动生成接口文档</span><br><span class="hljs-string">&#x27;DEFAULT\_SCHEMA\_CLASS&#x27;</span>:<span class="hljs-string">&#x27;rest\_framework.schemas.AutoSchema&#x27;</span>,<br></code></pre></td></tr></table></figure>
+
+<p><code>urls.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">path(<span class="hljs-string">&#x27;docs/&#x27;</span>,include\_docs\_urls(title=<span class="hljs-string">&#x27;API文档&#x27;</span>)),<br></code></pre></td></tr></table></figure>
+
+<p>浏览器访问<a target="_blank" rel="noopener" href="http://127.0.0.1:8000/docs/%EF%BC%8C%E5%8D%B3%E5%8F%AF%E7%9C%8B%E5%88%B0%E6%8E%A5%E5%8F%A3%E6%96%87%E6%A1%A3%E4%BA%86%EF%BC%8C%E8%BF%98%E5%8F%AF%E4%BB%A5%E8%BF%9B%E8%A1%8C%E6%B5%8B%E8%AF%95">http://127.0.0.1:8000/docs/，即可看到接口文档了，还可以进行测试</a></p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwhTv6"><img src="https://s1.ax1x.com/2022/03/27/qwhTv6.md.png" srcset="/img/loading.gif" lazyload></a></p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwhogx"><img src="https://s1.ax1x.com/2022/03/27/qwhogx.md.png" srcset="/img/loading.gif" lazyload></a></p>
+<h2 id="swagger"><a href="#swagger" class="headerlink" title="swagger"></a>swagger</h2><p>SpringBoot常用的API接口文档就是Swagger，DRF也可以整合Swagger</p>
+<p>下载库</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs shell">pip install drf\_yasg<br></code></pre></td></tr></table></figure>
+
+<p>添加组件</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python">INSTALLED\_APPS = [<br>...<br><span class="hljs-string">&#x27;drf\_yasg&#x27;</span>,<br>...<br>]<br></code></pre></td></tr></table></figure>
+
+<p><code>swagger_setting.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">schema\_view = get\_schema\_view(<br>openapi.Info(<br>title=<span class="hljs-string">&quot;接口文档平台&quot;</span>, <span class="hljs-comment"># 必传</span><br>default\_version=<span class="hljs-string">&#x27;v1&#x27;</span>, <span class="hljs-comment"># 必传</span><br>description=<span class="hljs-string">&quot;文档描述&quot;</span>,<br>terms\_of\_service=<span class="hljs-string">&#x27;&#x27;</span>,<br>contact=openapi.Contact(email=<span class="hljs-string">&quot;389783961@qq.com&quot;</span>),<br>license=openapi.License(name=<span class="hljs-string">&quot;BSD LICENSE&quot;</span>)<br>),<br>public=<span class="hljs-literal">True</span>,<br><span class="hljs-comment"># permission\_classes=(rest\_framework.permissions.AllowAny) # 权限类</span><br>)<br></code></pre></td></tr></table></figure>
+
+<p><code>urls.py</code></p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python">urlpatterns = [<br>path(<span class="hljs-string">&#x27;admin/&#x27;</span>, admin.site.urls),<br>path(<span class="hljs-string">&#x27;stu/&#x27;</span>, include(<span class="hljs-string">&#x27;students.urls&#x27;</span>)),<br>path(<span class="hljs-string">&#x27;req/&#x27;</span>, include(<span class="hljs-string">&#x27;req.urls&#x27;</span>)),<br><span class="hljs-comment"># path(&#x27;docs/&#x27;,include\_docs\_urls(title=&#x27;API文档&#x27;)),</span><br>path(<span class="hljs-string">&#x27;swagger/&#x27;</span>, schema\_view.<span class="hljs-keyword">with</span>\_ui(<span class="hljs-string">&#x27;swagger&#x27;</span>, cache\_timeout=<span class="hljs-number">0</span>), name=<span class="hljs-string">&#x27;schema-swagger&#x27;</span>),<br>path(<span class="hljs-string">&#x27;redoc/&#x27;</span>, schema\_view.<span class="hljs-keyword">with</span>\_ui(<span class="hljs-string">&#x27;redoc&#x27;</span>, cache\_timeout=<span class="hljs-number">0</span>), name=<span class="hljs-string">&#x27;schema-redoc&#x27;</span>),<br>]<br></code></pre></td></tr></table></figure>
+
+<p>浏览器访问<a target="_blank" rel="noopener" href="http://127.0.0.1:8000/swagger/">http://127.0.0.1:8000/swagger/</a></p>
+<p><a target="_blank" rel="noopener" href="https://imgtu.com/i/qwhI81"><img src="https://s1.ax1x.com/2022/03/27/qwhI81.png" srcset="/img/loading.gif" lazyload></a></p>
+<hr>
+<h1 id="DRF系列总结"><a href="#DRF系列总结" class="headerlink" title="DRF系列总结"></a>DRF系列总结</h1><p>作为Django的插件，DRF对API的封装非常完美，但是有时候又显得很鸡肋，不够相比它带给我们的便利，就不值一提了。</p>
+<p>drfdemo源码</p>
+<p><a target="_blank" rel="noopener" href="https://q1mi.github.io/Django-REST-framework-documentation/#_3">DRF中文官方文档</a></p>
+<p>2022年3月27日10点06分完结！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/DRF/" class="print-no-link">#DRF</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Django Rest Framework八大组件</div>
+      <div>http://example.com/2022/08/21/Django-Rest-Framework八大组件/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2022年8月21日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/04/30/Linux-%E5%BC%80%E6%9C%BA%E6%B5%81%E7%A8%8B/" title="Linux 开机流程">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Linux 开机流程</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/" title="Django Rest Framework请求响应视图路由">
+                        <span class="hidden-mobile">Django Rest Framework请求响应视图路由</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
