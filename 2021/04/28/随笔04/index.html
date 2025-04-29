@@ -22,7 +22,7 @@
     <meta name="description" content="关于多线程的几点补充在理解线程的状态时，需要先了解每个对象都有的——锁池和等待池这两个概念。 锁池就是一个线程A已经占用了对象锁，其他对象想要拿到该对象锁就必须等待A释放锁，这些想拿到对象锁的线程就会进入锁池，等待和竞争锁。 等待池：假设一个线程A调用了某个对象的wait()方法，线程A就会释放该对象的锁，进入到该对象的等待池。 从上面就可以看出锁池是里的线程都是竞争锁的，而等待池里的线程已经被释">
 <meta property="og:type" content="article">
 <meta property="og:title" content="随笔04">
-<meta property="og:url" content="http://example.com/2021/04/28/%E9%9A%8F%E7%AC%9404/index.html">
+<meta property="og:url" content="https://luffy997.github.io/2021/04/28/%E9%9A%8F%E7%AC%9404/index.html">
 <meta property="og:site_name" content="Luffy997&#39;s Blog">
 <meta property="og:description" content="关于多线程的几点补充在理解线程的状态时，需要先了解每个对象都有的——锁池和等待池这两个概念。 锁池就是一个线程A已经占用了对象锁，其他对象想要拿到该对象锁就必须等待A释放锁，这些想拿到对象锁的线程就会进入锁池，等待和竞争锁。 等待池：假设一个线程A调用了某个对象的wait()方法，线程A就会释放该对象的锁，进入到该对象的等待池。 从上面就可以看出锁池是里的线程都是竞争锁的，而等待池里的线程已经被释">
 <meta property="og:locale" content="zh_CN">
@@ -74,7 +74,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -319,7 +319,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>随笔04</div>
-      <div>http://example.com/2021/04/28/随笔04/</div>
+      <div>https://luffy997.github.io/2021/04/28/随笔04/</div>
     </div>
     <div class="license-meta">
       

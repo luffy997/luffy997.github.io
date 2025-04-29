@@ -22,7 +22,7 @@
     <meta name="description" content="ArrayList和LinkedList区别对于这两种数据结构的基础比较，如，线程安全问题、底层结构，空间占用问题我就不多说了，网上很多文档写的很清楚了，这里我详细的讲下自己对ArrayList和LinkedList在数据的查询，增加，删除和修改上的性能差异： 要分析在三种情况下的差异，首先要清楚两种容器它的底层实现是什么，ArrayList底层是数组实现的，连续的地址内存空间，也就是带索引；Li">
 <meta property="og:type" content="article">
 <meta property="og:title" content="随笔01">
-<meta property="og:url" content="http://example.com/2021/04/13/%E9%9A%8F%E7%AC%9401/index.html">
+<meta property="og:url" content="https://luffy997.github.io/2021/04/13/%E9%9A%8F%E7%AC%9401/index.html">
 <meta property="og:site_name" content="Luffy997&#39;s Blog">
 <meta property="og:description" content="ArrayList和LinkedList区别对于这两种数据结构的基础比较，如，线程安全问题、底层结构，空间占用问题我就不多说了，网上很多文档写的很清楚了，这里我详细的讲下自己对ArrayList和LinkedList在数据的查询，增加，删除和修改上的性能差异： 要分析在三种情况下的差异，首先要清楚两种容器它的底层实现是什么，ArrayList底层是数组实现的，连续的地址内存空间，也就是带索引；Li">
 <meta property="og:locale" content="zh_CN">
@@ -74,7 +74,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"example.com","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -316,7 +316,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div>随笔01</div>
-      <div>http://example.com/2021/04/13/随笔01/</div>
+      <div>https://luffy997.github.io/2021/04/13/随笔01/</div>
     </div>
     <div class="license-meta">
       
