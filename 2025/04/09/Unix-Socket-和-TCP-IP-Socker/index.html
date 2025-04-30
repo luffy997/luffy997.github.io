@@ -1,0 +1,913 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="🧱 一、通信机制区别   项目 Unix Domain Socket TCP&#x2F;IP Socket    通信类型 本地通信（同一台主机） 网络通信（本地或远程）   传输协议 使用文件系统路径作为地址标识，无需 IP 和端口 使用 IP 和端口作为地址标识   协议栈 不走网络协议栈，直接通过内核内存传输 走完整的网络协议栈（如 TCP&#x2F;IP）   性能 非常高（少了协议栈开">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Unix Socket 和 TCP&#x2F;IP Socker">
+<meta property="og:url" content="https://luffy997.github.io/2025/04/09/Unix-Socket-%E5%92%8C-TCP-IP-Socker/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="🧱 一、通信机制区别   项目 Unix Domain Socket TCP&#x2F;IP Socket    通信类型 本地通信（同一台主机） 网络通信（本地或远程）   传输协议 使用文件系统路径作为地址标识，无需 IP 和端口 使用 IP 和端口作为地址标识   协议栈 不走网络协议栈，直接通过内核内存传输 走完整的网络协议栈（如 TCP&#x2F;IP）   性能 非常高（少了协议栈开">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg">
+<meta property="article:published_time" content="2025-04-09T03:04:00.000Z">
+<meta property="article:modified_time" content="2025-04-30T01:28:52.334Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg">
+  
+  
+  
+  <title>Unix Socket 和 TCP/IP Socker - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Unix Socket 和 TCP/IP Socker"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-04-09 11:04" pubdate>
+          2025年4月9日 上午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Unix Socket 和 TCP/IP Socker</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="🧱-一、通信机制区别"><a href="#🧱-一、通信机制区别" class="headerlink" title="🧱 一、通信机制区别"></a>🧱 一、通信机制区别</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>Unix Domain Socket</th>
+<th>TCP&#x2F;IP Socket</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>通信类型</strong></td>
+<td>本地通信（同一台主机）</td>
+<td>网络通信（本地或远程）</td>
+</tr>
+<tr>
+<td><strong>传输协议</strong></td>
+<td>使用文件系统路径作为地址标识，无需 IP 和端口</td>
+<td>使用 IP 和端口作为地址标识</td>
+</tr>
+<tr>
+<td><strong>协议栈</strong></td>
+<td>不走网络协议栈，直接通过内核内存传输</td>
+<td>走完整的网络协议栈（如 TCP&#x2F;IP）</td>
+</tr>
+<tr>
+<td><strong>性能</strong></td>
+<td>非常高（少了协议栈开销）</td>
+<td>相对较低（协议栈处理、数据封包解析）</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="🚀-二、使用场景区别"><a href="#🚀-二、使用场景区别" class="headerlink" title="🚀 二、使用场景区别"></a>🚀 二、使用场景区别</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>Unix Domain Socket</th>
+<th>TCP&#x2F;IP Socket</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>适用场景</strong></td>
+<td>本地进程间通信（IPC）如 Nginx 和 PHP-FPM</td>
+<td>跨主机通信，如客户端与远程服务器通信</td>
+</tr>
+<tr>
+<td><strong>典型使用</strong></td>
+<td>Docker 容器内部通信、数据库本地连接（如 PostgreSQL）</td>
+<td>Web服务、分布式系统通信</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="🔒-三、安全与部署区别"><a href="#🔒-三、安全与部署区别" class="headerlink" title="🔒 三、安全与部署区别"></a>🔒 三、安全与部署区别</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>Unix Domain Socket</th>
+<th>TCP&#x2F;IP Socket</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>访问控制</strong></td>
+<td>可通过文件权限控制（如 <code>/tmp/socket.sock</code>）</td>
+<td>需要配置防火墙、监听地址来限制访问</td>
+</tr>
+<tr>
+<td><strong>部署复杂度</strong></td>
+<td>简单（仅需要指定文件路径）</td>
+<td>需要监听 IP、配置端口、防火墙、安全策略</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="📊-四、开发对比"><a href="#📊-四、开发对比" class="headerlink" title="📊 四、开发对比"></a>📊 四、开发对比</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>Unix Domain Socket</th>
+<th>TCP&#x2F;IP Socket</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>地址结构</strong></td>
+<td><code>sockaddr_un</code>（指定路径）</td>
+<td><code>sockaddr_in</code>（指定 IP+端口）</td>
+</tr>
+<tr>
+<td><strong>开发接口</strong></td>
+<td><code>socket()、bind()、listen()、accept()</code> 相同，只是地址结构不同</td>
+<td>同上</td>
+</tr>
+<tr>
+<td><strong>调试工具</strong></td>
+<td>一般看不到流量（不走网络），可以用 <code>lsof</code> 查看</td>
+<td>可以用 <code>tcpdump</code>、<code>netstat</code>、<code>wireshark</code> 抓包分析</td>
+</tr>
+</tbody></table>
+<hr>
+<p>✅ 总结一句话</p>
+<ul>
+<li>如果 <strong>两个进程在同一台机器上通信</strong>，选 <strong>Unix Domain Socket</strong>，速度快、安全性高。</li>
+<li>如果 <strong>需要跨主机通信</strong>，只能用 <strong>TCP&#x2F;IP Socket</strong>。</li>
+</ul>
+<hr>
+<h3 id="🧠-五、Unix-Domain-Socket-的通信原理"><a href="#🧠-五、Unix-Domain-Socket-的通信原理" class="headerlink" title="🧠 五、Unix Domain Socket 的通信原理"></a>🧠 五、Unix Domain Socket 的通信原理</h3><h4 id="📌-核心原理：内核空间内存拷贝-内存队列（socket-buffer）"><a href="#📌-核心原理：内核空间内存拷贝-内存队列（socket-buffer）" class="headerlink" title="📌 核心原理：内核空间内存拷贝 + 内存队列（socket buffer）"></a>📌 核心原理：内核空间内存拷贝 + 内存队列（socket buffer）</h4><ol>
+<li><strong>不经过网络协议栈（TCP&#x2F;IP）</strong></li>
+</ol>
+<ul>
+<li><ul>
+<li>数据在两个进程之间传递时，完全在本机内核中完成，不走网卡、不封包、不路由。</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><strong>使用内核的 Socket 缓冲区</strong></li>
+</ol>
+<ul>
+<li><ul>
+<li>类似于一对管道：每个 Unix socket 对应一对缓存队列（send buffer 和 recv buffer）。</li>
+<li>发送方 <code>write()</code> 数据，内核拷贝到 socket buffer；</li>
+<li>接收方 <code>read()</code> 时，从 buffer 中取出数据。</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><strong>拷贝次数</strong></li>
+</ol>
+<ul>
+<li><ul>
+<li>默认是两次拷贝：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>用户态 → 内核态（write）</li>
+<li>内核态 → 用户态（read）</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><strong>Zero-Copy（零拷贝）优化：</strong></li>
+</ol>
+<ul>
+<li><ul>
+<li>某些新版本内核可对 Unix Socket 开启“零拷贝”优化（比如 <code>splice</code>），进一步提升性能。</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><strong>效率优势</strong></li>
+</ol>
+<ul>
+<li><ul>
+<li>由于无需封包、校验、序列号等操作，速度非常快，延迟非常低。</li>
+</ul>
+</li>
+</ul>
+<p>✅ 总结：<strong>Unix Domain Socket 本质是借助内核的内存机制实现本地进程通信，效率高、延迟低。</strong></p>
+<hr>
+<h3 id="🌐-六、TCP-IP-Socket-的通信原理"><a href="#🌐-六、TCP-IP-Socket-的通信原理" class="headerlink" title="🌐 六、TCP&#x2F;IP Socket 的通信原理"></a>🌐 六、TCP&#x2F;IP Socket 的通信原理</h3><h4 id="📌-核心原理：走完整-TCP-IP-协议栈-网络缓冲区-可能跨主机"><a href="#📌-核心原理：走完整-TCP-IP-协议栈-网络缓冲区-可能跨主机" class="headerlink" title="📌 核心原理：走完整 TCP&#x2F;IP 协议栈 + 网络缓冲区 + 可能跨主机"></a>📌 核心原理：走完整 TCP&#x2F;IP 协议栈 + 网络缓冲区 + 可能跨主机</h4><ol>
+<li><strong>协议栈处理</strong></li>
+</ol>
+<ul>
+<li><ul>
+<li>发送数据时：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>用户态 → 内核态 → TCP层 → IP层 → 网卡驱动 → 发送到网络</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>接收数据时：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>网卡接收 → IP层 → TCP层 → socket buffer → 用户态读取</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><strong>封包与校验</strong></li>
+</ol>
+<ul>
+<li><ul>
+<li>每个数据包要加上 TCP 头、IP 头、进行序列号管理、重传机制等；</li>
+<li>TCP 的三次握手、流控、拥塞控制等都在这里进行。</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><strong>拷贝次数</strong></li>
+</ol>
+<ul>
+<li><ul>
+<li>通常至少两次（可能更多）：</li>
+</ul>
+</li>
+<li><ul>
+<li><ul>
+<li>用户态 → 内核态（write）</li>
+<li>内核态 → 用户态（read）</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><ul>
+<li>还有网卡 DMA 的硬件拷贝过程。</li>
+</ul>
+</li>
+</ul>
+<ol>
+<li><strong>可能的网络瓶颈</strong></li>
+</ol>
+<ul>
+<li><ul>
+<li>网络延迟、丢包重传、带宽限制都会影响通信效率。</li>
+</ul>
+</li>
+</ul>
+<p>✅ 总结：<strong>TCP&#x2F;IP Socket 适用于跨主机通信，但由于协议栈和网络环境，效率远不如 Unix Socket。</strong></p>
+<hr>
+<h3 id="🚩-一句话对比总结"><a href="#🚩-一句话对比总结" class="headerlink" title="🚩 一句话对比总结"></a>🚩 一句话对比总结</h3><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>Unix Domain Socket</th>
+<th>TCP&#x2F;IP Socket</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>是否跨主机</td>
+<td>❌ 本地进程间</td>
+<td>✅ 可跨主机</td>
+</tr>
+<tr>
+<td>数据路径</td>
+<td>用户态 → 内核态（内核内存传递）</td>
+<td>用户态 → 内核态 → 协议栈 → 网卡&#x2F;网络</td>
+</tr>
+<tr>
+<td>协议栈处理</td>
+<td>❌ 无</td>
+<td>✅ 有（TCP&#x2F;IP）</td>
+</tr>
+<tr>
+<td>拷贝次数</td>
+<td>通常 2 次（或 0 拷贝）</td>
+<td>通常 2 次（加协议处理）</td>
+</tr>
+<tr>
+<td>效率</td>
+<td>✅ 极高</td>
+<td>❌ 较低</td>
+</tr>
+</tbody></table>
+<hr>
+<p><a target="_blank" rel="noopener" href="https://imgse.com/i/pEHYPne"><img src="https://s21.ax1x.com/2025/04/30/pEHYPne.md.png" srcset="/img/loading.gif" lazyload alt="pEHYPne.md.png"></a><br>这是 Unix Domain Socket 和 TCP&#x2F;IP Socket 的数据传输流程图，并配套一个简单的 Python 示例对照两种通信方式。</p>
+<hr>
+<h2 id="🖼️-流程图说明"><a href="#🖼️-流程图说明" class="headerlink" title="🖼️ 流程图说明"></a>🖼️ 流程图说明</h2><p>左边为 <strong>Unix Domain Socket</strong>：  </p>
+<ul>
+<li>数据从应用层通过 <code>write()</code> 进入内核的 socket buffer  </li>
+<li>另一端 <code>read()</code> 直接读取，<strong>整个过程在内核中完成，不走网络</strong></li>
+</ul>
+<p>右边为 <strong>TCP&#x2F;IP Socket</strong>：  </p>
+<ul>
+<li>数据需经过 TCP&#x2F;IP 协议栈处理，经过网卡、可能传输到远程机器  </li>
+<li>中间涉及封包、路由、流控等多个阶段</li>
+</ul>
+<p>👉 图像展示了用户态和内核态之间的清晰数据路径对比。</p>
+<hr>
+<h2 id="🧪-Python-示例"><a href="#🧪-Python-示例" class="headerlink" title="🧪 Python 示例"></a>🧪 Python 示例</h2><p>下面分别演示 Unix Domain Socket 和 TCP&#x2F;IP Socket 的基本用法。</p>
+<h3 id="✅-1-Unix-Domain-Socket-示例（本地通信）"><a href="#✅-1-Unix-Domain-Socket-示例（本地通信）" class="headerlink" title="✅ 1. Unix Domain Socket 示例（本地通信）"></a>✅ 1. Unix Domain Socket 示例（本地通信）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># server_unix.py</span><br><span class="hljs-keyword">import</span> socket<br><span class="hljs-keyword">import</span> os<br><br>SOCKET_PATH = <span class="hljs-string">&quot;/tmp/demo_socket&quot;</span><br><br><span class="hljs-keyword">if</span> os.path.exists(SOCKET_PATH):<br>    os.remove(SOCKET_PATH)<br><br>server = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)<br>server.bind(SOCKET_PATH)<br>server.listen(<span class="hljs-number">1</span>)<br>conn, _ = server.accept()<br><br>data = conn.recv(<span class="hljs-number">1024</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;收到：&quot;</span>, data.decode())<br>conn.send(<span class="hljs-string">b&quot;你好，客户端！&quot;</span>)<br>conn.close()<br>server.close()<br><span class="hljs-comment"># client_unix.py</span><br><span class="hljs-keyword">import</span> socket<br><br>SOCKET_PATH = <span class="hljs-string">&quot;/tmp/demo_socket&quot;</span><br><br>client = socket.socket(socket.AF_UNIX, socket.SOCK_STREAM)<br>client.connect(SOCKET_PATH)<br>client.send(<span class="hljs-string">b&quot;你好，服务端！&quot;</span>)<br>data = client.recv(<span class="hljs-number">1024</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;收到：&quot;</span>, data.decode())<br>client.close()<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="✅-2-TCP-IP-Socket-示例（网络通信）"><a href="#✅-2-TCP-IP-Socket-示例（网络通信）" class="headerlink" title="✅ 2. TCP&#x2F;IP Socket 示例（网络通信）"></a>✅ 2. TCP&#x2F;IP Socket 示例（网络通信）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># server_tcp.py</span><br><span class="hljs-keyword">import</span> socket<br><br>server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)<br>server.bind((<span class="hljs-string">&quot;127.0.0.1&quot;</span>, <span class="hljs-number">8888</span>))<br>server.listen(<span class="hljs-number">1</span>)<br>conn, addr = server.accept()<br><br>data = conn.recv(<span class="hljs-number">1024</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;收到：&quot;</span>, data.decode())<br>conn.send(<span class="hljs-string">b&quot;你好，TCP客户端！&quot;</span>)<br>conn.close()<br>server.close()<br><span class="hljs-comment"># client_tcp.py</span><br><span class="hljs-keyword">import</span> socket<br><br>client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)<br>client.connect((<span class="hljs-string">&quot;127.0.0.1&quot;</span>, <span class="hljs-number">8888</span>))<br>client.send(<span class="hljs-string">b&quot;你好，TCP服务端！&quot;</span>)<br>data = client.recv(<span class="hljs-number">1024</span>)<br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;收到：&quot;</span>, data.decode())<br>client.close()<br></code></pre></td></tr></table></figure>
+
+<hr>
+<p>这两段代码逻辑一样，只是使用的 socket 类型不同（<code>AF_UNIX</code> vs <code>AF_INET</code>），你可以实际跑一下对比差异（如 CPU 使用率、延迟等）。</p>
+<p>如果你还想深入了解“零拷贝优化”或者“进程间通信对比”，我也可以继续补充～</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Unix Socket 和 TCP/IP Socker</div>
+      <div>https://luffy997.github.io/2025/04/09/Unix-Socket-和-TCP-IP-Socker/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年4月9日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/04/12/Python%E5%92%8CJava-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E3%80%81%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/" title="Python和Java 多线程、多进程的使用场景">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python和Java 多线程、多进程的使用场景</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/03/28/RAID-%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97/" title="RAID 磁盘阵列">
+                        <span class="hidden-mobile">RAID 磁盘阵列</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
