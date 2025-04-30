@@ -1,0 +1,833 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Huey 是一个轻量级的任务队列（Task Queue），适合中小型项目使用。它的架构虽然简单，但非常优雅，核心组成包括：  任务定义（@task &#x2F; @periodic_task） 任务调度器（Scheduler） 消费者（Consumer） 工作进程（Worker） 存储（Broker：Redis &#x2F; Sqlite）   ✅ Huey 的整体架构图我先画个图你一目了然地看清">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Huey 架构">
+<meta property="og:url" content="https://luffy997.github.io/2025/05/20/Huey-%E6%9E%B6%E6%9E%84/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="Huey 是一个轻量级的任务队列（Task Queue），适合中小型项目使用。它的架构虽然简单，但非常优雅，核心组成包括：  任务定义（@task &#x2F; @periodic_task） 任务调度器（Scheduler） 消费者（Consumer） 工作进程（Worker） 存储（Broker：Redis &#x2F; Sqlite）   ✅ Huey 的整体架构图我先画个图你一目了然地看清">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png">
+<meta property="article:published_time" content="2025-05-20T03:54:22.000Z">
+<meta property="article:modified_time" content="2025-04-30T00:59:33.648Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png">
+  
+  
+  
+  <title>Huey 架构 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Huey 架构"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-05-20 11:54" pubdate>
+          2025年5月20日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          17 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Huey 架构</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Huey 是一个轻量级的任务队列（Task Queue），适合中小型项目使用。它的架构虽然简单，但非常优雅，核心组成包括：</p>
+<ul>
+<li><strong>任务定义（@task &#x2F; @periodic_task）</strong></li>
+<li><strong>任务调度器（Scheduler）</strong></li>
+<li><strong>消费者（Consumer）</strong></li>
+<li><strong>工作进程（Worker）</strong></li>
+<li><strong>存储（Broker：Redis &#x2F; Sqlite）</strong></li>
+</ul>
+<hr>
+<h2 id="✅-Huey-的整体架构图"><a href="#✅-Huey-的整体架构图" class="headerlink" title="✅ Huey 的整体架构图"></a>✅ Huey 的整体架构图</h2><p>我先画个图你一目了然地看清架构关系，再详细讲解每个模块：</p>
+<h3 id="🌐-Huey-架构图"><a href="#🌐-Huey-架构图" class="headerlink" title="🌐 Huey 架构图"></a>🌐 Huey 架构图</h3><figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs latex">                        +------------------+<br>                        |  用户代码注册任务  |<br>                        |  @huey.task()     |<br>                        +--------+---------+<br>                                 |<br>                +-----------------------------+<br>                |        Huey 实例            |<br>                |  封装调度器/任务注册接口     |<br>                +-----------------------------+<br>                                 |<br>       +-------------------------+-------------------------+<br>       |                                                   |<br>+---------------+                                +------------------+<br>|   Scheduler   |  &lt;- 周期性任务调度              |     Consumer      |<br>|   (定时推任务) |                                |  (消费任务主控器) |<br>+-------+-------+                                +--------+---------+<br>        |                                                  |<br>        v                                                  v<br>+-------------------+                        +--------------------------+<br>|     Redis/Sqlite  | &lt;-- 任务入队/出队 --&gt;  |         Worker(s)        |<br>|     任务中间件     |                        |  (执行任务的多进程/线程) |<br>+-------------------+                        +--------------------------+<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="🧩-各部分作用详解"><a href="#🧩-各部分作用详解" class="headerlink" title="🧩 各部分作用详解"></a>🧩 各部分作用详解</h2><h3 id="1-任务注册-Huey-实例"><a href="#1-任务注册-Huey-实例" class="headerlink" title="1. 任务注册 &amp; Huey 实例"></a>1. <strong>任务注册 &amp; Huey 实例</strong></h3><p>你通过装饰器 <code>@huey.task()</code> 或 <code>@huey.periodic_task()</code> 注册任务。这些任务被注册到 <code>Huey</code> 实例中，供调度器或 consumer 执行。</p>
+<hr>
+<h3 id="2-Scheduler：调度器"><a href="#2-Scheduler：调度器" class="headerlink" title="2. Scheduler：调度器"></a>2. <strong>Scheduler：调度器</strong></h3><ul>
+<li>专门处理 <code>@periodic_task(crontab(...))</code> 任务。</li>
+<li>会根据时间条件，将周期性任务“推”入队列（即写入 Redis&#x2F;Sqlite）。</li>
+<li><strong>是一个独立线程（或进程）在 Consumer 中运行</strong>。</li>
+</ul>
+<hr>
+<h3 id="3-Consumer：消费者主控器"><a href="#3-Consumer：消费者主控器" class="headerlink" title="3. Consumer：消费者主控器"></a>3. <strong>Consumer：消费者主控器</strong></h3><p>这是关键模块，它：</p>
+<ul>
+<li>启动多个 Worker；</li>
+<li>拉起 Scheduler；</li>
+<li>管理 Worker 的生命周期（健康检查、重启）；</li>
+<li>拉任务给 Worker 执行。</li>
+</ul>
+<p>Consumer 就像个“班主任”，指挥所有 Worker 干活。</p>
+<hr>
+<h3 id="4-Worker：真正执行任务的进程或线程"><a href="#4-Worker：真正执行任务的进程或线程" class="headerlink" title="4. Worker：真正执行任务的进程或线程"></a>4. <strong>Worker：真正执行任务的进程或线程</strong></h3><p>Worker 是 Huey 中实际 <strong>执行任务的实体</strong>，它循环从队列中取出任务，处理执行、异常、结果存储等多个环节，核心流程如下：</p>
+<hr>
+<h4 id="🧱-1-从任务队列中拉取任务（dequeue）"><a href="#🧱-1-从任务队列中拉取任务（dequeue）" class="headerlink" title="🧱 1. 从任务队列中拉取任务（dequeue）"></a>🧱 1. 从任务队列中拉取任务（dequeue）</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">task = <span class="hljs-variable language_">self</span>.huey.dequeue()<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>huey.dequeue()</code> 会连接后端存储（Redis &#x2F; Sqlite）去读取一条待执行的任务。</li>
+<li>队列中保存的是序列化后的任务消息，内容包括任务ID、函数名称、参数等。</li>
+</ul>
+<hr>
+<h4 id="🧰-2-反序列化消息，解析任务函数和参数"><a href="#🧰-2-反序列化消息，解析任务函数和参数" class="headerlink" title="🧰 2. 反序列化消息，解析任务函数和参数"></a>🧰 2. 反序列化消息，解析任务函数和参数</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-variable language_">self</span>.huey.execute(task)<br></code></pre></td></tr></table></figure>
+
+<p>这一步会解析任务消息（Task对象）：</p>
+<ul>
+<li>确定对应的任务函数（通过 <code>Huey</code> 注册的 task 映射）</li>
+<li>获取函数参数（args、kwargs）</li>
+<li>还原 task 的上下文（比如任务ID、重试次数等）</li>
+</ul>
+<p>Huey 在任务注册时内部做了函数封装，反序列化能还原出真正要执行的 Python 函数。</p>
+<hr>
+<h4 id="🧠-3-执行任务函数的业务逻辑"><a href="#🧠-3-执行任务函数的业务逻辑" class="headerlink" title="🧠 3. 执行任务函数的业务逻辑"></a>🧠 3. 执行任务函数的业务逻辑</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">result = func(*args, **kwargs)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>任务函数被调用；</li>
+<li>执行中可以调用数据库、API、发送邮件等；</li>
+<li>支持返回值，也可以返回 <code>None</code>；</li>
+<li>Worker 是异步拉任务、同步执行。</li>
+</ul>
+<p>Huey 本质上是<strong>同步执行</strong>任务，但支持并发 worker 实现并行执行。</p>
+<hr>
+<h4 id="🚨-4-异常处理机制"><a href="#🚨-4-异常处理机制" class="headerlink" title="🚨 4. 异常处理机制"></a>🚨 4. 异常处理机制</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">try</span>:<br>    result = func(*args, **kwargs)<br><span class="hljs-keyword">except</span> Exception <span class="hljs-keyword">as</span> e:<br>    logger.exception(<span class="hljs-string">&#x27;Unhandled error during task %s&#x27;</span>, task.<span class="hljs-built_in">id</span>)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><p>如果任务执行抛出异常，Worker 会：</p>
+</li>
+<li><ul>
+<li>记录错误日志；</li>
+<li>设置任务状态为失败；</li>
+<li>（可选）支持自动重试（通过 <code>@task(retries=n)</code> 设置）；</li>
+</ul>
+</li>
+<li><p>有些后端支持失败任务记录，如 Redis 可记录到错误队列。</p>
+</li>
+</ul>
+<hr>
+<h4 id="📝-5-存储任务结果（可选）"><a href="#📝-5-存储任务结果（可选）" class="headerlink" title="📝 5. 存储任务结果（可选）"></a>📝 5. 存储任务结果（可选）</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-variable language_">self</span>.huey.store_result(task, result)<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>如果任务函数有返回值，Huey 可以将其存入结果后端；</li>
+<li>默认 Redis 是支持结果存储的（启用 <code>result_store=True</code>）；</li>
+<li>存储结果后，其他组件（比如 Web 端）可以查结果。</li>
+</ul>
+<p>也支持设置任务是否需要结果，比如 <code>@task(store_result=False)</code> 可以关闭存储。</p>
+<hr>
+<h4 id="💤-6-等待下一轮任务（任务调度控制）"><a href="#💤-6-等待下一轮任务（任务调度控制）" class="headerlink" title="💤 6. 等待下一轮任务（任务调度控制）"></a>💤 6. 等待下一轮任务（任务调度控制）</h4><ul>
+<li>如果没拉到任务，会调用 <code>self.sleep()</code> 进行延迟等待；</li>
+<li>支持延迟策略（default_delay、max_delay、backoff）；</li>
+<li>避免死循环 + CPU 空转；</li>
+<li>如果队列是 blocking（阻塞式，比如 Redis BRPOP），则直接阻塞等待任务。</li>
+</ul>
+<hr>
+<h4 id="🌪️-总结完整流程图"><a href="#🌪️-总结完整流程图" class="headerlink" title="🌪️ 总结完整流程图"></a>🌪️ 总结完整流程图</h4><figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs latex">+---------------------+<br>|     Worker 启动     |<br>+----------+----------+<br>           |<br>           v<br>+--------------------------+<br>| 拉取任务 huey.dequeue()  |<br>+--------------------------+<br>           |<br>           v<br>+-------------------------------+<br>| 反序列化：获取函数+参数       |<br>+-------------------------------+<br>           |<br>           v<br>+-----------------------------+<br>| 执行任务函数 func(*args)   |<br>+-----------------------------+<br>           |<br>      +----+----+<br>      |         |<br>      v         v<br> 成功执行     抛出异常<br>   |              |<br>   v              v<br> 保存结果     日志记录/重试<br>   |<br>   v<br> 睡眠/等待下一任务<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h4 id="🧩-其他细节拓展（高级特性）"><a href="#🧩-其他细节拓展（高级特性）" class="headerlink" title="🧩 其他细节拓展（高级特性）"></a>🧩 其他细节拓展（高级特性）</h4><ul>
+<li><strong>任务重试机制</strong>：通过 <code>@task(retries=3, retry_delay=10)</code> 自动重试失败任务；</li>
+<li><strong>优先级队列支持</strong>：使用 <code>PriorityRedisHuey</code> 支持任务优先级调度；</li>
+<li><strong>定时任务隔离</strong>：<code>Scheduler</code> 推送的是 periodic_task，Worker 对其统一处理；</li>
+<li><strong>多进程&#x2F;线程模式</strong>：通过 Consumer 的 <code>worker_type</code> 控制是多线程还是多进程执行 Worker；</li>
+<li><strong>最大任务限制</strong>（你用到的）：Worker 达到 <code>max_tasks</code> 限制后自动退出；</li>
+<li><strong>任务结果过期</strong>：可配置 Redis 结果 TTL，避免结果长时间占用内存。</li>
+</ul>
+<hr>
+<h3 id="5-Broker：任务队列的存储介质"><a href="#5-Broker：任务队列的存储介质" class="headerlink" title="5. Broker：任务队列的存储介质"></a>5. <strong>Broker：任务队列的存储介质</strong></h3><ul>
+<li>支持 Redis、Sqlite 等；</li>
+<li>所有任务都要写入&#x2F;读取这里；</li>
+<li>Scheduler 和 Worker 都是围绕 Broker 工作。</li>
+</ul>
+<hr>
+<h2 id="🔄-运行流程简要图示"><a href="#🔄-运行流程简要图示" class="headerlink" title="🔄 运行流程简要图示"></a>🔄 运行流程简要图示</h2><figure class="highlight latex"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs latex">@huey.task() -&gt; 注册任务到 Huey<br><br>周期性任务:<br>Scheduler -&gt; 检查时间 -&gt; 推入 Redis/Sqlite<br><br>普通任务:<br>用户调用 task(...) -&gt; 立即推入 Redis/Sqlite<br><br>Consumer -&gt; 拉任务 -&gt; 分发给多个 Worker<br><br>Worker -&gt; 真实执行任务<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="🎯-Consumer-和-Worker-的具体关系"><a href="#🎯-Consumer-和-Worker-的具体关系" class="headerlink" title="🎯 Consumer 和 Worker 的具体关系"></a>🎯 Consumer 和 Worker 的具体关系</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>管理者</td>
+<td>Consumer 是总控，启动 Scheduler 和多个 Worker</td>
+</tr>
+<tr>
+<td>启动方式</td>
+<td>Worker 启动是由 Consumer <code>create_worker()</code> 方法生成</td>
+</tr>
+<tr>
+<td>健康检查</td>
+<td>Worker 如果挂了，Consumer 会检测并自动重启</td>
+</tr>
+<tr>
+<td>执行职责</td>
+<td>Worker 负责从 Broker 中拉任务并执行；Consumer 不执行任务本身</td>
+</tr>
+<tr>
+<td>并发模型</td>
+<td>Worker 支持线程&#x2F;进程模型，由 <code>worker_type</code> 参数指定</td>
+</tr>
+<tr>
+<td>生命周期控制</td>
+<td>Worker 可配置执行最大任务数&#x2F;超时等退出条件，由 Consumer 负责控制</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="🧠-总结一下"><a href="#🧠-总结一下" class="headerlink" title="🧠 总结一下"></a>🧠 总结一下</h2><ul>
+<li><strong>Huey 架构简单而清晰：Producer → Broker → Consumer → Worker</strong></li>
+<li><strong>Consumer 是 orchestrator，调度和管理一切运行的单元</strong></li>
+<li><strong>Worker 是干活的实体，真正负责执行用户定义的任务函数</strong></li>
+<li><strong>Scheduler 只参与周期性任务调度，属于 Consumer 管辖下的一个线程</strong></li>
+</ul>
+<hr>
+<h2 id="Consumer始终是进程，为什么不能是当worker是线程时，用线程"><a href="#Consumer始终是进程，为什么不能是当worker是线程时，用线程" class="headerlink" title="Consumer始终是进程，为什么不能是当worker是线程时，用线程"></a>Consumer始终是进程，为什么不能是当worker是线程时，用线程</h2><h3 id="🎯-问题本质"><a href="#🎯-问题本质" class="headerlink" title="🎯 问题本质"></a>🎯 问题本质</h3><p>你问的是：</p>
+<p>在 <code>worker_type=&quot;thread&quot;</code> 时，<strong>Consumer 为啥还是进程</strong>，而不是也作为线程运行？</p>
+<p>答案是：</p>
+<p><strong>因为 Consumer 是 Huey 的“调度主控器”，本质就是一个独立运行的主进程</strong>，它的职责是创建、管理多个 worker（线程或进程），这个角色<strong>天然就需要以进程形式启动</strong>。</p>
+<hr>
+<h3 id="🔧-拆解角色职责"><a href="#🔧-拆解角色职责" class="headerlink" title="🔧 拆解角色职责"></a>🔧 拆解角色职责</h3><h4 id="🧠-1-Consumer-的职责是："><a href="#🧠-1-Consumer-的职责是：" class="headerlink" title="🧠 1. Consumer 的职责是："></a>🧠 1. <code>Consumer</code> 的职责是：</h4><ul>
+<li>启动多个 Worker（线程&#x2F;进程）</li>
+<li>定时扫描任务（定时任务调度器）</li>
+<li>健康检查：监控 worker 是否存活，崩了就重启</li>
+<li>维护共享队列、同步日志</li>
+</ul>
+<p>这些都需要<strong>阻塞式的控制循环（event loop）</strong>、调度器、线程&#x2F;进程管理能力，不适合用线程形式托管在其他程序里。</p>
+<hr>
+<h4 id="🧩-2-Consumer-≠-某个-Worker"><a href="#🧩-2-Consumer-≠-某个-Worker" class="headerlink" title="🧩 2. Consumer ≠ 某个 Worker"></a>🧩 2. <code>Consumer</code> ≠ 某个 Worker</h4><p><code>Consumer</code> 并不会自己执行任务，它只是：</p>
+<ul>
+<li>创建 N 个 Worker 实例</li>
+<li>把任务从队列中分发下去</li>
+</ul>
+<p>也就是说，哪怕 Worker 是线程，<code>Consumer</code> 本身也不会是其中之一 —— 它是上级控制器。</p>
+<hr>
+<h4 id="🚧-3-为什么不能是线程？"><a href="#🚧-3-为什么不能是线程？" class="headerlink" title="🚧 3. 为什么不能是线程？"></a>🚧 3. 为什么不能是线程？</h4><p>假设我们把 <code>Consumer</code> 做成线程，会有什么问题？</p>
+<table>
+<thead>
+<tr>
+<th>问题点</th>
+<th>说明</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>不易独立部署</strong></td>
+<td>Huey 是个调度系统，Consumer 必须独立运行，线程不方便脱离主程序独立运行</td>
+</tr>
+<tr>
+<td><strong>资源&#x2F;控制冲突</strong></td>
+<td>线程无法对子线程进行进程级资源回收和独立崩溃恢复</td>
+</tr>
+<tr>
+<td><strong>健康检查失效</strong></td>
+<td>健康检查机制需要进程间通信，线程做不到隔离重启</td>
+</tr>
+<tr>
+<td><strong>调度不准确</strong></td>
+<td>定时任务调度器内部基于 event loop 和 timer，会被主线程阻塞干扰</td>
+</tr>
+<tr>
+<td><strong>兼容性问题</strong></td>
+<td>比如多线程下的 GIL（全局解释器锁）会限制并发效率，而进程不会受影响</td>
+</tr>
+</tbody></table>
+<hr>
+<h3 id="✅-正确的架构视角图"><a href="#✅-正确的架构视角图" class="headerlink" title="✅ 正确的架构视角图"></a>✅ 正确的架构视角图</h3><p>不管 Worker 是线程还是进程，Consumer 都是如下结构：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plain">            [Consumer 主进程]<br>                   |<br>     +-------------+-------------+<br>     |                           |<br>[Worker Thread]           [Worker Thread]<br>[Thread #1]               [Thread #2]<br></code></pre></td></tr></table></figure>
+
+<p>或者：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs plain">            [Consumer 主进程]<br>                   |<br>     +-------------+-------------+<br>     |                           |<br>[Worker Process]           [Worker Process]<br>[Process #1]               [Process #2]<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="🎯-总结一句话："><a href="#🎯-总结一句话：" class="headerlink" title="🎯 总结一句话："></a>🎯 总结一句话：</h3><p><strong>Consumer 永远是主进程</strong>，它就是整个调度系统的核心控制器，线程或进程只是它所启动的 Worker 的执行方式。让 Consumer 成为线程反而会削弱它的独立性、稳定性和可靠性。</p>
+<hr>
+<p>如果你未来要部署 Huey 服务，推荐把 Consumer 作为一个<strong>独立服务进程部署</strong>，通过 supervisor 或 systemd 来守护它的运行。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Huey 架构</div>
+      <div>https://luffy997.github.io/2025/05/20/Huey-架构/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年5月20日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/04/30/Python-%E5%8D%8F%E7%A8%8B/" title="Python 协程">
+                        <span class="hidden-mobile">Python 协程</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

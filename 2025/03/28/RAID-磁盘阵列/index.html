@@ -1,0 +1,835 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="RAID 介绍RAID（Redundant Array of Independent Disks，独立磁盘冗余阵列）是一种数据存储技术，利用多个硬盘组合成一个逻辑存储单元，以提高数据冗余性、性能或两者兼顾。   RAID 主要分为 硬件 RAID 和 软件 RAID，不同级别的 RAID 提供不同的性能、容错能力和存储效率。  1. RAID 的分类RAID 主要分为以下几种常见级别：    RA">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RAID 磁盘阵列">
+<meta property="og:url" content="https://luffy997.github.io/2025/03/28/RAID-%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="RAID 介绍RAID（Redundant Array of Independent Disks，独立磁盘冗余阵列）是一种数据存储技术，利用多个硬盘组合成一个逻辑存储单元，以提高数据冗余性、性能或两者兼顾。   RAID 主要分为 硬件 RAID 和 软件 RAID，不同级别的 RAID 提供不同的性能、容错能力和存储效率。  1. RAID 的分类RAID 主要分为以下几种常见级别：    RA">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg">
+<meta property="article:published_time" content="2025-03-28T12:34:39.000Z">
+<meta property="article:modified_time" content="2025-04-30T00:56:15.332Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg">
+  
+  
+  
+  <title>RAID 磁盘阵列 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="RAID 磁盘阵列"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-03-28 20:34" pubdate>
+          2025年3月28日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          18 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">RAID 磁盘阵列</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h3 id="RAID-介绍"><a href="#RAID-介绍" class="headerlink" title="RAID 介绍"></a><strong>RAID 介绍</strong></h3><p>RAID（Redundant Array of Independent Disks，独立磁盘冗余阵列）是一种数据存储技术，利用多个硬盘组合成一个逻辑存储单元，以提高<strong>数据冗余性</strong>、<strong>性能</strong>或<strong>两者兼顾</strong>。  </p>
+<p>RAID 主要分为 <strong>硬件 RAID</strong> 和 <strong>软件 RAID</strong>，不同级别的 RAID 提供不同的性能、容错能力和存储效率。</p>
+<hr>
+<h2 id="1-RAID-的分类"><a href="#1-RAID-的分类" class="headerlink" title="1. RAID 的分类"></a><strong>1. RAID 的分类</strong></h2><p>RAID 主要分为以下几种常见级别：</p>
+<table>
+<thead>
+<tr>
+<th>RAID 级别</th>
+<th>特点</th>
+<th>容错性</th>
+<th>读写性能</th>
+<th>磁盘利用率</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>RAID 0</td>
+<td>数据条带化，无冗余</td>
+<td>❌ 无</td>
+<td>🔼 读写加速</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>RAID 1</td>
+<td>镜像存储，数据完整性高</td>
+<td>✅ 允许 1 块磁盘故障</td>
+<td>读性能高，写入受限</td>
+<td>50%</td>
+</tr>
+<tr>
+<td>RAID 5</td>
+<td>条带化 + 奇偶校验</td>
+<td>✅ 允许 1 块磁盘故障</td>
+<td>读高，写稍慢</td>
+<td>(n-1)&#x2F;n</td>
+</tr>
+<tr>
+<td>RAID 6</td>
+<td>双奇偶校验，增强可靠性</td>
+<td>✅ 允许 2 块磁盘故障</td>
+<td>读高，写稍慢</td>
+<td>(n-2)&#x2F;n</td>
+</tr>
+<tr>
+<td>RAID 10</td>
+<td>RAID 1 + RAID 0（镜像 + 条带）</td>
+<td>✅ 允许每组 1 块磁盘故障</td>
+<td>读高，写高</td>
+<td>50%</td>
+</tr>
+</tbody></table>
+<p>✅ <strong>RAID 0（条带化，提升速度，无冗余）</strong></p>
+<p><img src="https://s21.ax1x.com/2025/04/30/pEHJNeH.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><strong>特点</strong>：数据分布在多个磁盘上，提高读写性能。</li>
+<li><strong>优点</strong>：速度最快，磁盘利用率最高（100%）。</li>
+<li><strong>缺点</strong>：<strong>无冗余</strong>，任意一块磁盘损坏都会导致数据丢失。</li>
+<li><strong>适用场景</strong>：对性能要求极高但不关心数据安全性的场景，如<strong>缓存盘、临时存储</strong>。</li>
+</ul>
+<p>✅ <strong>RAID 1（镜像，数据安全高）</strong></p>
+<p><img src="https://s21.ax1x.com/2025/04/30/pEHJJyD.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><strong>特点</strong>：数据在两块磁盘上保持完全一致，一块损坏仍可使用。</li>
+<li><strong>优点</strong>：<strong>冗余度高，可靠性强</strong>，读性能提高。</li>
+<li><strong>缺点</strong>：磁盘利用率<strong>只有 50%</strong>（存两份）。</li>
+<li><strong>适用场景</strong>：系统盘、重要数据存储。</li>
+</ul>
+<p>✅ <strong>RAID 5（奇偶校验，提高安全性和性能）</strong></p>
+<p><img src="https://s21.ax1x.com/2025/04/30/pEHJUwd.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><strong>特点</strong>：采用 <strong>条带化 + 单一奇偶校验</strong>，数据分布在多个磁盘上。</li>
+<li><strong>优点</strong>：<strong>支持 1 块磁盘损坏</strong>，磁盘利用率较高（<code>(n-1)/n</code>）。</li>
+<li><strong>缺点</strong>：写入需要计算校验信息，写性能较 RAID 0 低。</li>
+<li><strong>适用场景</strong>：<strong>数据库、文件服务器</strong>。</li>
+</ul>
+<p>✅ <strong>RAID 6（双重奇偶校验，提高可靠性）</strong></p>
+<ul>
+<li><strong>特点</strong>：类似 RAID 5，但有 <strong>双奇偶校验</strong>，提高容错能力。</li>
+<li><strong>优点</strong>：<strong>支持 2 块磁盘同时损坏</strong>，比 RAID 5 更可靠。</li>
+<li><strong>缺点</strong>：写入性能比 RAID 5 低，磁盘利用率更低（<code>(n-2)/n</code>）。</li>
+<li><strong>适用场景</strong>：需要<strong>更高安全性</strong>的数据存储，如企业级存储系统。</li>
+</ul>
+<p>✅ <strong>RAID 10（RAID 1 + RAID 0，兼顾性能和安全）</strong></p>
+<p><img src="https://s21.ax1x.com/2025/04/30/pEHJYOe.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><strong>特点</strong>：RAID 1（镜像）+ RAID 0（条带），至少 4 块磁盘。</li>
+<li><strong>优点</strong>：<strong>读写性能高，安全性高</strong>，支持多个磁盘损坏（但必须分布在不同镜像组）。</li>
+<li><strong>缺点</strong>：磁盘利用率 50%，成本较高。</li>
+<li><strong>适用场景</strong>：数据库、虚拟机存储等需要<strong>高性能+高安全</strong>的场景。</li>
+</ul>
+<hr>
+<h2 id="2-硬件-RAID-vs-软件-RAID"><a href="#2-硬件-RAID-vs-软件-RAID" class="headerlink" title="2. 硬件 RAID vs. 软件 RAID"></a><strong>2. 硬件 RAID vs. 软件 RAID</strong></h2><p>RAID 既可以通过 <strong>硬件</strong> 实现，也可以通过 <strong>软件</strong> 实现。</p>
+<h3 id="硬件-RAID"><a href="#硬件-RAID" class="headerlink" title="硬件 RAID"></a><strong>硬件 RAID</strong></h3><p><img src="https://s21.ax1x.com/2025/04/30/pEHJaTA.png" srcset="/img/loading.gif" lazyload></p>
+<ul>
+<li><p><strong>通过 RAID 控制器（RAID 卡）管理磁盘</strong>，独立于操作系统运行。</p>
+</li>
+<li><p><strong>特点</strong>：</p>
+</li>
+<li><ul>
+<li>RAID 操作由<strong>专用硬件</strong>完成，不占用 CPU 资源。</li>
+<li>具有 <strong>专用缓存</strong>，提高 RAID 5&#x2F;6 写入性能。</li>
+<li>适用于 <strong>企业级存储</strong>，如服务器、NAS。</li>
+</ul>
+</li>
+<li><p><strong>缺点</strong>：</p>
+</li>
+<li><ul>
+<li><strong>成本高</strong>，RAID 卡价格昂贵。</li>
+<li>RAID 卡故障后，可能导致 RAID 不能恢复。</li>
+</ul>
+</li>
+</ul>
+<h3 id="软件-RAID"><a href="#软件-RAID" class="headerlink" title="软件 RAID"></a><strong>软件 RAID</strong></h3><ul>
+<li><p><strong>通过操作系统（Linux mdadm、Windows Storage Spaces）实现 RAID</strong>，不需要专用 RAID 硬件。</p>
+</li>
+<li><p><strong>特点</strong>：</p>
+</li>
+<li><ul>
+<li><strong>成本低</strong>，仅依赖操作系统和 CPU 计算。</li>
+<li><strong>灵活性高</strong>，可在不同硬件上迁移。</li>
+<li>适用于 <strong>个人用户、低成本存储方案</strong>。</li>
+</ul>
+</li>
+<li><p><strong>缺点</strong>：</p>
+</li>
+<li><ul>
+<li><strong>占用 CPU 资源</strong>，影响整体性能。</li>
+<li>RAID 5&#x2F;6 <strong>写入性能较差</strong>，因 CPU 需要计算校验信息。</li>
+</ul>
+</li>
+</ul>
+<h3 id="硬件-RAID-vs-软件-RAID-对比"><a href="#硬件-RAID-vs-软件-RAID-对比" class="headerlink" title="硬件 RAID vs. 软件 RAID 对比"></a><strong>硬件 RAID vs. 软件 RAID 对比</strong></h3><table>
+<thead>
+<tr>
+<th>方案</th>
+<th>性能</th>
+<th>成本</th>
+<th>适用场景</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>硬件 RAID</strong></td>
+<td>🚀 高</td>
+<td>💰 高</td>
+<td>企业级存储，数据中心</td>
+</tr>
+<tr>
+<td><strong>软件 RAID</strong></td>
+<td>⚡ 适中</td>
+<td>✅ 低</td>
+<td>个人存储，服务器</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="3-RAID-选择指南"><a href="#3-RAID-选择指南" class="headerlink" title="3. RAID 选择指南"></a><strong>3. RAID 选择指南</strong></h2><ul>
+<li><strong>高性能</strong>，但不关心数据安全性？👉 RAID 0</li>
+<li><strong>数据安全性最重要</strong>，可接受磁盘利用率降低？👉 RAID 1</li>
+<li><strong>需要性能+冗余，性价比高</strong>？👉 RAID 5</li>
+<li><strong>极高的可靠性，支持 2 块磁盘故障</strong>？👉 RAID 6</li>
+<li><strong>性能+安全性兼顾，预算充足</strong>？👉 RAID 10</li>
+</ul>
+<hr>
+<h2 id="4-Linux-创建软件-RAID（mdadm）"><a href="#4-Linux-创建软件-RAID（mdadm）" class="headerlink" title="4. Linux 创建软件 RAID（mdadm）"></a><strong>4. Linux 创建软件 RAID（mdadm）</strong></h2><p>在 <code>Linux</code> 上，使用 <code>mdadm</code> 命令管理软件 RAID。例如，创建 <code>RAID 1</code>：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br><span class="line">89</span><br><span class="line">90</span><br><span class="line">91</span><br><span class="line">92</span><br><span class="line">93</span><br><span class="line">94</span><br><span class="line">95</span><br><span class="line">96</span><br><span class="line">97</span><br><span class="line">98</span><br><span class="line">99</span><br><span class="line">100</span><br><span class="line">101</span><br><span class="line">102</span><br><span class="line">103</span><br><span class="line">104</span><br><span class="line">105</span><br><span class="line">106</span><br><span class="line">107</span><br><span class="line">108</span><br><span class="line">109</span><br><span class="line">110</span><br><span class="line">111</span><br><span class="line">112</span><br><span class="line">113</span><br><span class="line">114</span><br><span class="line">115</span><br><span class="line">116</span><br><span class="line">117</span><br><span class="line">118</span><br><span class="line">119</span><br><span class="line">120</span><br><span class="line">121</span><br><span class="line">122</span><br><span class="line">123</span><br><span class="line">124</span><br><span class="line">125</span><br><span class="line">126</span><br><span class="line">127</span><br><span class="line">128</span><br><span class="line">129</span><br><span class="line">130</span><br><span class="line">131</span><br><span class="line">132</span><br><span class="line">133</span><br><span class="line">134</span><br><span class="line">135</span><br><span class="line">136</span><br><span class="line">137</span><br><span class="line">138</span><br><span class="line">139</span><br><span class="line">140</span><br><span class="line">141</span><br><span class="line">142</span><br><span class="line">143</span><br><span class="line">144</span><br><span class="line">145</span><br><span class="line">146</span><br><span class="line">147</span><br><span class="line">148</span><br><span class="line">149</span><br><span class="line">150</span><br><span class="line">151</span><br><span class="line">152</span><br><span class="line">153</span><br><span class="line">154</span><br><span class="line">155</span><br><span class="line">156</span><br><span class="line">157</span><br><span class="line">158</span><br><span class="line">159</span><br><span class="line">160</span><br><span class="line">161</span><br><span class="line">162</span><br><span class="line">163</span><br><span class="line">164</span><br><span class="line">165</span><br><span class="line">166</span><br><span class="line">167</span><br><span class="line">168</span><br><span class="line">169</span><br><span class="line">170</span><br><span class="line">171</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># root @ debian in ~ [20:21:45] </span><br>$ lsblk -f<br>NAME   FSTYPE  FSVER            LABEL UUID                                 FSAVAIL FSUSE% MOUNTPOINT<br>sda                                                                                       <br>└─sda1 ext4    1.0                    f34f1c4a-fb45-4145-b526-1a9985598ea4  305.4G    17% /<br>sdb                                                                                       <br>sdc                                                                                       <br>sdd                                                                                       <br>sr0    iso9660 Joliet Extension CDROM 2023-04-19-20-36-49-00                              <br><br><span class="hljs-comment"># root @ debian in ~ [20:22:15] </span><br>$ lsblk<br>NAME   MAJ:MIN RM   SIZE RO TYPE MOUNTPOINT<br>sda      8:0    0   400G  0 disk <br>└─sda1   8:1    0   400G  0 part /<br>sdb      8:16   0   100G  0 disk <br>sdc      8:32   0   100G  0 disk <br>sdd      8:48   0   100G  0 disk <br>sr0     11:0    1 445.7M  0 rom  <br><br><span class="hljs-comment"># root @ debian in ~ [20:22:17] </span><br>$ fdisk -l<br>Disk /dev/sdd: 100 GiB, 107374182400 bytes, 209715200 sectors<br>Disk model: Virtual disk    <br>Units: sectors of 1 * 512 = 512 bytes<br>Sector size (logical/physical): 512 bytes / 512 bytes<br>I/O size (minimum/optimal): 512 bytes / 512 bytes<br>Disklabel <span class="hljs-built_in">type</span>: gpt<br>Disk identifier: BAF1E3D6-56AC-49CB-A007-04A885EC8176<br><br><br>Disk /dev/sdc: 100 GiB, 107374182400 bytes, 209715200 sectors<br>Disk model: Virtual disk    <br>Units: sectors of 1 * 512 = 512 bytes<br>Sector size (logical/physical): 512 bytes / 512 bytes<br>I/O size (minimum/optimal): 512 bytes / 512 bytes<br>Disklabel <span class="hljs-built_in">type</span>: gpt<br>Disk identifier: 6B28F12E-298C-444B-9280-B193950BC24F<br><br><br>Disk /dev/sda: 400 GiB, 429496729600 bytes, 838860800 sectors<br>Disk model: Virtual disk    <br>Units: sectors of 1 * 512 = 512 bytes<br>Sector size (logical/physical): 512 bytes / 512 bytes<br>I/O size (minimum/optimal): 512 bytes / 512 bytes<br>Disklabel <span class="hljs-built_in">type</span>: dos<br>Disk identifier: 0x61522629<br><br>Device     Boot Start       End   Sectors  Size Id Type<br>/dev/sda1  *     2048 838858751 838856704  400G 83 Linux<br><br><br>Disk /dev/sdb: 100 GiB, 107374182400 bytes, 209715200 sectors<br>Disk model: Virtual disk    <br>Units: sectors of 1 * 512 = 512 bytes<br>Sector size (logical/physical): 512 bytes / 512 bytes<br>I/O size (minimum/optimal): 512 bytes / 512 bytes<br>Disklabel <span class="hljs-built_in">type</span>: gpt<br>Disk identifier: 9324FD1A-EAE8-7E49-B548-C613E8D4D282<br><br><span class="hljs-comment"># root @ debian in ~ [20:22:20] </span><br>$ mdadm --create --verbose /dev/md0 --level=1 --raid-devices=2 /dev/sdc /dev/sdd<br>mdadm: partition table exists on /dev/sdc<br>mdadm: partition table exists on /dev/sdc but will be lost or<br>       meaningless after creating array<br>mdadm: Note: this array has metadata at the start and<br>    may not be suitable as a boot device.  If you plan to<br>    store <span class="hljs-string">&#x27;/boot&#x27;</span> on this device please ensure that<br>    your boot-loader understands md/v1.x metadata, or use<br>    --metadata=0.90<br>mdadm: partition table exists on /dev/sdd<br>mdadm: partition table exists on /dev/sdd but will be lost or<br>       meaningless after creating array<br>mdadm: size <span class="hljs-built_in">set</span> to 104791040K<br>Continue creating array? <br>Continue creating array? (y/n) y<br>mdadm: Defaulting to version 1.2 metadata<br>mdadm: array /dev/md0 started.<br><br><span class="hljs-comment"># root @ debian in ~ [20:22:30] </span><br>$ <span class="hljs-built_in">cat</span> /proc/mdstat <span class="hljs-comment"># 查看raid状态</span><br>Personalities : [raid1] <br>md0 : active raid1 sdd[1] sdc[0]<br>      104791040 blocks super 1.2 [2/2] [UU]<br>      [&gt;....................]  resync =  0.3% (377728/104791040) finish=46.0min speed=37772K/sec<br>      <br>unused devices: &lt;none&gt;<br><br><span class="hljs-comment"># root @ debian in ~ [20:22:40] </span><br>$ mdadm --detail /dev/md0<br>/dev/md0:<br>           Version : 1.2<br>     Creation Time : Fri Mar 28 20:22:30 2025<br>        Raid Level : raid1<br>        Array Size : 104791040 (99.94 GiB 107.31 GB)<br>     Used Dev Size : 104791040 (99.94 GiB 107.31 GB)<br>      Raid Devices : 2<br>     Total Devices : 2<br>       Persistence : Superblock is persistent<br><br>       Update Time : Fri Mar 28 20:22:30 2025<br>             State : clean, resyncing <br>    Active Devices : 2<br>   Working Devices : 2<br>    Failed Devices : 0<br>     Spare Devices : 0<br><br>Consistency Policy : resync<br><br>     Resync Status : 1% complete<br><br>              Name : debian:0  (<span class="hljs-built_in">local</span> to host debian)<br>              UUID : 5a3e483d:dcc3f33d:3ffdbae7:7f4a41a7<br>            Events : 0<br><br>    Number   Major   Minor   RaidDevice State<br>       0       8       32        0      active <span class="hljs-built_in">sync</span>   /dev/sdc<br>       1       8       48        1      active <span class="hljs-built_in">sync</span>   /dev/sdd<br><br><span class="hljs-comment"># root @ debian in ~ [20:23:01] </span><br>$ mkfs.ext4 /dev/md0<br>mke2fs 1.46.2 (28-Feb-2021)<br>Creating filesystem with 26197760 4k blocks and 6553600 inodes<br>Filesystem UUID: f3ee7c5d-c9a7-429a-91e8-58d6301ed7dc<br>Superblock backups stored on blocks: <br>	32768, 98304, 163840, 229376, 294912, 819200, 884736, 1605632, 2654208, <br>	4096000, 7962624, 11239424, 20480000, 23887872<br><br>Allocating group tables: <span class="hljs-keyword">done</span>                            <br>Writing inode tables: <span class="hljs-keyword">done</span>                            <br>Creating journal (131072 blocks): <br><span class="hljs-keyword">done</span><br>Writing superblocks and filesystem accounting information: <span class="hljs-keyword">done</span>   <br><br><span class="hljs-comment"># root @ debian in ~ [20:23:17] </span><br>$ <span class="hljs-built_in">mkdir</span> -p /mnt/raid1<br><br><span class="hljs-comment"># root @ debian in ~ [20:23:23] </span><br>$ mount /dev/md0 /mnt/raid1<br><br><span class="hljs-comment"># root @ debian in ~ [20:23:27] </span><br>$ <span class="hljs-built_in">df</span> -h | grep md0<br>/dev/md0         98G   24K   93G    1% /mnt/raid1<br><br><span class="hljs-comment"># root @ debian in ~ [20:23:31] </span><br>$ mdadm --detail --scan &gt;&gt; /etc/mdadm/mdadm.conf<br><br><span class="hljs-comment"># root @ debian in ~ [20:23:53] </span><br>$ update-initramfs -u<br>update-initramfs: Generating /boot/initrd.img-5.10.0-20-amd64<br><br><span class="hljs-comment"># root @ debian in ~ [20:24:10] </span><br>$ vim /dev/md0  /mnt/raid1  ext4  defaults  0  0<br><br><span class="hljs-comment"># root @ debian in ~ [20:24:15] C:130</span><br>$ vim /etc/fstab <br><br><span class="hljs-comment"># root @ debian in ~ [20:24:30] </span><br>$ mount -a<br><br><span class="hljs-comment"># root @ debian in ~ [20:24:34] </span><br>$ lsblk<br>NAME   MAJ:MIN RM   SIZE RO TYPE  MOUNTPOINT<br>sda      8:0    0   400G  0 disk  <br>└─sda1   8:1    0   400G  0 part  /<br>sdb      8:16   0   100G  0 disk  <br>sdc      8:32   0   100G  0 disk  <br>└─md0    9:0    0  99.9G  0 raid1 /mnt/raid1<br>sdd      8:48   0   100G  0 disk  <br>└─md0    9:0    0  99.9G  0 raid1 /mnt/raid1<br>sr0     11:0    1 445.7M  0 rom  <br></code></pre></td></tr></table></figure>
+
+<hr>
+<h2 id="注意"><a href="#注意" class="headerlink" title="注意"></a>注意</h2><p>是的！<strong>如果你是通过 RAID 卡（硬件 RAID）来创建 RAID 阵列，系统就不会在</strong> <code>/proc/mdstat</code> <strong>里看到 RAID 信息。</strong></p>
+<hr>
+<h3 id="为什么硬件-RAID-在-proc-mdstat-里看不到？"><a href="#为什么硬件-RAID-在-proc-mdstat-里看不到？" class="headerlink" title="为什么硬件 RAID 在 /proc/mdstat 里看不到？"></a>为什么硬件 RAID 在 <code>/proc/mdstat</code> 里看不到？</h3><p><code>/proc/mdstat</code> 只会显示 <strong>软件 RAID（mdadm 组的阵列）</strong> 的状态，硬件 RAID 是由 RAID 控制器（RAID 卡）直接管理磁盘，并向操作系统暴露一个<strong>单独的虚拟磁盘</strong>，系统会把它当作一个普通的磁盘，而不是多个磁盘的 RAID 组合。</p>
+<p>📌 <strong>简单理解：</strong></p>
+<ul>
+<li><strong>软件 RAID（mdadm）</strong> 👉 在 <code>/proc/mdstat</code> 可以看到 RAID 设备（如 <code>/dev/md0</code>）。</li>
+<li><strong>硬件 RAID（RAID 卡）</strong> 👉 <code>/proc/mdstat</code> 看不到，系统里只会看到一个 RAID 卡创建的虚拟磁盘（如 <code>/dev/sda</code>）。</li>
+</ul>
+<hr>
+<h3 id="如何检查硬件-RAID-状态？"><a href="#如何检查硬件-RAID-状态？" class="headerlink" title="如何检查硬件 RAID 状态？"></a>如何检查硬件 RAID 状态？</h3><p>如果你是用 RAID 卡组的 RAID，可以使用 <strong>RAID 卡的管理工具</strong> 来查看 RAID 状态：</p>
+<h4 id="lsblk-查看-RAID-设备"><a href="#lsblk-查看-RAID-设备" class="headerlink" title="lsblk 查看 RAID 设备"></a><code>lsblk</code> 查看 RAID 设备</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">lsblk<br></code></pre></td></tr></table></figure>
+
+<p>如果是硬件 RAID，可能会看到一个大容量的 RAID 设备（比如 <code>/dev/sda</code>），但看不到原始的物理磁盘（<code>/dev/sdc</code>、<code>/dev/sdd</code>）。</p>
+<hr>
+<h4 id="lsscsi-查看-RAID-磁盘"><a href="#lsscsi-查看-RAID-磁盘" class="headerlink" title="lsscsi 查看 RAID 磁盘"></a><code>lsscsi</code> 查看 RAID 磁盘</h4><p>如果系统里有 <code>lsscsi</code>，可以用它检查 RAID 设备：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">lsscsi<br></code></pre></td></tr></table></figure>
+
+<p>可能会看到类似：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">[0:0:0:0]    disk    DELL     PERC H730 Mini    4.27  /dev/sda<br></code></pre></td></tr></table></figure>
+
+<p>这里 <code>/dev/sda</code> 其实就是 RAID 设备，而不是普通的物理磁盘。</p>
+<hr>
+<h3 id="使用-RAID-卡厂商提供的管理工具"><a href="#使用-RAID-卡厂商提供的管理工具" class="headerlink" title="使用 RAID 卡厂商提供的管理工具"></a><strong>使用 RAID 卡厂商提供的管理工具</strong></h3><p>不同品牌的 RAID 卡有不同的管理工具，你可以尝试以下工具：</p>
+<h4 id="MegaRAID（LSI、DELL-PERC）"><a href="#MegaRAID（LSI、DELL-PERC）" class="headerlink" title="MegaRAID（LSI、DELL PERC）"></a><strong>MegaRAID（LSI、DELL PERC）</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> megacli -LDInfo -Lall -aAll<br></code></pre></td></tr></table></figure>
+
+<p>或者：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> storcli64 /c0 show<br></code></pre></td></tr></table></figure>
+
+<h4 id="HP-Smart-Array"><a href="#HP-Smart-Array" class="headerlink" title="HP Smart Array"></a><strong>HP Smart Array</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> hpssacli ctrl all show config<br></code></pre></td></tr></table></figure>
+
+<h4 id="Dell-iDRAC（PERC-RAID-卡）"><a href="#Dell-iDRAC（PERC-RAID-卡）" class="headerlink" title="Dell iDRAC（PERC RAID 卡）"></a><strong>Dell iDRAC（PERC RAID 卡）</strong></h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> omreport storage controller<br></code></pre></td></tr></table></figure>
+
+<hr>
+<h3 id="结论"><a href="#结论" class="headerlink" title="结论"></a>结论</h3><p>✅ <strong>软件 RAID（mdadm）</strong> 👉 可以用 <code>/proc/mdstat</code> 查看。<br>✅ <strong>硬件 RAID（RAID 卡）</strong> 👉 <code>/proc/mdstat</code> 看不到 RAID 详情，需要用 RAID 管理工具检查。</p>
+<p>💡 你可以试试看 <code>lsblk</code> 和 <code>lsscsi</code>，看看 RAID 设备的情况，然后告诉我你的 RAID 卡是什么型号，我可以帮你找到对应的管理工具！ 🚀</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a><strong>总结</strong></h2><ol>
+<li><strong>RAID 主要分为 RAID 0&#x2F;1&#x2F;5&#x2F;6&#x2F;10</strong>，不同级别提供不同的<strong>安全性、性能和磁盘利用率</strong>。</li>
+<li><strong>硬件 RAID 依赖 RAID 卡，速度快但成本高</strong>，适合企业存储。</li>
+<li><strong>软件 RAID 依赖操作系统管理，成本低但占用 CPU 资源</strong>，适合个人和中小型存储。</li>
+<li><strong>Linux 可以使用</strong> <code>mdadm</code> <strong>配置软件 RAID</strong>，支持 RAID 0&#x2F;1&#x2F;5&#x2F;6&#x2F;10。</li>
+</ol>
+<p>如果你想在 Debian 11 上 <strong>实践 RAID 配置</strong>，可以告诉我你的磁盘情况，我可以提供具体的 <code>mdadm</code> 配置步骤！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>RAID 磁盘阵列</div>
+      <div>https://luffy997.github.io/2025/03/28/RAID-磁盘阵列/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年3月28日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/04/12/Python%E5%92%8CJava-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E3%80%81%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/" title="Python和Java 多线程、多进程的使用场景">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python和Java 多线程、多进程的使用场景</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/03/28/GPT%E5%88%86%E5%8C%BA%E8%A1%A8%E6%A0%BC%E5%BC%8F%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F/" title="GPT分区表格式的两种创建方式">
+                        <span class="hidden-mobile">GPT分区表格式的两种创建方式</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

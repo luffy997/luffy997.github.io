@@ -227,23 +227,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/04/18/%E9%9A%8F%E7%AC%9403/" target="_self">
-          <img src="https://i.loli.net/2021/04/13/43zmSMxVFhPncuU.jpg" srcset="/img/loading.gif" lazyload alt="随笔03">
+        <a href="/2024/07/15/Python-%E7%BA%BF%E7%A8%8B%E9%AB%98CPU%E5%8D%A0%E7%94%A8%E6%8E%92%E6%9F%A5%E6%80%BB%E7%BB%93/" target="_self">
+          <img src="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png" srcset="/img/loading.gif" lazyload alt="Python 线程高CPU占用排查总结">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/04/18/%E9%9A%8F%E7%AC%9403/" target="_self">
-          随笔03
+        <a href="/2024/07/15/Python-%E7%BA%BF%E7%A8%8B%E9%AB%98CPU%E5%8D%A0%E7%94%A8%E6%8E%92%E6%9F%A5%E6%80%BB%E7%BB%93/" target="_self">
+          Python 线程高CPU占用排查总结
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/04/18/%E9%9A%8F%E7%AC%9403/" target="_self">
+      <a class="index-excerpt " href="/2024/07/15/Python-%E7%BA%BF%E7%A8%8B%E9%AB%98CPU%E5%8D%A0%E7%94%A8%E6%8E%92%E6%9F%A5%E6%80%BB%E7%BB%93/" target="_self">
         <div>
-          进程的上下文切换和线程的上下文切换的区别首先我们需要知道进程和线程的上下文切换做了什么：  切换页目录以及使用新的地址空间 切换内核栈和硬件的上下文  两种的区别就是进程有第一个操作，线程是没有的，第二个线程和进程都有 关于讨论两者的区别，需要知道进程和线程的在内存地址上的区别，进程是独立的地址空间，而进程里面的线程是连续的地址空间，同一个进程内的线程地址是共享的。 其实切换进程和线程最大的区别就
+          1. 背景 线上进程CPU占用异常偏高。 希望快速定位到是哪一个线程导致的问题，并进一步追踪到具体Python代码位置。   2. 排查步骤（1）确认CPU异常的进程通过常规 top 或 htop 工具，找到高CPU占用的进程PID，比如 2608。  （2）确认线程视角下的情况执行   1top -H -p 2608  或   1ps -mp 2608 -o THREAD,tid,time  切
         </div>
       </a>
 
@@ -251,8 +251,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-18 00:51" pubdate>
-              2021-04-18
+            <time datetime="2024-07-15 11:56" pubdate>
+              2024-07-15
             </time>
           </div>
         
@@ -261,7 +261,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E9%9A%8F%E7%AC%94/">#随笔</a>
+              <a href="/tags/Python/">#Python</a>
             
           </div>
         
@@ -273,23 +273,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/04/16/%E9%9A%8F%E7%AC%9402/" target="_self">
-          <img src="https://i.loli.net/2021/04/13/43zmSMxVFhPncuU.jpg" srcset="/img/loading.gif" lazyload alt="随笔02">
+        <a href="/2024/07/09/Django-%E4%BF%A1%E5%8F%B7/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django 信号">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/04/16/%E9%9A%8F%E7%AC%9402/" target="_self">
-          随笔02
+        <a href="/2024/07/09/Django-%E4%BF%A1%E5%8F%B7/" target="_self">
+          Django 信号
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/04/16/%E9%9A%8F%E7%AC%9402/" target="_self">
+      <a class="index-excerpt " href="/2024/07/09/Django-%E4%BF%A1%E5%8F%B7/" target="_self">
         <div>
-          https实现原理最近看的一篇面试总结，原作者写的有一丢丢问题，下面这篇讲的很清楚 深入理解https 在此之前，需要了解对称加密和非对称加密的原理和效率对比 对称加密，就是加密和解密用的同一把密钥，加密和解密速度快 非对称加密，加密用公钥，解密用密钥，公钥是公开的，但在解密的时候只有用相应的密钥才能解密，加密和解密速度慢。 https解决的http的三大问题：  明文传输，裸奔 消息的完整性无法
+          Django 提供了几个内置的信号，允许在不同事件发生时执行特定的代码。这些信号主要用于模型、请求&#x2F;响应处理以及数据库操作。以下是Django中常用的信号分类和具体信号： 1. 模型信号这些信号与Django模型相关联，用于在模型的创建、保存、删除等操作时触发。  pre_save：在模型的save方法被调用之前发送。 post_save：在模型的save方法被调用之后发送。 pre_d
         </div>
       </a>
 
@@ -297,8 +297,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-16 01:37" pubdate>
-              2021-04-16
+            <time datetime="2024-07-09 16:34" pubdate>
+              2024-07-09
             </time>
           </div>
         
@@ -307,7 +307,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E9%9A%8F%E7%AC%94/">#随笔</a>
+              <a href="/tags/Django/">#Django</a>
             
           </div>
         
@@ -319,23 +319,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/04/13/%E9%9A%8F%E7%AC%9401/" target="_self">
-          <img src="https://i.loli.net/2021/04/13/43zmSMxVFhPncuU.jpg" srcset="/img/loading.gif" lazyload alt="随笔01">
+        <a href="/2023/12/28/ssh-%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95%E9%85%8D%E7%BD%AE/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg" srcset="/img/loading.gif" lazyload alt="ssh 免密登录配置">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/04/13/%E9%9A%8F%E7%AC%9401/" target="_self">
-          随笔01
+        <a href="/2023/12/28/ssh-%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95%E9%85%8D%E7%BD%AE/" target="_self">
+          ssh 免密登录配置
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/04/13/%E9%9A%8F%E7%AC%9401/" target="_self">
+      <a class="index-excerpt " href="/2023/12/28/ssh-%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95%E9%85%8D%E7%BD%AE/" target="_self">
         <div>
-          ArrayList和LinkedList区别对于这两种数据结构的基础比较，如，线程安全问题、底层结构，空间占用问题我就不多说了，网上很多文档写的很清楚了，这里我详细的讲下自己对ArrayList和LinkedList在数据的查询，增加，删除和修改上的性能差异： 要分析在三种情况下的差异，首先要清楚两种容器它的底层实现是什么，ArrayList底层是数组实现的，连续的地址内存空间，也就是带索引；Li
+          客户端1cat ~/.ssh/id_rsa.pub  服务端12vim ~/.ssh/authorized_keyssystemctl restart sshd
         </div>
       </a>
 
@@ -343,8 +343,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-13 02:10" pubdate>
-              2021-04-13
+            <time datetime="2023-12-28 16:36" pubdate>
+              2023-12-28
             </time>
           </div>
         
@@ -353,7 +353,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E9%9A%8F%E7%AC%94/">#随笔</a>
+              <a href="/tags/linux/">#linux</a>
             
           </div>
         
@@ -365,23 +365,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/04/02/Redis%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" target="_self">
-          <img src="https://s3.ax1x.com/2021/01/23/s7uNlt.jpg" srcset="/img/loading.gif" lazyload alt="Redis必知必会">
+        <a href="/2023/09/07/Linux%E6%8A%8A%E4%B8%80%E4%B8%AA%E5%89%8D%E5%8F%B0%E8%BF%90%E8%A1%8C%E7%9A%84%E8%BF%9B%E7%A8%8B%E6%94%BE%E5%9C%A8%E5%90%8E%E5%8F%B0%E6%89%A7%E8%A1%8C/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg" srcset="/img/loading.gif" lazyload alt="Linux把一个前台运行的进程放在后台执行">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/04/02/Redis%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" target="_self">
-          Redis必知必会
+        <a href="/2023/09/07/Linux%E6%8A%8A%E4%B8%80%E4%B8%AA%E5%89%8D%E5%8F%B0%E8%BF%90%E8%A1%8C%E7%9A%84%E8%BF%9B%E7%A8%8B%E6%94%BE%E5%9C%A8%E5%90%8E%E5%8F%B0%E6%89%A7%E8%A1%8C/" target="_self">
+          Linux把一个前台运行的进程放在后台执行
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/04/02/Redis%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" target="_self">
+      <a class="index-excerpt " href="/2023/09/07/Linux%E6%8A%8A%E4%B8%80%E4%B8%AA%E5%89%8D%E5%8F%B0%E8%BF%90%E8%A1%8C%E7%9A%84%E8%BF%9B%E7%A8%8B%E6%94%BE%E5%9C%A8%E5%90%8E%E5%8F%B0%E6%89%A7%E8%A1%8C/" target="_self">
         <div>
-          Redis绝对是当下非常火热的一个NoSql数据库，在之前的博客中，我已经讲到了springboot集成redis的使用，今天在这里分享下Redis常问面试题 1.为什么使用Redis？在项目中使用Redis，主要考虑两个角度：性能和并发。如果只是为了分布式锁这些其他功能，还有其他中间件 Zookpeer 等代替，并非一定要使用 Redis。 性能： 如下图所示，我们在碰到需要执行耗时特别久，且
+          对于正常执行的前台程序，可以使用ctrl + z，让程序停止，然后通过bg %job_id 把程序放入后台运行  12345678910111213[root@luffy study]# bash sleep500S.sh ^Z[1]+  已停止               bash sleep500S.sh[root@luffy study]# jobs[1]+  已停止
         </div>
       </a>
 
@@ -389,8 +389,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-04-02 10:12" pubdate>
-              2021-04-02
+            <time datetime="2023-09-07 18:24" pubdate>
+              2023-09-07
             </time>
           </div>
         
@@ -399,7 +399,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Redis/">#Redis</a>
+              <a href="/tags/linux/">#linux</a>
             
           </div>
         
@@ -411,23 +411,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/03/26/Spring%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" target="_self">
-          <img src="https://i.loli.net/2021/03/26/Yt45DHFURLdonjW.jpg" srcset="/img/loading.gif" lazyload alt="Spring必知必会">
+        <a href="/2023/08/08/cp-%E6%9D%83%E9%99%90%E7%9A%84%E5%AE%9E%E9%AA%8C%E6%B5%8B%E8%AF%95/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg" srcset="/img/loading.gif" lazyload alt="cp 权限的实验测试">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/03/26/Spring%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" target="_self">
-          Spring必知必会
+        <a href="/2023/08/08/cp-%E6%9D%83%E9%99%90%E7%9A%84%E5%AE%9E%E9%AA%8C%E6%B5%8B%E8%AF%95/" target="_self">
+          cp 权限的实验测试
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/03/26/Spring%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" target="_self">
+      <a class="index-excerpt " href="/2023/08/08/cp-%E6%9D%83%E9%99%90%E7%9A%84%E5%AE%9E%E9%AA%8C%E6%B5%8B%E8%AF%95/" target="_self">
         <div>
-          Spring中用到了哪些设计模式？单例模式Spring中的Bean默认情况下都是单例的。bean被声明为单例的时候，在处理多次请求的时候在Spring容器里只实例化出一个bean，后续的请求都公用这个对象，这个对象会保存在一个map里面。当有请求来的时候会先从缓存(map)里查看有没有，有的话直接使用这个对象，没有的话才实例化一个新的对象，所以这是个单例的。但是对于原型(prototype)bea
+          12345678910111213141516171819202122232425262728293031323334353637383940414243444546474849[root@luffy luffy2]# cp --help用法：cp [选项]... [-T] 源文件 目标文件　或：cp [选项]... 源文件... 目录　或：cp [选项]... -t 目录 源文件...Copy
         </div>
       </a>
 
@@ -435,8 +435,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-03-26 08:12" pubdate>
-              2021-03-26
+            <time datetime="2023-08-08 17:56" pubdate>
+              2023-08-08
             </time>
           </div>
         
@@ -445,7 +445,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Spring/">#Spring</a>
+              <a href="/tags/linux/">#linux</a>
             
           </div>
         
@@ -457,23 +457,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/03/24/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" target="_self">
-          <img src="https://i.loli.net/2021/03/24/gvJH9OZDXjP254x.jpg" srcset="/img/loading.gif" lazyload alt="Java多线程必知必会">
+        <a href="/2023/08/01/Linux-%E6%96%87%E4%BB%B6%E7%A7%8D%E7%B1%BB%E4%B8%8E%E6%89%A9%E5%B1%95%E5%90%8D/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg" srcset="/img/loading.gif" lazyload alt="Linux 文件种类与扩展名">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/03/24/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" target="_self">
-          Java多线程必知必会
+        <a href="/2023/08/01/Linux-%E6%96%87%E4%BB%B6%E7%A7%8D%E7%B1%BB%E4%B8%8E%E6%89%A9%E5%B1%95%E5%90%8D/" target="_self">
+          Linux 文件种类与扩展名
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/03/24/Java%E5%A4%9A%E7%BA%BF%E7%A8%8B%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" target="_self">
+      <a class="index-excerpt " href="/2023/08/01/Linux-%E6%96%87%E4%BB%B6%E7%A7%8D%E7%B1%BB%E4%B8%8E%E6%89%A9%E5%B1%95%E5%90%8D/" target="_self">
         <div>
-          进程和线程的联系和区别**进程：**是程序在执行中进行资源分配和调度的基本单位 线程： 是进程的进一步划分，是进程的一个执行体，更小的独立运行的基本单位，亦称轻量级线程 举个栗子： 我们在使用QQ的时候假设是一个进程，那我们使用QQ的发短信，发文件，发说说等功能就可以说是线程。 进程和线程的区别：  进程是独立的地址空间，但同一个进程内的线程共享本进程的地址空间  同一进程的线程共享资源比如CPU
+          任何装置在 Linux 底下都是文件 文件种类到使用『ls -l』观察到第一栏那十个字符中，第一个字符为文件的类型。除了常见的一般文件(-)与目录文件(d)之外。  正规文件(regular file )：  是一般我们在进行存取的类型的文件，在由 ls -al 所显示出来的属性方面，第一个字符为 [ - ]，例如  [-rwxrwxrwx ]。另外，依照文件的内容，又大略可以分为： a. 纯文本
         </div>
       </a>
 
@@ -481,8 +481,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-03-24 01:27" pubdate>
-              2021-03-24
+            <time datetime="2023-08-01 11:08" pubdate>
+              2023-08-01
             </time>
           </div>
         
@@ -491,7 +491,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Java/">#Java</a>
+              <a href="/tags/linux/">#linux</a>
             
           </div>
         
@@ -503,23 +503,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/03/18/Mysql%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" target="_self">
-          <img src="https://i.loli.net/2021/03/18/oKPNEQjZkgWwyu2.jpg" srcset="/img/loading.gif" lazyload alt="Mysql必知必会">
+        <a href="/2023/06/13/Python-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" target="_self">
+          <img src="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png" srcset="/img/loading.gif" lazyload alt="Python 性能分析">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/03/18/Mysql%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" target="_self">
-          Mysql必知必会
+        <a href="/2023/06/13/Python-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" target="_self">
+          Python 性能分析
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/03/18/Mysql%E5%BF%85%E7%9F%A5%E5%BF%85%E4%BC%9A/" target="_self">
+      <a class="index-excerpt " href="/2023/06/13/Python-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/" target="_self">
         <div>
-          介绍MySQL 是最流行的关系型数据库管理系统，在 WEB 应用方面 MySQL 是最好的 RDBMS(Relational Database Management System：关系数据库管理系统)应用软件之一。 mysql架构图  myisam和innodbmyisam引擎是5.1版本之前的默认引擎，有如下特点：  不支持事务  只支持表级锁定 —&gt;数据更新时锁定整个表，就说说对一个数据
+          python性能调试过程中最突出的问题就是耗时，性能测试工具有很多，像profiler，cprofiler等等，都是只能返回函数整体的耗时，而line_profiler就能够很好解决这个问题 项目地址 https://github.com/rkern/line_profiler 这里记录 line_profiler 的两种用法 通过装饰器 @profile123456789101112131415
         </div>
       </a>
 
@@ -527,8 +527,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-03-18 08:23" pubdate>
-              2021-03-18
+            <time datetime="2023-06-13 19:11" pubdate>
+              2023-06-13
             </time>
           </div>
         
@@ -537,7 +537,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Mysql/">#Mysql</a>
+              <a href="/tags/Python/">#Python</a>
             
           </div>
         
@@ -549,23 +549,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/03/17/%E5%85%AB%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%EF%BC%88%E4%B8%8B%EF%BC%89/" target="_self">
-          <img src="https://s3.ax1x.com/2021/01/23/s73VYD.jpg" srcset="/img/loading.gif" lazyload alt="八大排序算法（下）">
+        <a href="/2023/05/22/%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E5%91%BD%E4%BB%A4/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJFJ0.png" srcset="/img/loading.gif" lazyload alt="网络故障排查命令">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/03/17/%E5%85%AB%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%EF%BC%88%E4%B8%8B%EF%BC%89/" target="_self">
-          八大排序算法（下）
+        <a href="/2023/05/22/%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E5%91%BD%E4%BB%A4/" target="_self">
+          网络故障排查命令
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/03/17/%E5%85%AB%E5%A4%A7%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95%EF%BC%88%E4%B8%8B%EF%BC%89/" target="_self">
+      <a class="index-excerpt " href="/2023/05/22/%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E5%91%BD%E4%BB%A4/" target="_self">
         <div>
-          归并排序归并排序（MERGE-SORT）是利用归并的思想实现的排序方法，该方法采用经典的分治策略（分治法将问题分成一些小的问题然后递归求解，而治的阶段则将分的阶段得到的各个答案拼接在一起，即为分而治之）。 实现思想  具体步骤  代码实现 12345678910111213141516171819202122232425262728293031323334353637383940414243444
+          查看网关12345678[root@luffy ~]# route -nKernel IP routing tableDestination     Gateway         Genmask         Flags Metric Ref    Use Iface0.0.0.0         10.67.9.253     0.0.0.0         UG    100    0
         </div>
       </a>
 
@@ -573,8 +573,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-03-17 03:54" pubdate>
-              2021-03-17
+            <time datetime="2023-05-22 21:33" pubdate>
+              2023-05-22
             </time>
           </div>
         
@@ -583,7 +583,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E7%AE%97%E6%B3%95/">#算法</a>
+              <a href="/tags/%E7%BD%91%E7%BB%9C/">#网络</a>
             
           </div>
         
@@ -595,23 +595,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/03/16/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0/" target="_self">
-          <img src="https://i.loli.net/2021/03/16/b7FsHnlWEUTOd8k.jpg" srcset="/img/loading.gif" lazyload alt="单例模式的多种实现方式">
+        <a href="/2022/08/21/Django-Rest-Framework%E5%85%AB%E5%A4%A7%E7%BB%84%E4%BB%B6/" target="_self">
+          <img src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" srcset="/img/loading.gif" lazyload alt="Django Rest Framework八大组件">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/03/16/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0/" target="_self">
-          单例模式的多种实现方式
+        <a href="/2022/08/21/Django-Rest-Framework%E5%85%AB%E5%A4%A7%E7%BB%84%E4%BB%B6/" target="_self">
+          Django Rest Framework八大组件
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/03/16/%E5%8D%95%E4%BE%8B%E6%A8%A1%E5%BC%8F%E7%9A%84%E5%A4%9A%E7%A7%8D%E5%85%B7%E4%BD%93%E5%AE%9E%E7%8E%B0/" target="_self">
+      <a class="index-excerpt " href="/2022/08/21/Django-Rest-Framework%E5%85%AB%E5%A4%A7%E7%BB%84%E4%BB%B6/" target="_self">
         <div>
-          单例模式，顾名思义就是只有一个实例，并且它自己负责创建自己的对象，这个类提供了一种访问其唯一的对象的方式，可以直接访问，不需要实例化该类的对象。下面我们来看下有哪几种实现方式吧。 单例模式分饿汉式和懒汉式，下面介绍下两种的具体写法： 饿汉式饿汉式就是在类加载的时候就已经创建实例，不管你用没用到，都创建。 好处：线程安全 坏处：浪费内存空间 123456789public class Hungry
+          DRF整合了非常多的开发常用组件，认证，授权、限流等等，简单配置即可使用 认证和授权全局配置开启全局配置，只要请求后端接口，都需要进行认证才可以请求成功 settings.py 12345678910111213# DRF 组件配置REST\_FRAMEWORK = &#123;# 内部循环遍历注册的认证类，一旦成功，结束循环&#x27;DEFAULT\_AUTHENTICATION\_CLASS
         </div>
       </a>
 
@@ -619,8 +619,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-03-16 09:55" pubdate>
-              2021-03-16
+            <time datetime="2022-08-21 06:46" pubdate>
+              2022-08-21
             </time>
           </div>
         
@@ -629,7 +629,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Java/">#Java</a>
+              <a href="/tags/DRF/">#DRF</a>
             
           </div>
         
@@ -641,23 +641,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/03/04/HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
-          <img src="https://i.loli.net/2021/03/04/Yo9vtBKTcAbWmwx.png" srcset="/img/loading.gif" lazyload alt="HashMap源码分析">
+        <a href="/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/" target="_self">
+          <img src="https://s1.ax1x.com/2022/08/21/vyYQMD.png" srcset="/img/loading.gif" lazyload alt="Django Rest Framework请求响应视图路由">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/03/04/HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
-          HashMap源码分析
+        <a href="/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/" target="_self">
+          Django Rest Framework请求响应视图路由
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/03/04/HashMap%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" target="_self">
+      <a class="index-excerpt " href="/2022/08/21/Django-Rest-Framework%E8%AF%B7%E6%B1%82%E5%93%8D%E5%BA%94%E8%A7%86%E5%9B%BE%E8%B7%AF%E7%94%B1/" target="_self">
         <div>
-          1.HashMap介绍1.1 HashMap底层存储结构 HashMap最早出现在JDK1.2中，底层基于散列算法实现。HashMap 允许 null 键和 null 值，是非线程安全类，在多线程环境下可能会存在问题。  1.8版本的HashMap底层存储结构： 数组+链表+红黑树  1.2 HashMap类的定义先来看看HashMap类的定义： 12public class HashMap&lt
+          DRF封装了很多关于请求信息的参数，我们可以通过 request获取，响应 Response 也有着规定的模板，让接口响应更加规范。 在视图中，封装了非常多的视图类，便于简化视图层操作。  APIView是DRF中提供的所有视图类的积累，它继承于django.views.View，传入的请求是DRF的 Request实例，任何APIException异常都会被捕获，并且传递给合适的响应 ，业务代码
         </div>
       </a>
 
@@ -665,8 +665,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-03-04 07:25" pubdate>
-              2021-03-04
+            <time datetime="2022-08-21 06:44" pubdate>
+              2022-08-21
             </time>
           </div>
         
@@ -675,7 +675,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Java/">#Java</a>
+              <a href="/tags/DRF/">#DRF</a>
             
           </div>
         
@@ -687,7 +687,7 @@
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/2/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><a class="extend next" rel="next" href="/page/4/#board"><i class="iconfont icon-arrowright"></i></a>
+      <a class="extend prev" rel="prev" href="/page/2/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#board">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#board">4</a><a class="page-number" href="/page/5/#board">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#board">8</a><a class="extend next" rel="next" href="/page/4/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

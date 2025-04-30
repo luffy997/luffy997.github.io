@@ -227,23 +227,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/01/12/SpringBoot%E9%9B%86%E6%88%90Mybatis%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
-          <img src="https://s3.ax1x.com/2021/01/23/s7eROO.jpg" srcset="/img/loading.gif" lazyload alt="SpringBoot集成Mybatis的使用">
+        <a href="/2021/07/19/%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/" target="_self">
+          <img src="https://i.loli.net/2021/07/19/Fbg6i9Vw5XnMSh4.png" srcset="/img/loading.gif" lazyload alt="什么是上下文切换">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/01/12/SpringBoot%E9%9B%86%E6%88%90Mybatis%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
-          SpringBoot集成Mybatis的使用
+        <a href="/2021/07/19/%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/" target="_self">
+          什么是上下文切换
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/01/12/SpringBoot%E9%9B%86%E6%88%90Mybatis%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
+      <a class="index-excerpt " href="/2021/07/19/%E4%BB%80%E4%B9%88%E6%98%AF%E4%B8%8A%E4%B8%8B%E6%96%87%E5%88%87%E6%8D%A2/" target="_self">
         <div>
-          SpringBoot集成Mybatis的使用 MyBatis 是一款优秀的持久层框架，它支持定制化 SQL、存储过程以及高级映射。MyBatis 避免了几乎所有的 JDBC 代码和手动设置参数以及获取结果集。 MyBatis 可以使用简单的 XML 或注解来配置和映射原生信息，将接口和 Java 的 POJOs映射成数据库中的记录。 这里我使用原生的Mybatis，不使用Mybatis插件，来讲解
+          上下文首先，需要讲清楚什么是上下文。 每个任务运行前，CPU 都需要知道任务从哪里加载、又从哪里开始运行，这就涉及到 CPU 寄存器 和 程序计数器（PC）：  CPU 寄存器是 CPU 内置的容量小、但速度极快的内存； 程序计数器会存储 CPU 正在执行的指令位置，或者即将执行的指令位置。  这两个是 CPU 运行任何任务前都必须依赖的环境，因此叫做 CPU 上下文。 上下文切换那么，什么是上下
         </div>
       </a>
 
@@ -251,8 +251,238 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-01-12 03:46" pubdate>
-              2021-01-12
+            <time datetime="2021-07-19 12:31" pubdate>
+              2021-07-19
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Linux/">#Linux</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/07/19/Redis%E4%B9%8BAOF%E9%87%8D%E5%86%99%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
+          <img src="https://s3.ax1x.com/2021/01/23/s7uNlt.jpg" srcset="/img/loading.gif" lazyload alt="Redis之AOF重写及其实现原理">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/07/19/Redis%E4%B9%8BAOF%E9%87%8D%E5%86%99%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
+          Redis之AOF重写及其实现原理
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/07/19/Redis%E4%B9%8BAOF%E9%87%8D%E5%86%99%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/" target="_self">
+        <div>
+          AOF重写 AOF 持久化是通过保存被执行的写命令来记录数据库状态的，所以AOF文件的大小随着时间的流逝一定会越来越大；影响包括但不限于：对于Redis服务器，计算机的存储压力；AOF还原出数据库状态的时间增加； 为了解决AOF文件体积膨胀的问题，Redis提供了AOF重写功能：Redis服务器可以创建一个新的AOF文件来替代现有的AOF文件，新旧两个文件所保存的数据库状态是相同的，但是新的AOF
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-07-19 06:07" pubdate>
+              2021-07-19
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/Redis/">#Redis</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/06/25/SpringCloudAlibaba%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" target="_self">
+          <img src="https://i.loli.net/2021/06/25/v8UuOdxAzMycQwk.png" srcset="/img/loading.gif" lazyload alt="SpringCloudAlibaba快速入门">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/06/25/SpringCloudAlibaba%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" target="_self">
+          SpringCloudAlibaba快速入门
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/06/25/SpringCloudAlibaba%E5%BF%AB%E9%80%9F%E5%85%A5%E9%97%A8/" target="_self">
+        <div>
+          1. 什么是微服务？官网: https://www.martinfowler.com/articles/microservices.html In short, the microservice architectural style is an approach to developing a single application as a suite of small services, ea
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-06-25 09:32" pubdate>
+              2021-06-25
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%BE%AE%E6%9C%8D%E5%8A%A1/">#微服务</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/06/13/Nginx%E4%B8%80%E7%82%B9%E7%82%B9/" target="_self">
+          <img src="https://i.loli.net/2021/06/12/pOVkBsKWd5c4GPI.png" srcset="/img/loading.gif" lazyload alt="Nginx一点点">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/06/13/Nginx%E4%B8%80%E7%82%B9%E7%82%B9/" target="_self">
+          Nginx一点点
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/06/13/Nginx%E4%B8%80%E7%82%B9%E7%82%B9/" target="_self">
+        <div>
+          1. Nginx介绍Nginx是一款轻量级的Web服务器、反向代理服务器，由于它的内存占用少，启动极快，高并发能力强，在互联网项目中广泛应用。  上图基本上说明了当下流行的技术架构，其中Nginx有点入口网关的味道。 说了这么多，我们先安装玩玩吧 2. 安装Nginx一般都是项目都是部署在linux上，这里我们采用Docker的方式启动Nginx，关于Docker的，上一篇有详细介绍 Docke
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-06-13 03:26" pubdate>
+              2021-06-13
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/nginx/">#nginx</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/06/12/Docker/" target="_self">
+          <img src="https://i.loli.net/2021/06/12/VfTEq8BdwYzMKCl.png" srcset="/img/loading.gif" lazyload alt="Docker">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/06/12/Docker/" target="_self">
+          Docker
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/06/12/Docker/" target="_self">
+        <div>
+          最近在学Docker，花了很多时间，算是把Docker的一些基本使用方法get到了，现在记录下 1. Docker基础知识1. 什么是Docker 官网的介绍是“Docker is the world’s leading software container platform.” 官方给Docker的定位是一个应用容器平台。 Docker 是一个容器平台的领导者 Docker 容器平台 Docke
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-06-12 01:34" pubdate>
+              2021-06-12
+            </time>
+          </div>
+        
+        
+        
+          <div class="post-meta">
+            <i class="iconfont icon-tags"></i>
+            
+              <a href="/tags/%E5%AE%B9%E5%99%A8/">#容器</a>
+            
+          </div>
+        
+      </div>
+    </article>
+  </div>
+
+  <div class="row mx-auto index-card">
+    
+    
+      <div class="col-12 col-md-4 m-auto index-img">
+        <a href="/2021/05/22/SpringBoot%E4%B9%8B%E9%9B%86%E6%88%90MongoDB/" target="_self">
+          <img src="https://i.loli.net/2021/05/22/iwIGZaCXqgoBjvr.png" srcset="/img/loading.gif" lazyload alt="SpringBoot之集成MongoDB">
+        </a>
+      </div>
+    
+    <article class="col-12 col-md-8 mx-auto index-info">
+      <h2 class="index-header">
+        
+        <a href="/2021/05/22/SpringBoot%E4%B9%8B%E9%9B%86%E6%88%90MongoDB/" target="_self">
+          SpringBoot之集成MongoDB
+        </a>
+      </h2>
+
+      
+      <a class="index-excerpt " href="/2021/05/22/SpringBoot%E4%B9%8B%E9%9B%86%E6%88%90MongoDB/" target="_self">
+        <div>
+          公司的技术栈是SpringCloud+ZoomKeeper+RabbitMq+JPA+MongoDB，利用zk去做配置文件，rabbitmq做一些异步处理，持久层采用JPA(数据库的Mysql)，对于大部分都是查询的业务，数据是存在MongoDB中。 MongoDB是一个高性能、开源、无模式的文档型数据库，是当前NoSql数据库中比较热门的一种。 适合对大量或者无固定格式的数据进行存储，比如：日志
+        </div>
+      </a>
+
+      <div class="index-btm post-metas">
+        
+          <div class="post-meta mr-3">
+            <i class="iconfont icon-date"></i>
+            <time datetime="2021-05-22 03:42" pubdate>
+              2021-05-22
             </time>
           </div>
         
@@ -273,23 +503,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/01/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_self">
-          <img src="https://s3.ax1x.com/2021/01/23/s73EFO.jpg" srcset="/img/loading.gif" lazyload alt="计算机网络学习笔记">
+        <a href="/2021/04/28/%E9%9A%8F%E7%AC%9404/" target="_self">
+          <img src="https://i.loli.net/2021/04/13/43zmSMxVFhPncuU.jpg" srcset="/img/loading.gif" lazyload alt="随笔04">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/01/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_self">
-          计算机网络学习笔记
+        <a href="/2021/04/28/%E9%9A%8F%E7%AC%9404/" target="_self">
+          随笔04
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/01/11/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" target="_self">
+      <a class="index-excerpt " href="/2021/04/28/%E9%9A%8F%E7%AC%9404/" target="_self">
         <div>
-          计算机网络学习笔记1.TCP&#x2F;IP四层模型，OSI七层模型的理解为了增强通用性和兼容性，计算机网络都被设计成层次机构，每一层都遵守一定的规则。 因此有了OSI这样一个抽象的网络通信参考模型，按照这个标准使计算机网络系统可以互相连接。  物理层：通过网线、光缆等这种物理方式将电脑连接起来。传递的数据是比特流，0101010100。 数据链路层：首先，把比特流封装成数据帧的格式，对0、1进行
+          关于多线程的几点补充在理解线程的状态时，需要先了解每个对象都有的——锁池和等待池这两个概念。 锁池就是一个线程A已经占用了对象锁，其他对象想要拿到该对象锁就必须等待A释放锁，这些想拿到对象锁的线程就会进入锁池，等待和竞争锁。 等待池：假设一个线程A调用了某个对象的wait()方法，线程A就会释放该对象的锁，进入到该对象的等待池。 从上面就可以看出锁池是里的线程都是竞争锁的，而等待池里的线程已经被释
         </div>
       </a>
 
@@ -297,8 +527,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-01-11 10:32" pubdate>
-              2021-01-11
+            <time datetime="2021-04-28 01:57" pubdate>
+              2021-04-28
             </time>
           </div>
         
@@ -307,7 +537,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E8%AE%A1%E7%AE%97%E6%9C%BA%E7%BD%91%E7%BB%9C/">#计算机网络</a>
+              <a href="/tags/%E9%9A%8F%E7%AC%94/">#随笔</a>
             
           </div>
         
@@ -319,23 +549,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/01/06/SpringBoot%E4%B9%8BAOP%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
-          <img src="https://s3.ax1x.com/2021/01/23/s73EFO.jpg" srcset="/img/loading.gif" lazyload alt="SpringBoot之AOP的使用">
+        <a href="/2021/04/18/%E9%9A%8F%E7%AC%9403/" target="_self">
+          <img src="https://i.loli.net/2021/04/13/43zmSMxVFhPncuU.jpg" srcset="/img/loading.gif" lazyload alt="随笔03">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/01/06/SpringBoot%E4%B9%8BAOP%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
-          SpringBoot之AOP的使用
+        <a href="/2021/04/18/%E9%9A%8F%E7%AC%9403/" target="_self">
+          随笔03
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/01/06/SpringBoot%E4%B9%8BAOP%E7%9A%84%E4%BD%BF%E7%94%A8/" target="_self">
+      <a class="index-excerpt " href="/2021/04/18/%E9%9A%8F%E7%AC%9403/" target="_self">
         <div>
-          SpringBoot之AOP的使用spring核心思想分三大类：控制反转（IOC），依赖注入（DI）和面向切面（AOP） 1.什么是面向切面编程 AOP简介 AOP为Aspect Oriented Programming的缩写，意为：面向切面编程，通过预编译方式和运行期间动态代理实现程序功能的统一维护的一种技术。  为什么使用AOP编程范式？ 分离功能性需求和非功能性需求 集中处理某一关注点 侵入
+          进程的上下文切换和线程的上下文切换的区别首先我们需要知道进程和线程的上下文切换做了什么：  切换页目录以及使用新的地址空间 切换内核栈和硬件的上下文  两种的区别就是进程有第一个操作，线程是没有的，第二个线程和进程都有 关于讨论两者的区别，需要知道进程和线程的在内存地址上的区别，进程是独立的地址空间，而进程里面的线程是连续的地址空间，同一个进程内的线程地址是共享的。 其实切换进程和线程最大的区别就
         </div>
       </a>
 
@@ -343,8 +573,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-01-06 11:40" pubdate>
-              2021-01-06
+            <time datetime="2021-04-18 00:51" pubdate>
+              2021-04-18
             </time>
           </div>
         
@@ -353,7 +583,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/SpringBoot/">#SpringBoot</a>
+              <a href="/tags/%E9%9A%8F%E7%AC%94/">#随笔</a>
             
           </div>
         
@@ -365,23 +595,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2021/01/03/JWT%E4%BB%8B%E7%BB%8D%E5%92%8C%E5%AE%89%E5%85%A8%E9%98%B2%E8%8C%83%E4%BB%A5%E5%8F%8ASpringBoot%E6%95%B4%E5%90%88JWT%E5%AE%9E%E7%8E%B0%E6%8E%A5%E5%8F%A3%E6%9D%83%E9%99%90%E8%AE%A4%E8%AF%81/" target="_self">
-          <img src="https://s3.ax1x.com/2021/01/23/s7QpQI.jpg" srcset="/img/loading.gif" lazyload alt="JWT介绍和安全防范以及SpringBoot整合JWT实现接口权限认证">
+        <a href="/2021/04/16/%E9%9A%8F%E7%AC%9402/" target="_self">
+          <img src="https://i.loli.net/2021/04/13/43zmSMxVFhPncuU.jpg" srcset="/img/loading.gif" lazyload alt="随笔02">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2021/01/03/JWT%E4%BB%8B%E7%BB%8D%E5%92%8C%E5%AE%89%E5%85%A8%E9%98%B2%E8%8C%83%E4%BB%A5%E5%8F%8ASpringBoot%E6%95%B4%E5%90%88JWT%E5%AE%9E%E7%8E%B0%E6%8E%A5%E5%8F%A3%E6%9D%83%E9%99%90%E8%AE%A4%E8%AF%81/" target="_self">
-          JWT介绍和安全防范以及SpringBoot整合JWT实现接口权限认证
+        <a href="/2021/04/16/%E9%9A%8F%E7%AC%9402/" target="_self">
+          随笔02
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2021/01/03/JWT%E4%BB%8B%E7%BB%8D%E5%92%8C%E5%AE%89%E5%85%A8%E9%98%B2%E8%8C%83%E4%BB%A5%E5%8F%8ASpringBoot%E6%95%B4%E5%90%88JWT%E5%AE%9E%E7%8E%B0%E6%8E%A5%E5%8F%A3%E6%9D%83%E9%99%90%E8%AE%A4%E8%AF%81/" target="_self">
+      <a class="index-excerpt " href="/2021/04/16/%E9%9A%8F%E7%AC%9402/" target="_self">
         <div>
-          JWT介绍和安全防范以及SpringBoot集成JWT实现接口权限认证 1.什么是JWTJSON Web Token (JWT) is an open standard (RFC 7519) that defines a compact and self-contained way for securely transmitting information between parties as a
+          https实现原理最近看的一篇面试总结，原作者写的有一丢丢问题，下面这篇讲的很清楚 深入理解https 在此之前，需要了解对称加密和非对称加密的原理和效率对比 对称加密，就是加密和解密用的同一把密钥，加密和解密速度快 非对称加密，加密用公钥，解密用密钥，公钥是公开的，但在解密的时候只有用相应的密钥才能解密，加密和解密速度慢。 https解决的http的三大问题：  明文传输，裸奔 消息的完整性无法
         </div>
       </a>
 
@@ -389,8 +619,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2021-01-03 03:45" pubdate>
-              2021-01-03
+            <time datetime="2021-04-16 01:37" pubdate>
+              2021-04-16
             </time>
           </div>
         
@@ -399,7 +629,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/SpringBoot/">#SpringBoot</a>
+              <a href="/tags/%E9%9A%8F%E7%AC%94/">#随笔</a>
             
           </div>
         
@@ -411,23 +641,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/12/21/SSM%E5%AE%9E%E7%8E%B0%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%EF%BC%8C%E6%95%B4%E5%90%88html%E4%BD%9C%E4%B8%BA%E8%A7%86%E5%9B%BE%E5%BC%95%E6%93%8E%EF%BC%8C%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E5%92%8C%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/" target="_self">
-          <img src="https://s3.ax1x.com/2021/01/23/s73VYD.jpg" srcset="/img/loading.gif" lazyload alt="SSM实现前后端分离，整合html作为视图引擎，解决跨域和拦截问题">
+        <a href="/2021/04/13/%E9%9A%8F%E7%AC%9401/" target="_self">
+          <img src="https://i.loli.net/2021/04/13/43zmSMxVFhPncuU.jpg" srcset="/img/loading.gif" lazyload alt="随笔01">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2020/12/21/SSM%E5%AE%9E%E7%8E%B0%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%EF%BC%8C%E6%95%B4%E5%90%88html%E4%BD%9C%E4%B8%BA%E8%A7%86%E5%9B%BE%E5%BC%95%E6%93%8E%EF%BC%8C%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E5%92%8C%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/" target="_self">
-          SSM实现前后端分离，整合html作为视图引擎，解决跨域和拦截问题
+        <a href="/2021/04/13/%E9%9A%8F%E7%AC%9401/" target="_self">
+          随笔01
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2020/12/21/SSM%E5%AE%9E%E7%8E%B0%E5%89%8D%E5%90%8E%E7%AB%AF%E5%88%86%E7%A6%BB%EF%BC%8C%E6%95%B4%E5%90%88html%E4%BD%9C%E4%B8%BA%E8%A7%86%E5%9B%BE%E5%BC%95%E6%93%8E%EF%BC%8C%E8%A7%A3%E5%86%B3%E8%B7%A8%E5%9F%9F%E5%92%8C%E6%8B%A6%E6%88%AA%E9%97%AE%E9%A2%98/" target="_self">
+      <a class="index-excerpt " href="/2021/04/13/%E9%9A%8F%E7%AC%9401/" target="_self">
         <div>
-          SSM实现前后端分离，整合html作为视图引擎，解决跨域和拦截问题按照csdn查的说sping4.2以上的jar 跨域使用@CrosssOrgin注解就可以跨域了但我不知道为啥没有用。不过使用跨域过滤器工具类的方式解决的跨域问题，后端的json数据能够跨域被接收到。 1. 写CrossingFilter过滤器类，实现(Interfaces)本地ApacheTomcat的Filter接口123456
+          ArrayList和LinkedList区别对于这两种数据结构的基础比较，如，线程安全问题、底层结构，空间占用问题我就不多说了，网上很多文档写的很清楚了，这里我详细的讲下自己对ArrayList和LinkedList在数据的查询，增加，删除和修改上的性能差异： 要分析在三种情况下的差异，首先要清楚两种容器它的底层实现是什么，ArrayList底层是数组实现的，连续的地址内存空间，也就是带索引；Li
         </div>
       </a>
 
@@ -435,8 +665,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2020-12-21 02:07" pubdate>
-              2020-12-21
+            <time datetime="2021-04-13 02:10" pubdate>
+              2021-04-13
             </time>
           </div>
         
@@ -445,226 +675,9 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/SSM/">#SSM</a>
+              <a href="/tags/%E9%9A%8F%E7%AC%94/">#随笔</a>
             
           </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/11/13/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E7%9A%84%E5%AE%89%E5%85%A8%E4%B8%8A%E4%BC%A0%EF%BC%9F/" target="_self">
-          <img src="https://s3.ax1x.com/2021/01/23/s73Fw6.jpg" srcset="/img/loading.gif" lazyload alt="如何实现文件的安全上传？">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2020/11/13/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E7%9A%84%E5%AE%89%E5%85%A8%E4%B8%8A%E4%BC%A0%EF%BC%9F/" target="_self">
-          如何实现文件的安全上传？
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2020/11/13/%E5%A6%82%E4%BD%95%E5%AE%9E%E7%8E%B0%E6%96%87%E4%BB%B6%E7%9A%84%E5%AE%89%E5%85%A8%E4%B8%8A%E4%BC%A0%EF%BC%9F/" target="_self">
-        <div>
-          介绍项目中常会遇到需要文件上传和下载的地方，其中文件上传的安全问题不可忽视，下面是我考虑到的文件上传安全问题和用编码实现的过程  对文件大小的判断，防止恶意上传大文件挤占服务器资源  对文件类型的判断，这里实现的是对图片的判断  对图片进行resize处理，防止图片嵌入恶意可执行的代码，通过压缩可以实现对嵌入可代码的破坏  文件保存的地址有两种，一个就是借助第三方服务器进行保存（七牛云），或者是放
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-11-13 11:16" pubdate>
-              2020-11-13
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/%E7%BD%91%E5%AE%89/">#网安</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/10/31/api-design-demo-%E5%90%8E%E7%AB%AF%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E8%84%9A%E6%89%8B%E6%9E%B6/" target="_self">
-          <img src="https://s3.ax1x.com/2021/01/23/s73VYD.jpg" srcset="/img/loading.gif" lazyload alt="api-design-demo 后端快速开发脚手架">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2020/10/31/api-design-demo-%E5%90%8E%E7%AB%AF%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E8%84%9A%E6%89%8B%E6%9E%B6/" target="_self">
-          api-design-demo 后端快速开发脚手架
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2020/10/31/api-design-demo-%E5%90%8E%E7%AB%AF%E5%BF%AB%E9%80%9F%E5%BC%80%E5%8F%91%E8%84%9A%E6%89%8B%E6%9E%B6/" target="_self">
-        <div>
-          1.介绍 api-design-demo是我对之前所学框架的一个整合，基于SpringBoot整合Mybatis,Redis,Shiro，融合Swagger做接口文档，运用JSR303做数据校验,利用MybatisPlus简化数据访问层的操作，利用AutoGenerator自动代码生成器，减少代码的编写，更加专注业务逻辑的实现，从而提高开发效率。 自定义全局异常处理器，使controller层始终
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-10-31 16:10" pubdate>
-              2020-10-31
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/SpringBoot/">#SpringBoot</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/10/15/%E9%98%BF%E9%87%8C%E4%BA%91%E9%83%A8%E7%BD%B2SpringBoot%E9%A1%B9%E7%9B%AE-%E5%86%85%E7%BD%AETomcat-%EF%BC%8C%E9%85%8D%E7%BD%AEhttps%EF%BC%8C%E9%85%8D%E7%BD%AE%E9%82%AE%E7%AE%B1%E7%AB%AF%E5%8F%A3465%EF%BC%8C%E6%88%90%E5%8A%9F%E9%83%A8%E7%BD%B2%E5%8F%91%E5%B8%83/" target="_self">
-          <img src="https://s3.ax1x.com/2021/01/23/s73EFO.jpg" srcset="/img/loading.gif" lazyload alt="阿里云部署SpringBoot项目(内置Tomcat)，配置https，配置邮箱端口465，成功部署发布">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2020/10/15/%E9%98%BF%E9%87%8C%E4%BA%91%E9%83%A8%E7%BD%B2SpringBoot%E9%A1%B9%E7%9B%AE-%E5%86%85%E7%BD%AETomcat-%EF%BC%8C%E9%85%8D%E7%BD%AEhttps%EF%BC%8C%E9%85%8D%E7%BD%AE%E9%82%AE%E7%AE%B1%E7%AB%AF%E5%8F%A3465%EF%BC%8C%E6%88%90%E5%8A%9F%E9%83%A8%E7%BD%B2%E5%8F%91%E5%B8%83/" target="_self">
-          阿里云部署SpringBoot项目(内置Tomcat)，配置https，配置邮箱端口465，成功部署发布
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2020/10/15/%E9%98%BF%E9%87%8C%E4%BA%91%E9%83%A8%E7%BD%B2SpringBoot%E9%A1%B9%E7%9B%AE-%E5%86%85%E7%BD%AETomcat-%EF%BC%8C%E9%85%8D%E7%BD%AEhttps%EF%BC%8C%E9%85%8D%E7%BD%AE%E9%82%AE%E7%AE%B1%E7%AB%AF%E5%8F%A3465%EF%BC%8C%E6%88%90%E5%8A%9F%E9%83%A8%E7%BD%B2%E5%8F%91%E5%B8%83/" target="_self">
-        <div>
-          配置https我是阿里云的服务器，里面有个白嫖的SSL证书，申请成功后把它和域名绑定就行，再下载证书就行了。 因为我用的内置的Tomcat，所以下载的还是Tomcat的证书：  现在就是配项目配置https，我的springboot版本是1.5.10.RELEASE，2.0X版本的就不知道了，我这个配置很简单，放到resources是文件夹下就行了  在application.properties
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-10-15 16:05" pubdate>
-              2020-10-15
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/SpringBoot/">#SpringBoot</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-      <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2020/10/14/hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" target="_self">
-          <img src="https://s3.ax1x.com/2021/01/23/s73EFO.jpg" srcset="/img/loading.gif" lazyload alt="hexo常用命令">
-        </a>
-      </div>
-    
-    <article class="col-12 col-md-8 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2020/10/14/hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" target="_self">
-          hexo常用命令
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt " href="/2020/10/14/hexo%E5%B8%B8%E7%94%A8%E5%91%BD%E4%BB%A4/" target="_self">
-        <div>
-          hexo常用命令 初始化hexo  1# hexo init   启动hexo  1# hexo s   清楚缓存  1# hexo clean   生成静态网站  1# hexo g   将现在的文件部署到远端  1# hexo d
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-10-14 15:44" pubdate>
-              2020-10-14
-            </time>
-          </div>
-        
-        
-        
-          <div class="post-meta">
-            <i class="iconfont icon-tags"></i>
-            
-              <a href="/tags/hexo/">#hexo</a>
-            
-          </div>
-        
-      </div>
-    </article>
-  </div>
-
-  <div class="row mx-auto index-card">
-    
-    
-    <article class="col-12 col-md-12 mx-auto index-info">
-      <h2 class="index-header">
-        
-        <a href="/2020/10/10/hello-world/" target="_self">
-          Hello World
-        </a>
-      </h2>
-
-      
-      <a class="index-excerpt index-excerpt__noimg" href="/2020/10/10/hello-world/" target="_self">
-        <div>
-          Welcome to Hexo! This is your very first post. Check documentation for more info. If you get any problems when using Hexo, you can find the answer in troubleshooting or you can ask me on GitHub. Quick
-        </div>
-      </a>
-
-      <div class="index-btm post-metas">
-        
-          <div class="post-meta mr-3">
-            <i class="iconfont icon-date"></i>
-            <time datetime="2020-10-10 12:29" pubdate>
-              2020-10-10
-            </time>
-          </div>
-        
-        
         
       </div>
     </article>
@@ -674,7 +687,7 @@
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <a class="extend prev" rel="prev" href="/page/4/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><span class="page-number current">5</span>
+      <a class="extend prev" rel="prev" href="/page/4/#board"><i class="iconfont icon-arrowleft"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/#board">3</a><a class="page-number" href="/page/4/#board">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/#board">6</a><a class="page-number" href="/page/7/#board">7</a><a class="page-number" href="/page/8/#board">8</a><a class="extend next" rel="next" href="/page/6/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

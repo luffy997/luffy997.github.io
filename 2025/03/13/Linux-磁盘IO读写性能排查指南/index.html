@@ -1,0 +1,824 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="准备工作确保系统中已安装下列工具：  sysstat（包含 iostat） smartmontools（包含 smartctl） hdparm dd（自带，一般Linux默认安装）  安装示例（基于Debian&#x2F;Ubuntu）： 1sudo apt-get install sysstat smartmontools hdparm  排查步骤1. 检查系统整体负载首先，使用 top 或 h">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux 磁盘IO读写性能排查指南">
+<meta property="og:url" content="https://luffy997.github.io/2025/03/13/Linux-%E7%A3%81%E7%9B%98IO%E8%AF%BB%E5%86%99%E6%80%A7%E8%83%BD%E6%8E%92%E6%9F%A5%E6%8C%87%E5%8D%97/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="准备工作确保系统中已安装下列工具：  sysstat（包含 iostat） smartmontools（包含 smartctl） hdparm dd（自带，一般Linux默认安装）  安装示例（基于Debian&#x2F;Ubuntu）： 1sudo apt-get install sysstat smartmontools hdparm  排查步骤1. 检查系统整体负载首先，使用 top 或 h">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg">
+<meta property="article:published_time" content="2025-03-13T03:59:00.000Z">
+<meta property="article:modified_time" content="2025-04-30T00:58:54.325Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="linux">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg">
+  
+  
+  
+  <title>Linux 磁盘IO读写性能排查指南 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Linux 磁盘IO读写性能排查指南"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-03-13 11:59" pubdate>
+          2025年3月13日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          23 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Linux 磁盘IO读写性能排查指南</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h2><p>确保系统中已安装下列工具：</p>
+<ul>
+<li><strong>sysstat</strong>（包含 <code>iostat</code>）</li>
+<li><strong>smartmontools</strong>（包含 <code>smartctl</code>）</li>
+<li><strong>hdparm</strong></li>
+<li><strong>dd</strong>（自带，一般Linux默认安装）</li>
+</ul>
+<p>安装示例（基于Debian&#x2F;Ubuntu）：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> apt-get install sysstat smartmontools hdparm<br></code></pre></td></tr></table></figure>
+
+<h2 id="排查步骤"><a href="#排查步骤" class="headerlink" title="排查步骤"></a>排查步骤</h2><h3 id="1-检查系统整体负载"><a href="#1-检查系统整体负载" class="headerlink" title="1. 检查系统整体负载"></a>1. 检查系统整体负载</h3><p>首先，使用 <code>top</code> 或 <code>htop</code> 查看系统整体负载情况，关注：</p>
+<ul>
+<li>CPU 利用率中是否有较高的 <strong>iowait</strong> 时间</li>
+<li>是否存在异常进程占用大量IO资源、</li>
+</ul>
+<p> 在 top 的第一屏中，会有一行显示 CPU 的整体利用率，通常格式类似于：  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">%Cpu(s):  3.0 us,  1.0 sy,  0.0 ni, 95.0 <span class="hljs-built_in">id</span>,  1.0 wa,  0.0 hi,  0.0 si,  0.0 st<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>us (user)</strong>：用户空间占用的 CPU 时间。</li>
+<li><strong>sy (system)</strong>：内核空间占用的 CPU 时间。</li>
+<li><strong>ni (nice)</strong>：低优先级进程占用的 CPU 时间。</li>
+<li><strong>id (idle)</strong>：空闲时间。</li>
+<li><strong>wa (iowait)</strong>：等待 I&#x2F;O 完成的 CPU 时间。</li>
+<li><strong>hi&#x2F;si</strong>：硬中断&#x2F;软中断占用的 CPU 时间。</li>
+<li><strong>st</strong>：被虚拟机偷取的 CPU 时间。</li>
+</ul>
+<h3 id="1-1-查看-iowait-指标"><a href="#1-1-查看-iowait-指标" class="headerlink" title="1.1 查看 iowait 指标"></a>1.1 查看 iowait 指标</h3><ul>
+<li><p><strong>iowait (wa)</strong> 表示 CPU 等待磁盘 I&#x2F;O 操作完成的时间比例。 </p>
+</li>
+<li><ul>
+<li>正常情况下，wa 数值较低（例如 3%～5%），说明磁盘 I&#x2F;O 响应较快。</li>
+<li>如果发现 wa 值持续较高（如 10% 以上），则可能存在磁盘读写瓶颈或响应缓慢的问题。</li>
+</ul>
+</li>
+</ul>
+<p>例如，你提到的 wa 为 <strong>3.6%</strong>，总体来说处于正常水平，但仍需结合其它指标进一步确认系统的整体 I&#x2F;O 状态。</p>
+<h3 id="1-2-检查进程状态"><a href="#1-2-检查进程状态" class="headerlink" title="1.2 检查进程状态"></a>1.2 检查进程状态</h3><p>在 top 的进程列表中，重点关注以下几点：</p>
+<ul>
+<li><p><strong>进程状态（STAT 列）</strong>：</p>
+</li>
+<li><ul>
+<li><strong>D 状态</strong>：表示进程处于不可中断睡眠状态，通常与等待 I&#x2F;O 有关。如果有进程长时间处于 D 状态，可能正在等待磁盘操作。</li>
+</ul>
+</li>
+<li><p><strong>CPU 占用（%CPU 列）</strong>：</p>
+</li>
+<li><ul>
+<li>检查是否有某个或多个进程占用异常高的 CPU 资源。高 CPU 占用本身不一定表示 I&#x2F;O 问题，但如果结合高 iowait，则可能是 I&#x2F;O 密集型进程在等待磁盘响应。</li>
+</ul>
+</li>
+<li><p><strong>累计时间（TIME+ 列）</strong>：</p>
+</li>
+<li><ul>
+<li>表示进程自启动以来累计使用的 CPU 时间，对于长时间运行且 I&#x2F;O 密集的进程，可以帮助判断其负载情况。</li>
+</ul>
+</li>
+</ul>
+<p>例如，在进程列表中看到如下行：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">PID USER      PR  NI    VIRT    RES    SHR S  %CPU  %MEM     TIME+ COMMAND<br>1234 root      20   0  123456   7890   2345 D   0.0   0.1   0:00.12 some_process<br></code></pre></td></tr></table></figure>
+
+<p>这里，进程 <code>some_process</code> 的状态为 <strong>D</strong>，表示<strong>它可能正在等待磁盘 I&#x2F;O 操作</strong>。如果这种状态的进程数量较多或持续时间较长，则需要重点排查。</p>
+<h3 id="2-使用-iostat-查看磁盘利用率"><a href="#2-使用-iostat-查看磁盘利用率" class="headerlink" title="2. 使用 iostat 查看磁盘利用率"></a>2. 使用 iostat 查看磁盘利用率</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@luffy ~]# iostat --<span class="hljs-built_in">help</span><br>Usage: iostat [ options ] [ &lt;interval&gt; [ &lt;count&gt; ] ]<br>Options are:<br>[ -c ] [ -d ] [ -h ] [ -k | -m ] [ -N ] [ -t ] [ -V ] [ -x ] [ -y ] [ -z ]<br>[ -j &#123; ID | LABEL | PATH | UUID | ... &#125; ]<br>[ [ -T ] -g &lt;group_name&gt; ] [ -p [ &lt;device&gt; [,...] | ALL ] ]<br>[ &lt;device&gt; [...] | ALL ]<br></code></pre></td></tr></table></figure>
+
+<p>选项：</p>
+<ul>
+<li>-c：仅显示 CPU 使用情况；</li>
+<li>-d：仅显示设备利用率；</li>
+<li>-k：显示状态以千字节每秒为单位，而不使用块每秒；</li>
+<li>-m：显示状态以兆字节每秒为单位；</li>
+<li>-p：仅显示块设备和所有被使用的其他分区的状态；</li>
+<li>-t：显示每个报告产生时的时间；</li>
+<li>-V：显示版号并退出；</li>
+<li>-x：显示扩展状态。</li>
+</ul>
+<p>参数：</p>
+<p>间隔时间：每次报告的间隔时间（秒）；</p>
+<p>次数：显示报告的次数。</p>
+<h4 id="2-1-使用示例"><a href="#2-1-使用示例" class="headerlink" title="2.1 使用示例"></a>2.1 使用示例</h4><p>-d 参数</p>
+<p>参数 -d 表示，显示设备（磁盘）使用状态。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@luffy ~]# iostat -d 10<br>Linux 3.10.0-1160.105.1.el7.x86_64 (luffy.super) 	03/13/2025 	_x86_64_	(16 CPU)<br><br>Device:            tps    kB_read/s    kB_wrtn/s    kB_read    kB_wrtn<br>sdb               0.00         0.00         0.00      10929       2048<br>sda              28.07         2.73       257.90    6566161  619903894<br>scd0              0.47        17.33         0.00   41664468          0<br>dm-0             30.26         2.72       257.89    6531997  619895566<br>dm-1              0.00         0.00         0.00       2312       6240<br></code></pre></td></tr></table></figure>
+
+<p>输出信息的含义：</p>
+<ul>
+<li>tps：该设备每秒的传输次数。”一次传输” 意思是 “一次 I&#x2F;O 请求”。多个逻辑请求可能会被合并为 “一次 I&#x2F;O 请求”。”一次传输” 请求的大小是未知的。</li>
+<li>kB_read&#x2F;s：每秒从设备读取的数据量；</li>
+<li>kB_wrtn&#x2F;s：每秒向设备写入的数据量；</li>
+<li>kB_read：读取的总数据量；</li>
+<li>kB_wrtn：写入的总数量数据量。</li>
+</ul>
+<p>这些单位都为 Kilobytes。</p>
+<h5 id="c-参数"><a href="#c-参数" class="headerlink" title="-c 参数"></a>-c 参数</h5><p>-c 参数显示 CPU 使用情况：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@luffy ~]#  iostat -c<br>Linux 3.10.0-1160.105.1.el7.x86_64 (luffy.super) 	03/13/2025 	_x86_64_	(16 CPU)<br><br>avg-cpu:  %user   %<span class="hljs-built_in">nice</span> %system %iowait  %steal   %idle<br>           0.37    0.00    0.18    0.02    0.00   99.43<br></code></pre></td></tr></table></figure>
+
+<p>输出信息的含义：</p>
+<ul>
+<li>% user：CPU 处在用户模式下的时间百分比。</li>
+<li>% nice：CPU 处在带 NICE 值的用户模式下的时间百分比。</li>
+<li>% system：CPU 处在系统模式下的时间百分比。</li>
+<li>% iowait：CPU 等待输入输出完成时间的百分比。</li>
+<li>% steal：管理程序维护另一个虚拟处理器时，虚拟 CPU 的无意识等待时间百分比。</li>
+<li>% idle：CPU 空闲时间百分比。</li>
+</ul>
+<p>备注：如果 % iowait 的值过高，表示硬盘存在 I&#x2F;O 瓶颈，% idle 值高，表示 CPU 较空闲，如果 % idle 值高但系统响应慢时，有可能是 CPU 等待分配内存，此时应加大内存容量。% idle 值如果持续低于 10，那么系统的 CPU 处理能力相对较低，表明系统中最需要解决的资源是 CPU。</p>
+<h5 id="x-参数"><a href="#x-参数" class="headerlink" title="-x 参数"></a>-x 参数</h5><p>每隔三秒查看一次完整信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><code class="hljs bash">[root@luffy ~]# iostat -x 3<br>Linux 3.10.0-1160.105.1.el7.x86_64 (luffy.super) 	03/13/2025 	_x86_64_	(16 CPU)<br><br>avg-cpu:  %user   %<span class="hljs-built_in">nice</span> %system %iowait  %steal   %idle<br>           0.37    0.00    0.18    0.02    0.00   99.43<br><br>Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util<br>sdb               0.00     0.00    0.00    0.00     0.00     0.00   104.24     0.00    3.22    3.03   15.00   2.40   0.00<br>sda               0.00     2.19    0.03   28.04     2.73   257.98    18.57     0.53   19.00   34.10   18.98   0.34   0.96<br>scd0              0.00     0.00    0.47    0.00    17.33     0.00    74.29     0.00    0.10    0.10    0.00   0.08   0.00<br>dm-0              0.00     0.00    0.03   30.23     2.72   257.97    17.23     0.62   20.42   34.30   20.40   0.32   0.96<br>dm-1              0.00     0.00    0.00    0.00     0.00     0.00    10.21     0.00   32.21   11.90   33.71   1.18   0.00<br><br>avg-cpu:  %user   %<span class="hljs-built_in">nice</span> %system %iowait  %steal   %idle<br>           0.60    0.00    0.40    0.19    0.00   98.81<br><br>Device:         rrqm/s   wrqm/s     r/s     w/s    rkB/s    wkB/s avgrq-sz avgqu-sz   await r_await w_await  svctm  %util<br>sdb               0.00     0.00    0.00    0.00     0.00     0.00     0.00     0.00    0.00    0.00    0.00   0.00   0.00<br>sda               0.00    51.00    0.00  304.00     0.00  2977.33    19.59     8.30   27.30    0.00   27.30   0.32   9.77<br>scd0              0.00     0.00    0.00    0.00     0.00     0.00     0.00     0.00    0.00    0.00    0.00   0.00   0.00<br>dm-0              0.00     0.00    0.00  355.00     0.00  2977.33    16.77    11.77   33.14    0.00   33.14   0.28   9.77<br>dm-1              0.00     0.00    0.00    0.00     0.00     0.00     0.00     0.00    0.00    0.00    0.00   0.00   0.00<br></code></pre></td></tr></table></figure>
+
+<p><strong>输出信息的含义：</strong></p>
+<ul>
+<li>rrqm&#x2F;s：每秒这个设备相关的读取请求有多少被 Merge 了（当系统调用需要读取数据的时候，VFS 将请求发到各个 FS，如果 FS 发现不同的读取请求读取的是相同 Block 的数据，FS 会将这个请求合并 Merge）；</li>
+<li>wrqm&#x2F;s：每秒这个设备相关的写入请求有多少被 Merge 了。</li>
+<li>r&#x2F;s：每秒读取的扇区数；</li>
+<li>w&#x2F;s：每秒写入的扇区数。</li>
+<li>rKB&#x2F;s：每秒发送到设备的读取请求数。</li>
+<li>wKB&#x2F;s：每秒向设备发出的写请求数。</li>
+<li>avgrq-sz 平均请求扇区的大小</li>
+<li>avgqu-sz 是平均请求队列的长度。毫无疑问，队列长度越短越好。</li>
+<li>await： 每一个 IO 请求的处理的平均时间（单位是微秒毫秒）。这里可以理解为 IO 的响应时间，一般地系统 IO 响应时间应该低于 5ms，如果大于 10ms 就比较大了。这个时间包括了队列时间和服务时间，也就是说，一般情况下，await 大于 svctm，它们的差值越小，则说明队列时间越短，反之差值越大，队列时间越长，说明系统出了问题。</li>
+<li>svctm 表示平均每次设备 I&#x2F;O 操作的服务时间（以毫秒为单位）。如果 svctm 的值与 await 很接近，表示几乎没有 I&#x2F;O 等待，磁盘性能很好，如果 await 的值远高于 svctm 的值，则表示 I&#x2F;O 队列等待太长， 系统上运行的应用程序将变慢。</li>
+<li>% util： 在统计时间内所有处理 IO 时间，除以总共统计时间。例如，如果统计间隔 1 秒，该设备有 0.8 秒在处理 IO，而 0.2 秒闲置，那么该设备的 % util &#x3D; 0.8&#x2F;1 &#x3D; 80%，所以该参数暗示了设备的繁忙程度。一般地，如果该参数是 100% 表示设备已经接近满负荷运行了（当然如果是多磁盘，即使 % util 是 100%，因为磁盘的并发能力，所以磁盘使用未必就到了瓶颈）。</li>
+</ul>
+<p> iostat -x 1 10  是指执行 10 次，每秒输出一次信息，适合快速查看一定时间内的性能数 </p>
+<p> iostat -x 1  每秒输出一次信息，持续输出，适合长期监控和观察系统性能，直到手动结束  </p>
+<h3 id="3-进行读写性能测试"><a href="#3-进行读写性能测试" class="headerlink" title="3. 进行读写性能测试"></a>3. 进行读写性能测试</h3><p><strong>dd 命令</strong></p>
+<ul>
+<li><code>**if**</code><strong>：指定输入文件（</strong><code>**input file**</code><strong>）。</strong></li>
+<li><code>**of**</code><strong>：指定输出文件（</strong><code>**output file**</code><strong>）</strong></li>
+</ul>
+<h4 id="写入测试"><a href="#写入测试" class="headerlink" title="写入测试"></a>写入测试</h4><p>使用 <code>dd</code> 命令测试写入速度：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=/dev/zero of=testfile bs=1G count=1 oflag=dsync<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><code>if=/dev/zero</code>：输入来自一个特殊设备，产生持续的零。</li>
+<li><code>bs=1G</code>：设置块大小为 1 GB。</li>
+<li><code>count=1</code>：只写入一个块。</li>
+</ul>
+<p>常见正常输出示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plain">1+0 records in<br>1+0 records out<br>1073741824 bytes (1.1 GB) copied, 10.1 s, 106 MB/s<br></code></pre></td></tr></table></figure>
+
+<p><strong>说明</strong>：对于机械硬盘，速度可能在50-150 MB&#x2F;s之间；对于SSD，速度往往更高。</p>
+<h4 id="读取测试"><a href="#读取测试" class="headerlink" title="读取测试"></a>读取测试</h4><p>测试写入后文件的读取速度：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">dd</span> <span class="hljs-keyword">if</span>=testfile of=/dev/null bs=1G count=1<br></code></pre></td></tr></table></figure>
+
+<p>正常输出示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">1073741824 bytes (1.1 GB) copied, 4.2 s, 256 MB/s<br></code></pre></td></tr></table></figure>
+
+<h4 id="其他工具"><a href="#其他工具" class="headerlink" title="其他工具"></a>其他工具</h4><p>可以利用 <code>hdparm</code> 测试缓存读取与磁盘实际读取速度：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">hdparm -tT /dev/sda<br></code></pre></td></tr></table></figure>
+
+<p>正常情况下输出示例：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plain">Timing cached reads:<br>    12000 MB in  2.00 seconds = 6000.00 MB/sec<br>Timing buffered disk reads:<br>     150 MB in  3.00 seconds = 50.00 MB/sec<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-检查磁盘健康状态"><a href="#4-检查磁盘健康状态" class="headerlink" title="4. 检查磁盘健康状态"></a>4. 检查磁盘健康状态</h3><p>使用 <code>smartctl</code> 检查硬盘健康信息，查看是否存在错误或预警：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">sudo</span> smartctl -a /dev/sda<br></code></pre></td></tr></table></figure>
+
+<p>关注项：</p>
+<ul>
+<li>Reallocated_Sector_Ct（重新分配扇区数）</li>
+<li>Current_Pending_Sector（待处理扇区）</li>
+<li>SMART整体状态（通常显示为 PASSED 表示正常）</li>
+</ul>
+<h3 id="5-查看系统日志"><a href="#5-查看系统日志" class="headerlink" title="5. 查看系统日志"></a>5. 查看系统日志</h3><p>通过 <code>dmesg</code> 或查看 <code>/var/log/syslog</code>、<code>/var/log/messages</code> 等日志文件，关注磁盘相关错误信息：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">dmesg | grep -i error<br></code></pre></td></tr></table></figure>
+
+<p>或</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">grep -i <span class="hljs-string">&#x27;sda&#x27;</span> /var/log/syslog<br></code></pre></td></tr></table></figure>
+
+<h2 id="正常情况下的输出示例"><a href="#正常情况下的输出示例" class="headerlink" title="正常情况下的输出示例"></a>正常情况下的输出示例</h2><ul>
+<li><strong>iostat -x 输出示例</strong>：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs plain">avg-cpu:  %user   %nice %system %iowait  %steal   %idle<br>           5.13    0.00    2.34    1.02    0.00   91.51<br><br>Device             r/s     w/s     rMB/s   wMB/s  avgrq-sz  avgqu-sz   await  svctm  %util<br>sda                2.00    1.00    0.20    0.10    64.00      0.00     3.00   1.00   0.30<br></code></pre></td></tr></table></figure>
+
+<p><strong>说明</strong>：低iowait、低队列长度和较低的%util表明磁盘处于空闲状态。</p>
+<ul>
+<li><strong>dd 写入测试示例</strong>：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs plain">1+0 records in<br>1+0 records out<br>1073741824 bytes (1.1 GB) copied, 10.1 s, 106 MB/s<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>dd 读取测试示例</strong>：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">1073741824 bytes (1.1 GB) copied, 4.2 s, 256 MB/s<br></code></pre></td></tr></table></figure>
+
+<ul>
+<li><strong>hdparm 测试示例</strong>：</li>
+</ul>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs plain">Timing cached reads:<br>    12000 MB in  2.00 seconds = 6000.00 MB/sec<br>Timing buffered disk reads:<br>     150 MB in  3.00 seconds = 50.00 MB/sec<br></code></pre></td></tr></table></figure>
+
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><ul>
+<li><strong>数据备份</strong>：在进行磁盘调试和测试之前，请确保重要数据已经备份。</li>
+<li><strong>测试环境</strong>：尽量在业务低峰期或非生产环境下进行性能测试，以免影响正常业务。</li>
+<li><strong>挂载参数</strong>：检查磁盘挂载参数是否合理（如 noatime 选项）。</li>
+<li><strong>负载影响</strong>：测试过程中关闭或暂停其它大IO操作，确保测试结果准确。</li>
+<li><strong>硬件状态</strong>：若硬盘健康状态出现警告，建议及时更换硬盘以防数据丢失。</li>
+</ul>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>通过上述步骤，你可以较为全面地排查Linux系统磁盘IO性能问题。从整体负载、iostat监控、dd测试到硬盘健康检查，各项指标正常时，系统读写性能应在预期范围内（例如机械硬盘写入速度在50-150 MB&#x2F;s，SSD则更快）。如发现某项指标异常，则可进一步定位问题原因，例如硬件故障、系统配置问题或IO资源争用等。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/linux/" class="print-no-link">#linux</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Linux 磁盘IO读写性能排查指南</div>
+      <div>https://luffy997.github.io/2025/03/13/Linux-磁盘IO读写性能排查指南/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年3月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/03/28/GPT%E5%88%86%E5%8C%BA%E8%A1%A8%E6%A0%BC%E5%BC%8F%E7%9A%84%E4%B8%A4%E7%A7%8D%E5%88%9B%E5%BB%BA%E6%96%B9%E5%BC%8F/" title="GPT分区表格式的两种创建方式">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">GPT分区表格式的两种创建方式</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/03/10/pgrep-%E5%91%BD%E4%BB%A4%E5%AD%A6%E4%B9%A0%E6%80%BB%E7%BB%93/" title="pgrep 命令学习总结">
+                        <span class="hidden-mobile">pgrep 命令学习总结</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

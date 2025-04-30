@@ -1,0 +1,716 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. 背景 线上进程CPU占用异常偏高。 希望快速定位到是哪一个线程导致的问题，并进一步追踪到具体Python代码位置。   2. 排查步骤（1）确认CPU异常的进程通过常规 top 或 htop 工具，找到高CPU占用的进程PID，比如 2608。  （2）确认线程视角下的情况执行   1top -H -p 2608  或   1ps -mp 2608 -o THREAD,tid,time  切">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 线程高CPU占用排查总结">
+<meta property="og:url" content="https://luffy997.github.io/2024/07/15/Python-%E7%BA%BF%E7%A8%8B%E9%AB%98CPU%E5%8D%A0%E7%94%A8%E6%8E%92%E6%9F%A5%E6%80%BB%E7%BB%93/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="1. 背景 线上进程CPU占用异常偏高。 希望快速定位到是哪一个线程导致的问题，并进一步追踪到具体Python代码位置。   2. 排查步骤（1）确认CPU异常的进程通过常规 top 或 htop 工具，找到高CPU占用的进程PID，比如 2608。  （2）确认线程视角下的情况执行   1top -H -p 2608  或   1ps -mp 2608 -o THREAD,tid,time  切">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png">
+<meta property="article:published_time" content="2024-07-15T03:56:00.000Z">
+<meta property="article:modified_time" content="2025-04-30T00:57:33.334Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png">
+  
+  
+  
+  <title>Python 线程高CPU占用排查总结 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Python 线程高CPU占用排查总结"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-07-15 11:56" pubdate>
+          2024年7月15日 中午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.8k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          16 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Python 线程高CPU占用排查总结</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="1-背景"><a href="#1-背景" class="headerlink" title="1. 背景"></a>1. 背景</h2><ul>
+<li>线上进程CPU占用异常偏高。</li>
+<li>希望快速定位到<strong>是哪一个线程</strong>导致的问题，并进一步追踪到<strong>具体Python代码位置</strong>。</li>
+</ul>
+<hr>
+<h2 id="2-排查步骤"><a href="#2-排查步骤" class="headerlink" title="2. 排查步骤"></a>2. 排查步骤</h2><h3 id="（1）确认CPU异常的进程"><a href="#（1）确认CPU异常的进程" class="headerlink" title="（1）确认CPU异常的进程"></a>（1）确认CPU异常的进程</h3><p>通过常规 <code>top</code> 或 <code>htop</code> 工具，找到高CPU占用的进程PID，比如 <code>2608</code>。</p>
+<hr>
+<h3 id="（2）确认线程视角下的情况"><a href="#（2）确认线程视角下的情况" class="headerlink" title="（2）确认线程视角下的情况"></a>（2）确认线程视角下的情况</h3><p>执行  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">top -H -p 2608<br></code></pre></td></tr></table></figure>
+
+<p>或  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ps -mp 2608 -o THREAD,tid,<span class="hljs-keyword">time</span><br></code></pre></td></tr></table></figure>
+
+<p>切换到<strong>线程级别视角</strong>，查看哪个TID（线程ID）CPU占用最高。</p>
+<p><strong>注意：</strong>  </p>
+<ul>
+<li><code>top -H</code>是动态实时监控。</li>
+<li><code>ps</code>是静态一次性快照。</li>
+</ul>
+<hr>
+<h3 id="（3）将线程TID转成十六进制"><a href="#（3）将线程TID转成十六进制" class="headerlink" title="（3）将线程TID转成十六进制"></a>（3）将线程TID转成十六进制</h3><p>因为Python解释器内部使用十六进制TID，需要转换，比如：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">printf</span> <span class="hljs-string">&quot;%x\n&quot;</span> 线程号<br></code></pre></td></tr></table></figure>
+
+<p>例如线程ID是 <code>3245</code>，转换后是 <code>0xca5</code>。</p>
+<hr>
+<h3 id="（4）用GDB-attach到目标进程"><a href="#（4）用GDB-attach到目标进程" class="headerlink" title="（4）用GDB attach到目标进程"></a>（4）用GDB attach到目标进程</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">gdb -p 2608<br></code></pre></td></tr></table></figure>
+
+<p>成功后，执行：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs plain">thread apply all bt<br></code></pre></td></tr></table></figure>
+
+<p>或者针对单一线程，切换到指定线程：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plain">thread 线程号<br>bt<br></code></pre></td></tr></table></figure>
+
+<p>pstack输出的是cpython的调用，查看很不优化</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><code class="hljs yaml">[<span class="hljs-string">root@luffy</span> <span class="hljs-string">~</span>]<span class="hljs-comment"># pstack 2607</span><br><span class="hljs-attr">Thread 3 (Thread 0x7fc78e1a0700 (LWP 2608)):</span><br><span class="hljs-comment">#0  0x00000000004243ec in _PyEval_EvalFrameDefault (f=&lt;optimized out&gt;, throwflag=&lt;optimized out&gt;) at Python/ceval.c:2759</span><br><span class="hljs-comment">#1  0x0000000000420098 in function_code_fastcall (co=co@entry=0x7fc795c31300, args=&lt;optimized out&gt;, args@entry=0x7fc795ca6068, nargs=nargs@entry=0, globals=globals@entry=0x7fc795c5cc30) at Objects/call.c:283</span><br><span class="hljs-comment">#2  0x000000000043b186 in _PyFunction_FastCallDict (func=0x7fc795b8e050, args=args@entry=0x7fc795ca6068, nargs=0, kwargs=kwargs@entry=0x7fc795c1bd70) at Objects/call.c:322</span><br><span class="hljs-comment">#3  0x000000000043c763 in PyObject_Call (callable=callable@entry=0x7fc795b8e050, args=args@entry=0x7fc795ca6050, kwargs=kwargs@entry=0x7fc795c1bd70) at Objects/call.c:226</span><br><span class="hljs-comment">#4  0x0000000000422469 in do_call_core (kwdict=0x7fc795c1bd70, callargs=0x7fc795ca6050, func=0x7fc795b8e050) at Python/ceval.c:4645</span><br><span class="hljs-comment">#5  _PyEval_EvalFrameDefault (f=&lt;optimized out&gt;, throwflag=&lt;optimized out&gt;) at Python/ceval.c:3191</span><br><span class="hljs-comment">#6  0x0000000000420098 in function_code_fastcall (co=&lt;optimized out&gt;, args=&lt;optimized out&gt;, nargs=1, globals=&lt;optimized out&gt;) at Objects/call.c:283</span><br><span class="hljs-comment">#7  0x000000000043b316 in _PyFunction_FastCallKeywords (func=&lt;optimized out&gt;, stack=&lt;optimized out&gt;, nargs=&lt;optimized out&gt;, kwnames=&lt;optimized out&gt;) at Objects/call.c:415</span><br><span class="hljs-comment">#8  0x00000000004280e2 in call_function (kwnames=0x0, oparg=&lt;optimized out&gt;, pp_stack=&lt;synthetic pointer&gt;) at Python/ceval.c:4616</span><br><span class="hljs-comment">#9  _PyEval_EvalFrameDefault (f=&lt;optimized out&gt;, throwflag=&lt;optimized out&gt;) at Python/ceval.c:3110</span><br><span class="hljs-comment">#10 0x0000000000420098 in function_code_fastcall (co=&lt;optimized out&gt;, args=&lt;optimized out&gt;, nargs=1, globals=&lt;optimized out&gt;) at Objects/call.c:283</span><br><span class="hljs-comment">#11 0x000000000043b316 in _PyFunction_FastCallKeywords (func=&lt;optimized out&gt;, stack=&lt;optimized out&gt;, nargs=&lt;optimized out&gt;, kwnames=&lt;optimized out&gt;) at Objects/call.c:415</span><br><span class="hljs-comment">#12 0x00000000004280e2 in call_function (kwnames=0x0, oparg=&lt;optimized out&gt;, pp_stack=&lt;synthetic pointer&gt;) at Python/ceval.c:4616</span><br><span class="hljs-comment">#13 _PyEval_EvalFrameDefault (f=&lt;optimized out&gt;, throwflag=&lt;optimized out&gt;) at Python/ceval.c:3110</span><br><span class="hljs-comment">#14 0x0000000000420098 in function_code_fastcall (co=co@entry=0x7fc78e2541e0, args=&lt;optimized out&gt;, args@entry=0x7fc78e19fe20, nargs=nargs@entry=1, globals=globals@entry=0x7fc78e249640) at Objects/call.c:283</span><br><span class="hljs-comment">#15 0x000000000043b186 in _PyFunction_FastCallDict (func=func@entry=0x7fc78e1d1710, args=args@entry=0x7fc78e19fe20, nargs=nargs@entry=1, kwargs=kwargs@entry=0x0) at Objects/call.c:322</span><br><span class="hljs-comment">#16 0x000000000043e3e9 in _PyObject_FastCallDict (kwargs=0x0, nargs=1, args=0x7fc78e19fe20, callable=0x7fc78e1d1710) at Objects/call.c:98</span><br><span class="hljs-comment">#17 _PyObject_Call_Prepend (callable=0x7fc78e1d1710, obj=&lt;optimized out&gt;, args=0x7fc795ca6050, kwargs=0x0) at Objects/call.c:906</span><br><span class="hljs-comment">#18 0x000000000043c688 in PyObject_Call (callable=0x7fc795c9d320, args=&lt;optimized out&gt;, kwargs=&lt;optimized out&gt;) at Objects/call.c:245</span><br><span class="hljs-comment">#19 0x0000000000580bb3 in t_bootstrap (boot_raw=boot_raw@entry=0x7fc795b989c0) at ./Modules/_threadmodule.c:994</span><br><span class="hljs-comment">#20 0x0000000000537187 in pythread_wrapper (arg=&lt;optimized out&gt;) at Python/thread_pthread.h:174</span><br><span class="hljs-comment">#21 0x00007fc795689ea5 in start_thread () from /lib64/libpthread.so.0</span><br><span class="hljs-comment">#22 0x00007fc794ca9b0d in clone () from /lib64/libc.so.6</span><br><span class="hljs-attr">Thread 2 (Thread 0x7fc78d99f700 (LWP 2609)):</span><br><span class="hljs-comment">#0  0x00007fc794ca0b43 in select () from /lib64/libc.so.6</span><br><span class="hljs-comment">#1  0x000000000057f742 in pysleep (secs=&lt;optimized out&gt;) at ./Modules/timemodule.c:1843</span><br><span class="hljs-comment">#2  time_sleep (self=self@entry=0x7fc78e2578f0, obj=&lt;optimized out&gt;) at ./Modules/timemodule.c:371</span><br><span class="hljs-comment">#3  0x000000000043be56 in _PyMethodDef_RawFastCallKeywords (kwnames=0x0, nargs=0, args=0x7fc78e1c0d98, self=0x7fc78e2578f0, method=0x8e51e0 &lt;time_methods+288&gt;) at Objects/call.c:647</span><br><span class="hljs-comment">#4  _PyCFunction_FastCallKeywords (func=0x7fc78e25b0f0, args=args@entry=0x7fc78e1c0d98, nargs=nargs@entry=1, kwnames=kwnames@entry=0x0) at Objects/call.c:732</span><br><span class="hljs-comment">#5  0x000000000042801d in call_function (kwnames=0x0, oparg=1, pp_stack=&lt;synthetic pointer&gt;) at Python/ceval.c:4568</span><br><span class="hljs-comment">#6  _PyEval_EvalFrameDefault (f=&lt;optimized out&gt;, throwflag=&lt;optimized out&gt;) at Python/ceval.c:3093</span><br><span class="hljs-comment">#7  0x0000000000420098 in function_code_fastcall (co=co@entry=0x7fc795c25390, args=&lt;optimized out&gt;, args@entry=0x7fc795ca6068, nargs=nargs@entry=0, globals=globals@entry=0x7fc795c5cc30) at Objects/call.c:283</span><br><span class="hljs-comment">#8  0x000000000043b186 in _PyFunction_FastCallDict (func=0x7fc78e233560, args=args@entry=0x7fc795ca6068, nargs=0, kwargs=kwargs@entry=0x7fc78e2564b0) at Objects/call.c:322</span><br><span class="hljs-comment">#9  0x000000000043c763 in PyObject_Call (callable=callable@entry=0x7fc78e233560, args=args@entry=0x7fc795ca6050, kwargs=kwargs@entry=0x7fc78e2564b0) at Objects/call.c:226</span><br><span class="hljs-comment">#10 0x0000000000422469 in do_call_core (kwdict=0x7fc78e2564b0, callargs=0x7fc795ca6050, func=0x7fc78e233560) at Python/ceval.c:4645</span><br><span class="hljs-comment">#11 _PyEval_EvalFrameDefault (f=&lt;optimized out&gt;, throwflag=&lt;optimized out&gt;) at Python/ceval.c:3191</span><br><span class="hljs-comment">#12 0x0000000000420098 in function_code_fastcall (co=&lt;optimized out&gt;, args=&lt;optimized out&gt;, nargs=1, globals=&lt;optimized out&gt;) at Objects/call.c:283</span><br><span class="hljs-comment">#13 0x000000000043b316 in _PyFunction_FastCallKeywords (func=&lt;optimized out&gt;, stack=&lt;optimized out&gt;, nargs=&lt;optimized out&gt;, kwnames=&lt;optimized out&gt;) at Objects/call.c:415</span><br><span class="hljs-comment">#14 0x00000000004280e2 in call_function (kwnames=0x0, oparg=&lt;optimized out&gt;, pp_stack=&lt;synthetic pointer&gt;) at Python/ceval.c:4616</span><br><span class="hljs-comment">#15 _PyEval_EvalFrameDefault (f=&lt;optimized out&gt;, throwflag=&lt;optimized out&gt;) at Python/ceval.c:3110</span><br><span class="hljs-comment">#16 0x0000000000420098 in function_code_fastcall (co=&lt;optimized out&gt;, args=&lt;optimized out&gt;, nargs=1, globals=&lt;optimized out&gt;) at Objects/call.c:283</span><br><span class="hljs-comment">#17 0x000000000043b316 in _PyFunction_FastCallKeywords (func=&lt;optimized out&gt;, stack=&lt;optimized out&gt;, nargs=&lt;optimized out&gt;, kwnames=&lt;optimized out&gt;) at Objects/call.c:415</span><br><span class="hljs-comment">#18 0x00000000004280e2 in call_function (kwnames=0x0, oparg=&lt;optimized out&gt;, pp_stack=&lt;synthetic pointer&gt;) at Python/ceval.c:4616</span><br><span class="hljs-comment">#19 _PyEval_EvalFrameDefault (f=&lt;optimized out&gt;, throwflag=&lt;optimized out&gt;) at Python/ceval.c:3110</span><br><span class="hljs-comment">#20 0x0000000000420098 in function_code_fastcall (co=co@entry=0x7fc78e2541e0, args=&lt;optimized out&gt;, args@entry=0x7fc78d99ee20, nargs=nargs@entry=1, globals=globals@entry=0x7fc78e249640) at Objects/call.c:283</span><br><span class="hljs-comment">#21 0x000000000043b186 in _PyFunction_FastCallDict (func=func@entry=0x7fc78e1d1710, args=args@entry=0x7fc78d99ee20, nargs=nargs@entry=1, kwargs=kwargs@entry=0x0) at Objects/call.c:322</span><br><span class="hljs-comment">#22 0x000000000043e3e9 in _PyObject_FastCallDict (kwargs=0x0, nargs=1, args=0x7fc78d99ee20, callable=0x7fc78e1d1710) at Objects/call.c:98</span><br><span class="hljs-comment">#23 _PyObject_Call_Prepend (callable=0x7fc78e1d1710, obj=&lt;optimized out&gt;, args=0x7fc795ca6050, kwargs=0x0) at Objects/call.c:906</span><br><span class="hljs-comment">#24 0x000000000043c688 in PyObject_Call (callable=0x7fc795bb83c0, args=&lt;optimized out&gt;, kwargs=&lt;optimized out&gt;) at Objects/call.c:245</span><br><span class="hljs-comment">#25 0x0000000000580bb3 in t_bootstrap (boot_raw=boot_raw@entry=0x7fc78e239ea0) at ./Modules/_threadmodule.c:994</span><br><span class="hljs-comment">#26 0x0000000000537187 in pythread_wrapper (arg=&lt;optimized out&gt;) at Python/thread_pthread.h:174</span><br><span class="hljs-comment">#27 0x00007fc795689ea5 in start_thread () from /lib64/libpthread.so.0</span><br><span class="hljs-comment">#28 0x00007fc794ca9b0d in clone () from /lib64/libc.so.6</span><br><span class="hljs-attr">Thread 1 (Thread 0x7fc795ce6740 (LWP 2607)):</span><br><span class="hljs-comment">#0  0x00007fc794ca0b43 in select () from /lib64/libc.so.6</span><br><span class="hljs-comment">#1  0x000000000057f742 in pysleep (secs=&lt;optimized out&gt;) at ./Modules/timemodule.c:1843</span><br><span class="hljs-comment">#2  time_sleep (self=self@entry=0x7fc78e2578f0, obj=&lt;optimized out&gt;) at ./Modules/timemodule.c:371</span><br><span class="hljs-comment">#3  0x000000000043be56 in _PyMethodDef_RawFastCallKeywords (kwnames=0x0, nargs=0, args=0x7fc795bf35c8, self=0x7fc78e2578f0, method=0x8e51e0 &lt;time_methods+288&gt;) at Objects/call.c:647</span><br><span class="hljs-comment">#4  _PyCFunction_FastCallKeywords (func=0x7fc78e25b0f0, args=args@entry=0x7fc795bf35c8, nargs=nargs@entry=1, kwnames=kwnames@entry=0x0) at Objects/call.c:732</span><br><span class="hljs-comment">#5  0x000000000042801d in call_function (kwnames=0x0, oparg=1, pp_stack=&lt;synthetic pointer&gt;) at Python/ceval.c:4568</span><br><span class="hljs-comment">#6  _PyEval_EvalFrameDefault (f=&lt;optimized out&gt;, throwflag=&lt;optimized out&gt;) at Python/ceval.c:3093</span><br><span class="hljs-comment">#7  0x00000000004ed8a7 in PyEval_EvalFrameEx (throwflag=0, f=0x7fc795bf3450) at Python/ceval.c:547</span><br><span class="hljs-comment">#8  _PyEval_EvalCodeWithName (_co=_co@entry=0x7fc795b71660, globals=globals@entry=0x7fc795c651b0, locals=locals@entry=0x7fc795b6ce10, args=args@entry=0x0, argcount=argcount@entry=0, kwnames=kwnames@entry=0x0, kwargs=kwargs@entry=0x0, kwcount=kwcount@entry=0, kwstep=kwstep@entry=2, defs=defs@entry=0x0, defcount=defcount@entry=0, kwdefs=kwdefs@entry=0x0, closure=closure@entry=0x0, name=name@entry=0x0, qualname=qualname@entry=0x0) at Python/ceval.c:3930</span><br><span class="hljs-comment">#9  0x00000000004ed9d0 in PyEval_EvalCodeEx (closure=0x0, kwdefs=0x0, defcount=0, defs=0x0, kwcount=0, kws=0x0, argcount=0, args=0x0, locals=locals@entry=0x7fc795b6ce10, globals=globals@entry=0x7fc795c651b0, _co=_co@entry=0x7fc795b71660) at Python/ceval.c:3959</span><br><span class="hljs-comment">#10 PyEval_EvalCode (co=co@entry=0x7fc795b71660, globals=globals@entry=0x7fc795c5cc30, locals=locals@entry=0x7fc795c5cc30) at Python/ceval.c:524</span><br><span class="hljs-comment">#11 0x0000000000528648 in run_mod (arena=0x7fc795c73770, flags=0x7ffc619def20, locals=0x7fc795c5cc30, globals=0x7fc795c5cc30, filename=0x7fc795b6ce10, mod=0x1cb9610) at Python/pythonrun.c:1035</span><br><span class="hljs-comment">#12 PyRun_FileExFlags (fp=0x1d04d10, filename_str=&lt;optimized out&gt;, start=&lt;optimized out&gt;, globals=0x7fc795c5cc30, locals=0x7fc795c5cc30, closeit=1, flags=0x7ffc619def20) at Python/pythonrun.c:988</span><br><span class="hljs-comment">#13 0x000000000052882d in PyRun_SimpleFileExFlags (fp=0x1d04d10, filename=&lt;optimized out&gt;, closeit=1, flags=0x7ffc619def20) at Python/pythonrun.c:429</span><br><span class="hljs-comment">#14 0x000000000042fe0d in pymain_run_file (p_cf=0x7ffc619def20, filename=0x1c7e460 L&quot;/root/vscode-work/daily_code/busy_thread.py&quot;, fp=0x1d04d10) at Modules/main.c:456</span><br><span class="hljs-comment">#15 pymain_run_filename (cf=0x7ffc619def20, pymain=0x7ffc619df000) at Modules/main.c:1646</span><br><span class="hljs-comment">#16 pymain_run_python (pymain=0x7ffc619df000) at Modules/main.c:2907</span><br><span class="hljs-comment">#17 pymain_main (pymain=pymain@entry=0x7ffc619df000) at Modules/main.c:3068</span><br><span class="hljs-comment">#18 0x00000000004300dd in _Py_UnixMain (argc=&lt;optimized out&gt;, argv=&lt;optimized out&gt;) at Modules/main.c:3103</span><br><span class="hljs-comment">#19 0x00007fc794bcd555 in __libc_start_main () from /lib64/libc.so.6</span><br><span class="hljs-comment">#20 0x0000000000429de4 in _start ()</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="（5）加载Python调试脚本，友好查看Python堆栈"><a href="#（5）加载Python调试脚本，友好查看Python堆栈" class="headerlink" title="（5）加载Python调试脚本，友好查看Python堆栈"></a>（5）加载Python调试脚本，友好查看Python堆栈</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs plain">source /root/.pyenv/versions/3.7.10/lib/python3.7/python-gdb.py<br>py-bt<br></code></pre></td></tr></table></figure>
+
+<p>这样就能看到<strong>Python级别的调用栈了</strong>。</p>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs yaml"><span class="hljs-string">(gdb)</span> <span class="hljs-string">source</span> <span class="hljs-string">/root/.pyenv/versions/3.7.10/lib/python3.7/python-gdb.py</span><br><span class="hljs-string">(gdb)</span> <span class="hljs-string">py-bt</span><br><span class="hljs-attr">Traceback (most recent call first):</span><br>  <span class="hljs-string">File</span> <span class="hljs-string">&quot;/root/vscode-work/daily_code/busy_thread.py&quot;</span><span class="hljs-string">,</span> <span class="hljs-string">line</span> <span class="hljs-number">18</span><span class="hljs-string">,</span> <span class="hljs-string">in</span> <span class="hljs-string">busy_thread</span><br>    <span class="hljs-string">pass</span>  <span class="hljs-comment"># 死循环，占满CPU</span><br>  <span class="hljs-string">File</span> <span class="hljs-string">&quot;/root/.pyenv/versions/3.7.10/lib/python3.7/threading.py&quot;</span><span class="hljs-string">,</span> <span class="hljs-string">line</span> <span class="hljs-number">870</span><span class="hljs-string">,</span> <span class="hljs-string">in</span> <span class="hljs-string">run</span><br>    <span class="hljs-string">self._target(*self._args,</span> <span class="hljs-string">**self._kwargs)</span><br>  <span class="hljs-string">File</span> <span class="hljs-string">&quot;/root/.pyenv/versions/3.7.10/lib/python3.7/threading.py&quot;</span><span class="hljs-string">,</span> <span class="hljs-string">line</span> <span class="hljs-number">926</span><span class="hljs-string">,</span> <span class="hljs-string">in</span> <span class="hljs-string">_bootstrap_inner</span><br>    <span class="hljs-string">self.run()</span><br>  <span class="hljs-string">File</span> <span class="hljs-string">&quot;/root/.pyenv/versions/3.7.10/lib/python3.7/threading.py&quot;</span><span class="hljs-string">,</span> <span class="hljs-string">line</span> <span class="hljs-number">890</span><span class="hljs-string">,</span> <span class="hljs-string">in</span> <span class="hljs-string">_bootstrap</span><br>    <span class="hljs-string">self._bootstrap_inner()</span><br><span class="hljs-string">(gdb)</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="3-本次最终结果"><a href="#3-本次最终结果" class="headerlink" title="3. 本次最终结果"></a>3. 本次最终结果</h2><ul>
+<li><p>最后通过 <code>py-bt</code> 成功定位到了代码位置：</p>
+</li>
+<li><ul>
+<li><code>/root/vscode-work/daily_code/busy_thread.py</code> <strong>第18行</strong> </li>
+<li>处于 <code>busy_thread()</code> 函数中</li>
+<li>正在执行 <code>pass</code> 死循环，占满CPU</li>
+</ul>
+</li>
+</ul>
+<hr>
+<h2 id="4-经验总结"><a href="#4-经验总结" class="headerlink" title="4. 经验总结"></a>4. 经验总结</h2><table>
+<thead>
+<tr>
+<th>项目</th>
+<th>经验</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>问题归因</td>
+<td>高CPU占用问题，常由死循环、频繁IO、竞争锁等引起</td>
+</tr>
+<tr>
+<td>工具链掌握</td>
+<td>熟练使用 <code>top -H</code>、<code>ps -mp</code>、<code>gdb -p</code>、<code>py-bt</code></td>
+</tr>
+<tr>
+<td>注意事项</td>
+<td>记得TID需要转16进制；Python要有对应的<code>python-gdb.py</code>脚本</td>
+</tr>
+<tr>
+<td>小技巧</td>
+<td><code>py-bt</code>能直接定位到Python代码层，比C层bt友好多了</td>
+</tr>
+</tbody></table>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>我自己用pyenv安装的python3.7没带 python-gdb.py  </p>
+<p> 正常来说，<code>python-gdb.py</code> 是 Python 源码安装后在 <code>lib-dynload/</code> 旁边的，像 <code>/usr/lib/debug/...</code> 或 <code>/usr/lib/python3.x/</code> 目录中。<br>但是如果你用 pyenv 裸安装，默认是不会带这个调试脚本的（除非你自己加了参数 <code>--with-pydebug</code> 编译）。  </p>
+<p>解决方法是：</p>
+<p> 手动下载一份 python-gdb.py 脚本过来用。  </p>
+<p> Python 3.7.10 对应的 <code>python-gdb.py</code> 官方地址在 GitHub源码里：<br>👉 <a target="_blank" rel="noopener" href="https://github.com/python/cpython/blob/3.7/Tools/gdb/libpython.py">https://github.com/python/cpython/blob/3.7/Tools/gdb/libpython.py</a></p>
+<p> 步骤：  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-built_in">cd</span> /root/.pyenv/versions/3.7.10/lib/python3.7/<br>wget https://raw.githubusercontent.com/python/cpython/3.7/Tools/gdb/libpython.py -O python-gdb.py<br></code></pre></td></tr></table></figure>
+
+<p> 然后在 gdb 里执行：  </p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs bash">(gdb) <span class="hljs-built_in">source</span> /root/.pyenv/versions/3.7.10/lib/python3.7/python-gdb.py<br>(gdb) py-bt<br></code></pre></td></tr></table></figure>
+
+<p> 就可以拿到 Python 代码级的调用栈了！！  </p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Python 线程高CPU占用排查总结</div>
+      <div>https://luffy997.github.io/2024/07/15/Python-线程高CPU占用排查总结/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年7月15日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2024/08/07/%E6%9F%A5%E7%9C%8Blinux%E6%97%B6%E5%8C%BA%E5%92%8C%E4%BF%AE%E6%94%B9%E6%97%B6%E5%8C%BA/" title="查看linux时区和修改时区">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">查看linux时区和修改时区</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2024/07/09/Django-%E4%BF%A1%E5%8F%B7/" title="Django 信号">
+                        <span class="hidden-mobile">Django 信号</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

@@ -1,0 +1,665 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="python性能调试过程中最突出的问题就是耗时，性能测试工具有很多，像profiler，cprofiler等等，都是只能返回函数整体的耗时，而line_profiler就能够很好解决这个问题 项目地址 https:&#x2F;&#x2F;github.com&#x2F;rkern&#x2F;line_profiler 这里记录 line_profiler 的两种用法 通过装饰器 @profile123456789101112131415">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Python 性能分析">
+<meta property="og:url" content="https://luffy997.github.io/2023/06/13/Python-%E6%80%A7%E8%83%BD%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="python性能调试过程中最突出的问题就是耗时，性能测试工具有很多，像profiler，cprofiler等等，都是只能返回函数整体的耗时，而line_profiler就能够很好解决这个问题 项目地址 https:&#x2F;&#x2F;github.com&#x2F;rkern&#x2F;line_profiler 这里记录 line_profiler 的两种用法 通过装饰器 @profile123456789101112131415">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png">
+<meta property="article:published_time" content="2023-06-13T11:11:00.000Z">
+<meta property="article:modified_time" content="2025-04-30T00:57:18.224Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="Python">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png">
+  
+  
+  
+  <title>Python 性能分析 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Python 性能分析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2023-06-13 19:11" pubdate>
+          2023年6月13日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          785 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          7 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Python 性能分析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>python性能调试过程中最突出的问题就是耗时，性能测试工具有很多，像profiler，cprofiler等等，都是只能返回函数整体的耗时，而line_profiler就能够很好解决这个问题</p>
+<p>项目地址</p>
+<p><a target="_blank" rel="noopener" href="https://github.com/rkern/line_profiler">https://github.com/rkern/line_profiler</a></p>
+<p>这里记录 line_profiler 的两种用法</p>
+<h2 id="通过装饰器-profile"><a href="#通过装饰器-profile" class="headerlink" title="通过装饰器 @profile"></a>通过装饰器 @profile</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> random<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">do_other_stuff</span>(<span class="hljs-params">numbers</span>):<br>    s = <span class="hljs-built_in">sum</span>(numbers)<br><br><span class="hljs-meta">@profile</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">do_stuff</span>(<span class="hljs-params">numbers</span>):<br>    do_other_stuff(numbers)<br>    l = [numbers[i] / <span class="hljs-number">43</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(numbers))]<br>    m = [<span class="hljs-string">&#x27;hello&#x27;</span> + <span class="hljs-built_in">str</span>(numbers[i]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(numbers))]<br><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&#x27;__main__&#x27;</span>:<br>    numbers = [random.randint(<span class="hljs-number">1</span>, <span class="hljs-number">100</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1000</span>)]<br>    do_stuff(numbers)<br></code></pre></td></tr></table></figure>
+
+<p>这是官方的推荐，但是这里对第一次用这个库的人来说并不友好！步骤如下：</p>
+<ul>
+<li>给需要分析的函数加上 @profile装饰器（这时第一反应肯定是引入装饰器的依赖，不然代码都报错了，但是实际上进行性能分析不是通过运行代码的，是通过命令行）</li>
+<li>通过命令 <strong>kernprof -l .\23.6.12\speed_test.py</strong>  生成 speed_test.py.lprof文件</li>
+<li>最后通过python 调用line_profiler去分析speed_test.py.lprof，命令</li>
+</ul>
+<p><strong>python -m line_profiler .\speed_test.py.lprof</strong></p>
+<p>分析结果如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python">Timer unit: <span class="hljs-number">1e-06</span> s<br><br>Total time: <span class="hljs-number">0.0004925</span> s<br>File: .\<span class="hljs-number">23.6</span><span class="hljs-number">.12</span>\speed_test.py<br>Function: do_stuff at line <span class="hljs-number">7</span><br><br>Line <span class="hljs-comment">#      Hits         Time  Per Hit   % Time  Line Contents</span><br>==============================================================<br>     <span class="hljs-number">7</span>                                           @profile<br>     <span class="hljs-number">8</span>                                           <span class="hljs-keyword">def</span> <span class="hljs-title function_">do_stuff</span>(<span class="hljs-params">numbers</span>):<br>     <span class="hljs-number">9</span>         <span class="hljs-number">1</span>          <span class="hljs-number">9.3</span>      <span class="hljs-number">9.3</span>      <span class="hljs-number">1.9</span>      do_other_stuff(numbers)<br>    <span class="hljs-number">10</span>         <span class="hljs-number">1</span>        <span class="hljs-number">159.2</span>    <span class="hljs-number">159.2</span>     <span class="hljs-number">32.3</span>      l = [numbers[i] / <span class="hljs-number">43</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(numbers))]<br>    <span class="hljs-number">11</span>         <span class="hljs-number">1</span>        <span class="hljs-number">324.0</span>    <span class="hljs-number">324.0</span>     <span class="hljs-number">65.8</span>      m = [<span class="hljs-string">&#x27;hello&#x27;</span> + <span class="hljs-built_in">str</span>(numbers[i]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(numbers))]<br></code></pre></td></tr></table></figure>
+
+<p>逐行显示出了函数的源码及其耗时信息。共有六列信息。</p>
+<ul>
+<li>Line #: 在文件中的行号</li>
+<li>Hits: 该行被执行的次数</li>
+<li>Time: 执行该行的总时间，以定时器为单位表示。在表格前的标题信息中，有一行“Timer unit（定时器单位）”，给出了与秒的换算关系。在不同的系统上可能有所不同。</li>
+<li>Per Hit: 以定时器为单位，执行一次该行的平均时间</li>
+<li>% Time: 该行所花费的时间，在该函数的总记录时间中所占的百分比</li>
+<li>Line Contents: 实际的源码。</li>
+</ul>
+<h2 id="实例化LineProfiler"><a href="#实例化LineProfiler" class="headerlink" title="实例化LineProfiler"></a>实例化LineProfiler</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> line_profiler <span class="hljs-keyword">import</span> LineProfiler<br><span class="hljs-keyword">import</span> random<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">do_other_stuff</span>(<span class="hljs-params">numbers</span>):<br>    s = <span class="hljs-built_in">sum</span>(numbers)<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">do_stuff</span>(<span class="hljs-params">numbers</span>):<br>    do_other_stuff(numbers)<br>    l = [numbers[i] / <span class="hljs-number">43</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(numbers))]<br>    m = [<span class="hljs-string">&#x27;hello&#x27;</span> + <span class="hljs-built_in">str</span>(numbers[i]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(numbers))]<br><br><br>numbers = [random.randint(<span class="hljs-number">1</span>, <span class="hljs-number">100</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1000</span>)]<br>lp = LineProfiler()<br>lp_wrapper = lp(do_stuff)<br>lp_wrapper(numbers)<br>lp.print_stats()<br></code></pre></td></tr></table></figure>
+
+<p>通过实例化LineProfiler，lp_wrapper &#x3D; lp(do_stuff) 传入需要分析的函数名，lp_wrapper(numbers)传入需要分析函数的参数，lp.print_stats()最后打印结果，如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python">Timer unit: <span class="hljs-number">1e-07</span> s<br><br>Total time: <span class="hljs-number">0.0005496</span> s<br>File: M:/code/example/daily-code/<span class="hljs-number">23.6</span><span class="hljs-number">.12</span>/speed_test.py<br>Function: do_stuff at line <span class="hljs-number">9</span><br><br>Line <span class="hljs-comment">#      Hits         Time  Per Hit   % Time  Line Contents</span><br>==============================================================<br>     <span class="hljs-number">9</span>                                           <span class="hljs-keyword">def</span> <span class="hljs-title function_">do_stuff</span>(<span class="hljs-params">numbers</span>):<br>    <span class="hljs-number">10</span>         <span class="hljs-number">1</span>        <span class="hljs-number">100.0</span>    <span class="hljs-number">100.0</span>      <span class="hljs-number">1.8</span>      do_other_stuff(numbers)<br>    <span class="hljs-number">11</span>         <span class="hljs-number">1</span>       <span class="hljs-number">2180.0</span>   <span class="hljs-number">2180.0</span>     <span class="hljs-number">39.7</span>      l = [numbers[i] / <span class="hljs-number">43</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(numbers))]<br>    <span class="hljs-number">12</span>         <span class="hljs-number">1</span>       <span class="hljs-number">3216.0</span>   <span class="hljs-number">3216.0</span>     <span class="hljs-number">58.5</span>      m = [<span class="hljs-string">&#x27;hello&#x27;</span> + <span class="hljs-built_in">str</span>(numbers[i]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(numbers))]<br></code></pre></td></tr></table></figure>
+
+<p>这个只是最简单的使用，当函数有别的函数调用，就不能分辨出具体耗时在哪块，这时可以加入需要分析的函数名称，最终代码如下：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> line_profiler <span class="hljs-keyword">import</span> LineProfiler<br><span class="hljs-keyword">import</span> random<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">do_other_stuff</span>(<span class="hljs-params">numbers</span>):<br>    s = <span class="hljs-built_in">sum</span>(numbers)<br><br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">do_stuff</span>(<span class="hljs-params">numbers</span>):<br>    do_other_stuff(numbers)<br>    l = [numbers[i] / <span class="hljs-number">43</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(numbers))]<br>    m = [<span class="hljs-string">&#x27;hello&#x27;</span> + <span class="hljs-built_in">str</span>(numbers[i]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(numbers))]<br><br><br>numbers = [random.randint(<span class="hljs-number">1</span>, <span class="hljs-number">100</span>) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">1000</span>)]<br>lp = LineProfiler()<br>lp.add_function(do_other_stuff)  <span class="hljs-comment"># add additional function to profile</span><br>lp_wrapper = lp(do_stuff)<br>lp_wrapper(numbers)<br>lp.print_stats()<br></code></pre></td></tr></table></figure>
+
+<p>分析结果：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python">Timer unit: <span class="hljs-number">1e-07</span> s<br><br>Total time: <span class="hljs-number">6.3e-06</span> s<br>File: M:/code/example/daily-code/<span class="hljs-number">23.6</span><span class="hljs-number">.12</span>/speed_test.py<br>Function: do_other_stuff at line <span class="hljs-number">5</span><br><br>Line <span class="hljs-comment">#      Hits         Time  Per Hit   % Time  Line Contents</span><br>==============================================================<br>     <span class="hljs-number">5</span>                                           <span class="hljs-keyword">def</span> <span class="hljs-title function_">do_other_stuff</span>(<span class="hljs-params">numbers</span>):<br>     <span class="hljs-number">6</span>         <span class="hljs-number">1</span>         <span class="hljs-number">63.0</span>     <span class="hljs-number">63.0</span>    <span class="hljs-number">100.0</span>      s = <span class="hljs-built_in">sum</span>(numbers)<br><br>Total time: <span class="hljs-number">0.0005201</span> s<br>File: M:/code/example/daily-code/<span class="hljs-number">23.6</span><span class="hljs-number">.12</span>/speed_test.py<br>Function: do_stuff at line <span class="hljs-number">9</span><br><br>Line <span class="hljs-comment">#      Hits         Time  Per Hit   % Time  Line Contents</span><br>==============================================================<br>     <span class="hljs-number">9</span>                                           <span class="hljs-keyword">def</span> <span class="hljs-title function_">do_stuff</span>(<span class="hljs-params">numbers</span>):<br>    <span class="hljs-number">10</span>         <span class="hljs-number">1</span>        <span class="hljs-number">127.0</span>    <span class="hljs-number">127.0</span>      <span class="hljs-number">2.4</span>      do_other_stuff(numbers)<br>    <span class="hljs-number">11</span>         <span class="hljs-number">1</span>       <span class="hljs-number">1770.0</span>   <span class="hljs-number">1770.0</span>     <span class="hljs-number">34.0</span>      l = [numbers[i] / <span class="hljs-number">43</span> <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(numbers))]<br>    <span class="hljs-number">12</span>         <span class="hljs-number">1</span>       <span class="hljs-number">3304.0</span>   <span class="hljs-number">3304.0</span>     <span class="hljs-number">63.5</span>      m = [<span class="hljs-string">&#x27;hello&#x27;</span> + <span class="hljs-built_in">str</span>(numbers[i]) <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-built_in">len</span>(numbers))]<br></code></pre></td></tr></table></figure>
+
+<p>我们把do_other_stuff函数加入分析中，<strong>line_profiler</strong>可以帮我们把do_other_stuff的执行时间也打印出来</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Python/" class="print-no-link">#Python</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Python 性能分析</div>
+      <div>https://luffy997.github.io/2023/06/13/Python-性能分析/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2023年6月13日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2023/08/01/Linux-%E6%96%87%E4%BB%B6%E7%A7%8D%E7%B1%BB%E4%B8%8E%E6%89%A9%E5%B1%95%E5%90%8D/" title="Linux 文件种类与扩展名">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Linux 文件种类与扩展名</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2023/05/22/%E7%BD%91%E7%BB%9C%E6%95%85%E9%9A%9C%E6%8E%92%E6%9F%A5%E5%91%BD%E4%BB%A4/" title="网络故障排查命令">
+                        <span class="hidden-mobile">网络故障排查命令</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

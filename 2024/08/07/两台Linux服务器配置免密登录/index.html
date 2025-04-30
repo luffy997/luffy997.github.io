@@ -19,22 +19,24 @@
   <meta name="author" content="Luffy997">
   <meta name="keywords" content="">
   
-    <meta name="description" content="🧠 Linux 开机流程总体分为 4 个阶段： 第一阶段：BIOS&#x2F;UEFI 初始化 🔌 触发点：按下电源键  📦 工作内容：   加载 BIOS&#x2F;UEFI，执行硬件自检（POST） 读取启动顺序，找到第一个可启动设备   💥 常见问题点：   找不到启动设备（BIOS 设置错） 硬件检测失败（内存条没插好等）     第二阶段：Boot Loader（如 grub2）">
+    <meta name="description" content="为了方便同步操作，可以配置A服务器到B服务器的SSH免密码登录。 在A服务器上生成SSH密钥： 1ssh-keygen -t rsa -b 4096 -C &quot;your_email@example.com&quot;  按照提示完成密钥生成后，将公钥复制到B服务器： 1ssh-copy-id user@b_server_ip">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Linux 开机流程">
-<meta property="og:url" content="https://luffy997.github.io/2025/04/30/Linux-%E5%BC%80%E6%9C%BA%E6%B5%81%E7%A8%8B/index.html">
+<meta property="og:title" content="两台Linux服务器配置免密登录">
+<meta property="og:url" content="https://luffy997.github.io/2024/08/07/%E4%B8%A4%E5%8F%B0Linux%E6%9C%8D%E5%8A%A1%E5%99%A8%E9%85%8D%E7%BD%AE%E5%85%8D%E5%AF%86%E7%99%BB%E5%BD%95/index.html">
 <meta property="og:site_name" content="Luffy997&#39;s Blog">
-<meta property="og:description" content="🧠 Linux 开机流程总体分为 4 个阶段： 第一阶段：BIOS&#x2F;UEFI 初始化 🔌 触发点：按下电源键  📦 工作内容：   加载 BIOS&#x2F;UEFI，执行硬件自检（POST） 读取启动顺序，找到第一个可启动设备   💥 常见问题点：   找不到启动设备（BIOS 设置错） 硬件检测失败（内存条没插好等）     第二阶段：Boot Loader（如 grub2）">
+<meta property="og:description" content="为了方便同步操作，可以配置A服务器到B服务器的SSH免密码登录。 在A服务器上生成SSH密钥： 1ssh-keygen -t rsa -b 4096 -C &quot;your_email@example.com&quot;  按照提示完成密钥生成后，将公钥复制到B服务器： 1ssh-copy-id user@b_server_ip">
 <meta property="og:locale" content="zh_CN">
-<meta property="article:published_time" content="2025-04-29T16:19:05.000Z">
-<meta property="article:modified_time" content="2025-04-29T16:20:07.062Z">
+<meta property="og:image" content="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg">
+<meta property="article:published_time" content="2024-08-07T12:14:00.000Z">
+<meta property="article:modified_time" content="2025-04-30T01:10:29.975Z">
 <meta property="article:author" content="Luffy997">
 <meta property="article:tag" content="linux">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg">
   
   
   
-  <title>Linux 开机流程 - Luffy997&#39;s Blog</title>
+  <title>两台Linux服务器配置免密登录 - Luffy997&#39;s Blog</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -200,7 +202,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Linux 开机流程"></span>
+            <span id="subtitle" data-typed-text="两台Linux服务器配置免密登录"></span>
           
         </div>
 
@@ -211,8 +213,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2025-04-30 00:19" pubdate>
-          2025年4月30日 凌晨
+        <time datetime="2024-08-07 20:14" pubdate>
+          2024年8月7日 晚上
         </time>
       </span>
     
@@ -223,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          409 字
+          71 字
         
       </span>
     
@@ -234,7 +236,7 @@
         
         
         
-          4 分钟
+          1 分钟
         
       </span>
     
@@ -271,96 +273,17 @@
       <div class="container nopadding-x-md" id="board-ctn">
         <div id="board">
           <article class="post-content mx-auto">
-            <h1 id="seo-header">Linux 开机流程</h1>
+            <h1 id="seo-header">两台Linux服务器配置免密登录</h1>
             
             
               <div class="markdown-body">
                 
-                <h3 id="🧠-Linux-开机流程总体分为-4-个阶段："><a href="#🧠-Linux-开机流程总体分为-4-个阶段：" class="headerlink" title="🧠 Linux 开机流程总体分为 4 个阶段："></a>🧠 <strong>Linux 开机流程总体分为 4 个阶段：</strong></h3><hr>
-<h4 id="第一阶段：BIOS-UEFI-初始化"><a href="#第一阶段：BIOS-UEFI-初始化" class="headerlink" title="第一阶段：BIOS&#x2F;UEFI 初始化"></a><strong>第一阶段：BIOS&#x2F;UEFI 初始化</strong></h4><ul>
-<li><p>🔌 <strong>触发点</strong>：按下电源键</p>
-</li>
-<li><p>📦 <strong>工作内容</strong>：</p>
-</li>
-<li><ul>
-<li>加载 <strong>BIOS&#x2F;UEFI</strong>，执行硬件自检（POST）</li>
-<li>读取启动顺序，找到<strong>第一个可启动设备</strong></li>
-</ul>
-</li>
-<li><p>💥 <strong>常见问题点</strong>：</p>
-</li>
-<li><ul>
-<li>找不到启动设备（BIOS 设置错）</li>
-<li>硬件检测失败（内存条没插好等）</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h4 id="第二阶段：Boot-Loader（如-grub2）加载"><a href="#第二阶段：Boot-Loader（如-grub2）加载" class="headerlink" title="第二阶段：Boot Loader（如 grub2）加载"></a><strong>第二阶段：Boot Loader（如 grub2）加载</strong></h4><ul>
-<li><p>🔁 <strong>从启动设备读取 MBR 或 EFI 区块</strong></p>
-</li>
-<li><p>🚀 <strong>Boot Loader 功能</strong>：</p>
-</li>
-<li><ul>
-<li>提供启动菜单</li>
-<li>选择并加载对应的 Linux <strong>内核（vmlinuz）</strong></li>
-</ul>
-</li>
-<li><p>💥 <strong>常见问题点</strong>：</p>
-</li>
-<li><ul>
-<li>grub 配置错误</li>
-<li>MBR 损坏或被覆盖（安装 Windows 后）</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h4 id="第三阶段：内核加载（Kernel）"><a href="#第三阶段：内核加载（Kernel）" class="headerlink" title="第三阶段：内核加载（Kernel）"></a><strong>第三阶段：内核加载（Kernel）</strong></h4><ul>
-<li><p>🧬 <strong>功能</strong>：</p>
-</li>
-<li><ul>
-<li>内核解压缩到内存中，开始运行</li>
-<li>识别硬件信息，加载相应驱动</li>
-</ul>
-</li>
-<li><p>🔧 <strong>输出</strong>：进入一个「最精简的操作系统」</p>
-</li>
-<li><p>💥 <strong>常见问题点</strong>：</p>
-</li>
-<li><ul>
-<li>找不到根文件系统（rootfs）</li>
-<li>initramfs 错误导致内核 panic</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h4 id="第四阶段：用户空间初始化（systemd）"><a href="#第四阶段：用户空间初始化（systemd）" class="headerlink" title="第四阶段：用户空间初始化（systemd）"></a><strong>第四阶段：用户空间初始化（systemd）</strong></h4><ul>
-<li>🧩 <strong>由内核启动</strong> systemd（以前是 init）</li>
-<li>🧭 <strong>执行流程</strong>（target 是 systemd 的阶段定义）：</li>
-</ul>
-<ol>
-<li><ol>
-<li><code>sysinit.target</code>：基础初始化（挂载文件系统、设置时钟）</li>
-<li><code>basic.target</code>：准备系统基础功能（网络等）</li>
-<li><code>multi-user.target</code>：启动服务器服务，如 sshd、network 等</li>
-<li><code>/etc/rc.local</code>：用户自定义启动脚本</li>
-<li><code>getty.target</code>：启动终端登录服务</li>
-<li><code>graphical.target</code>：图形界面（若安装桌面环境）</li>
-</ol>
-</li>
-</ol>
-<ul>
-<li><p>💥 <strong>常见问题点</strong>：</p>
-</li>
-<li><ul>
-<li>systemd 配置错、服务启动失败</li>
-<li>服务依赖配置错（启动顺序错）</li>
-</ul>
-</li>
-</ul>
-<hr>
-<h3 id="✅-总结成一句话："><a href="#✅-总结成一句话：" class="headerlink" title="✅ 总结成一句话："></a>✅ <strong>总结成一句话：</strong></h3><p>开机流程是从 BIOS → Boot Loader → 内核加载 → systemd 初始化，一环扣一环，systemd 在后期占比最大，是系统能否正常启动的关键。</p>
+                <p>为了方便同步操作，可以配置A服务器到B服务器的SSH免密码登录。</p>
+<p><strong>在A服务器上生成SSH密钥：</strong></p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ssh-keygen -t rsa -b 4096 -C <span class="hljs-string">&quot;your_email@example.com&quot;</span><br></code></pre></td></tr></table></figure>
 
+<p>按照提示完成密钥生成后，将公钥复制到B服务器：</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">ssh-copy-id user@b_server_ip<br></code></pre></td></tr></table></figure>
                 
               </div>
             
@@ -384,8 +307,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Linux 开机流程</div>
-      <div>https://luffy997.github.io/2025/04/30/Linux-开机流程/</div>
+      <div>两台Linux服务器配置免密登录</div>
+      <div>https://luffy997.github.io/2024/08/07/两台Linux服务器配置免密登录/</div>
     </div>
     <div class="license-meta">
       
@@ -397,7 +320,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2025年4月30日</div>
+          <div>2024年8月7日</div>
         </div>
       
       
@@ -429,12 +352,18 @@
                   <article class="post-prev col-6">
                     
                     
+                      <a href="/2024/08/30/Python-zipfile%E5%8E%8B%E7%BC%A9%E5%AF%B9%E6%96%87%E4%BB%B6%E6%97%B6%E9%97%B4%E7%9A%84%E8%A6%81%E6%B1%82/" title="Python zipfile压缩对文件时间的要求">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Python zipfile压缩对文件时间的要求</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/08/21/Django-Rest-Framework%E5%85%AB%E5%A4%A7%E7%BB%84%E4%BB%B6/" title="Django Rest Framework八大组件">
-                        <span class="hidden-mobile">Django Rest Framework八大组件</span>
+                      <a href="/2024/08/07/%E6%9F%A5%E7%9C%8Blinux%E6%97%B6%E5%8C%BA%E5%92%8C%E4%BF%AE%E6%94%B9%E6%97%B6%E5%8C%BA/" title="查看linux时区和修改时区">
+                        <span class="hidden-mobile">查看linux时区和修改时区</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
