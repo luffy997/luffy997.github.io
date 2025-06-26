@@ -1,0 +1,759 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="概述本文档详细解析了Django的WSGI架构，包括开发环境的runserver命令、WSGIHandler请求处理器、WSGIServer服务器，以及生产环境的服务器选择。 1. Django runserver 命令解析1.1 命令概述12class Command(BaseCommand):    help &#x3D; &quot;Starts a lightweight Web server fo">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django WSGI 架构深度解析">
+<meta property="og:url" content="https://luffy997.github.io/2025/06/26/Django-WSGI-%E6%9E%B6%E6%9E%84%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="概述本文档详细解析了Django的WSGI架构，包括开发环境的runserver命令、WSGIHandler请求处理器、WSGIServer服务器，以及生产环境的服务器选择。 1. Django runserver 命令解析1.1 命令概述12class Command(BaseCommand):    help &#x3D; &quot;Starts a lightweight Web server fo">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s21.ax1x.com/2025/04/30/pEHJjt1.png">
+<meta property="article:published_time" content="2025-06-26T12:41:09.000Z">
+<meta property="article:modified_time" content="2025-06-26T12:41:58.086Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="Django">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s21.ax1x.com/2025/04/30/pEHJjt1.png">
+  
+  
+  
+  <title>Django WSGI 架构深度解析 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Django WSGI 架构深度解析"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-06-26 20:41" pubdate>
+          2025年6月26日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Django WSGI 架构深度解析</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>本文档详细解析了Django的WSGI架构，包括开发环境的<code>runserver</code>命令、<code>WSGIHandler</code>请求处理器、<code>WSGIServer</code>服务器，以及生产环境的服务器选择。</p>
+<h2 id="1-Django-runserver-命令解析"><a href="#1-Django-runserver-命令解析" class="headerlink" title="1. Django runserver 命令解析"></a>1. Django runserver 命令解析</h2><h3 id="1-1-命令概述"><a href="#1-1-命令概述" class="headerlink" title="1.1 命令概述"></a>1.1 命令概述</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">Command</span>(<span class="hljs-title class_ inherited__">BaseCommand</span>):<br>    <span class="hljs-built_in">help</span> = <span class="hljs-string">&quot;Starts a lightweight Web server for development.&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><code>runserver</code>是Django提供的<strong>轻量级开发服务器</strong>，专门用于开发环境，<strong>不适用于生产环境</strong>。</p>
+<h3 id="1-2-命令行参数"><a href="#1-2-命令行参数" class="headerlink" title="1.2 命令行参数"></a>1.2 命令行参数</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">add_arguments</span>(<span class="hljs-params">self, parser</span>):<br>    parser.add_argument(<br>        <span class="hljs-string">&#x27;addrport&#x27;</span>, nargs=<span class="hljs-string">&#x27;?&#x27;</span>,<br>        <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Optional port number, or ipaddr:port&#x27;</span><br>    )<br>    parser.add_argument(<br>        <span class="hljs-string">&#x27;--ipv6&#x27;</span>, <span class="hljs-string">&#x27;-6&#x27;</span>, action=<span class="hljs-string">&#x27;store_true&#x27;</span>, dest=<span class="hljs-string">&#x27;use_ipv6&#x27;</span>, default=<span class="hljs-literal">False</span>,<br>        <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Tells Django to use an IPv6 address.&#x27;</span>,<br>    )<br>    parser.add_argument(<br>        <span class="hljs-string">&#x27;--nothreading&#x27;</span>, action=<span class="hljs-string">&#x27;store_false&#x27;</span>, dest=<span class="hljs-string">&#x27;use_threading&#x27;</span>, default=<span class="hljs-literal">True</span>,<br>        <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Tells Django to NOT use threading.&#x27;</span>,<br>    )<br>    parser.add_argument(<br>        <span class="hljs-string">&#x27;--noreload&#x27;</span>, action=<span class="hljs-string">&#x27;store_false&#x27;</span>, dest=<span class="hljs-string">&#x27;use_reloader&#x27;</span>, default=<span class="hljs-literal">True</span>,<br>        <span class="hljs-built_in">help</span>=<span class="hljs-string">&#x27;Tells Django to NOT use the auto-reloader.&#x27;</span>,<br>    )<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-3-启动流程"><a href="#1-3-启动流程" class="headerlink" title="1.3 启动流程"></a>1.3 启动流程</h3><figure class="highlight elm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs elm">用户执行: python manage.py runserver<br>    ↓<br><span class="hljs-number">1.</span> 解析命令行参数<br>    ├─ addr<span class="hljs-keyword">port</span> (地址:端口)<br>    ├─ <span class="hljs-comment">--ipv6 (IPv6支持)</span><br>    ├─ <span class="hljs-comment">--nothreading (禁用线程)</span><br>    └─ <span class="hljs-comment">--noreload (禁用重载)</span><br>    ↓<br><span class="hljs-number">2.</span> 验证配置<br>    ├─ 检查 <span class="hljs-type">DEBUG</span> 和 <span class="hljs-type">ALLOWED_HOSTS</span><br>    ├─ 验证 <span class="hljs-type">IPv6</span> 支持<br>    └─ 解析地址和端口<br>    ↓<br><span class="hljs-number">3.</span> 选择运行模式<br>    ├─ 自动重载模式 (默认)<br>    │   ├─ 启动监控线程<br>    │   ├─ 检测文件变化<br>    │   └─ 自动重启服务器<br>    └─ 直接运行模式<br>    ↓<br><span class="hljs-number">4.</span> 系统检查<br>    ├─ 模型验证<br>    ├─ 迁移检查<br>    └─ 配置验证<br>    ↓<br><span class="hljs-number">5.</span> 启动<span class="hljs-type">Web</span>服务器<br>    ├─ 获取<span class="hljs-type">WSGI</span>处理器<br>    ├─ 创建socket监听<br>    ├─ 启动请求处理循环<br>    └─ 处理<span class="hljs-type">HTTP</span>请求<br></code></pre></td></tr></table></figure>
+
+<h3 id="1-4-自动重载机制"><a href="#1-4-自动重载机制" class="headerlink" title="1.4 自动重载机制"></a>1.4 自动重载机制</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">run</span>(<span class="hljs-params">self, **options</span>):<br>    use_reloader = options[<span class="hljs-string">&#x27;use_reloader&#x27;</span>]<br>    <br>    <span class="hljs-keyword">if</span> use_reloader:<br>        autoreload.main(<span class="hljs-variable language_">self</span>.inner_run, <span class="hljs-literal">None</span>, options)  <span class="hljs-comment"># 自动重载模式</span><br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-variable language_">self</span>.inner_run(<span class="hljs-literal">None</span>, **options)  <span class="hljs-comment"># 直接运行模式</span><br></code></pre></td></tr></table></figure>
+
+<p>自动重载通过以下方式工作：</p>
+<ol>
+<li><strong>文件监控</strong>: 监控Python文件的变化</li>
+<li><strong>进程重启</strong>: 检测到变化时重启整个进程</li>
+<li><strong>无缝切换</strong>: 用户无感知的服务器重启</li>
+</ol>
+<h2 id="2-WSGIHandler-请求处理器"><a href="#2-WSGIHandler-请求处理器" class="headerlink" title="2. WSGIHandler 请求处理器"></a>2. WSGIHandler 请求处理器</h2><h3 id="2-1-本质理解"><a href="#2-1-本质理解" class="headerlink" title="2.1 本质理解"></a>2.1 本质理解</h3><p><strong>重要概念</strong>: <code>WSGIHandler</code> <strong>不是服务器，而是请求处理器</strong>，负责处理单个请求。</p>
+<h3 id="2-2-核心职责"><a href="#2-2-核心职责" class="headerlink" title="2.2 核心职责"></a>2.2 核心职责</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">WSGIHandler</span>(base.BaseHandler):<br>    request_class = WSGIRequest<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__call__</span>(<span class="hljs-params">self, environ, start_response</span>):<br>        <span class="hljs-comment"># 1. 设置脚本前缀</span><br>        set_script_prefix(get_script_name(environ))<br>        <br>        <span class="hljs-comment"># 2. 发送请求开始信号</span><br>        signals.request_started.send(sender=<span class="hljs-variable language_">self</span>.__class__, environ=environ)<br>        <br>        <span class="hljs-comment"># 3. 创建Django请求对象</span><br>        request = <span class="hljs-variable language_">self</span>.request_class(environ)<br>        <br>        <span class="hljs-comment"># 4. 获取响应</span><br>        response = <span class="hljs-variable language_">self</span>.get_response(request)<br>        <br>        <span class="hljs-comment"># 5. 设置响应头</span><br>        status = <span class="hljs-string">&#x27;%d %s&#x27;</span> % (response.status_code, response.reason_phrase)<br>        response_headers = [(<span class="hljs-built_in">str</span>(k), <span class="hljs-built_in">str</span>(v)) <span class="hljs-keyword">for</span> k, v <span class="hljs-keyword">in</span> response.items()]<br>        <br>        <span class="hljs-comment"># 6. 处理Cookie</span><br>        <span class="hljs-keyword">for</span> c <span class="hljs-keyword">in</span> response.cookies.values():<br>            response_headers.append((<span class="hljs-built_in">str</span>(<span class="hljs-string">&#x27;Set-Cookie&#x27;</span>), <span class="hljs-built_in">str</span>(c.output(header=<span class="hljs-string">&#x27;&#x27;</span>))))<br>        <br>        <span class="hljs-comment"># 7. 调用WSGI的start_response</span><br>        start_response(force_str(status), response_headers)<br>        <br>        <span class="hljs-comment"># 8. 返回响应内容</span><br>        <span class="hljs-keyword">return</span> response<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-3-三个核心职责"><a href="#2-3-三个核心职责" class="headerlink" title="2.3 三个核心职责"></a>2.3 三个核心职责</h3><h4 id="职责1-环境字典-→-Django请求对象"><a href="#职责1-环境字典-→-Django请求对象" class="headerlink" title="职责1: 环境字典 → Django请求对象"></a>职责1: 环境字典 → Django请求对象</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 输入: WSGI环境字典</span><br>environ = &#123;<br>    <span class="hljs-string">&#x27;REQUEST_METHOD&#x27;</span>: <span class="hljs-string">&#x27;GET&#x27;</span>,<br>    <span class="hljs-string">&#x27;PATH_INFO&#x27;</span>: <span class="hljs-string">&#x27;/hello/&#x27;</span>,<br>    <span class="hljs-string">&#x27;QUERY_STRING&#x27;</span>: <span class="hljs-string">&#x27;name=world&#x27;</span>,<br>    <span class="hljs-string">&#x27;HTTP_HOST&#x27;</span>: <span class="hljs-string">&#x27;localhost:8000&#x27;</span>,<br>    <span class="hljs-string">&#x27;wsgi.input&#x27;</span>: &lt;file-like <span class="hljs-built_in">object</span>&gt;,<br>    <span class="hljs-comment"># ... 其他环境变量</span><br>&#125;<br><br><span class="hljs-comment"># WSGIHandler 转换</span><br>request = WSGIRequest(environ)<br><span class="hljs-comment"># 结果: Django HttpRequest 对象</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="职责2-走Django中间件流程"><a href="#职责2-走Django中间件流程" class="headerlink" title="职责2: 走Django中间件流程"></a>职责2: 走Django中间件流程</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_response</span>(<span class="hljs-params">self, request</span>):<br>    <span class="hljs-comment"># 1. 中间件 process_request</span><br>    <span class="hljs-keyword">for</span> middleware <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>._request_middleware:<br>        response = middleware.process_request(request)<br>        <span class="hljs-keyword">if</span> response:<br>            <span class="hljs-keyword">return</span> response<br>    <br>    <span class="hljs-comment"># 2. 路由解析</span><br>    resolver_match = resolver.resolve(request.path_info)<br>    request.resolver_match = resolver_match<br>    <br>    <span class="hljs-comment"># 3. 中间件 process_view</span><br>    <span class="hljs-keyword">for</span> middleware <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>._view_middleware:<br>        response = middleware.process_view(request, callback, callback_args, callback_kwargs)<br>        <span class="hljs-keyword">if</span> response:<br>            <span class="hljs-keyword">return</span> response<br>    <br>    <span class="hljs-comment"># 4. 执行视图函数</span><br>    response = callback(request, *callback_args, **callback_kwargs)<br>    <br>    <span class="hljs-comment"># 5. 中间件 process_response</span><br>    <span class="hljs-keyword">for</span> middleware <span class="hljs-keyword">in</span> <span class="hljs-built_in">reversed</span>(<span class="hljs-variable language_">self</span>._response_middleware):<br>        response = middleware.process_response(request, response)<br>    <br>    <span class="hljs-keyword">return</span> response<br></code></pre></td></tr></table></figure>
+
+<h4 id="职责3-Django响应-→-WSGI响应"><a href="#职责3-Django响应-→-WSGI响应" class="headerlink" title="职责3: Django响应 → WSGI响应"></a>职责3: Django响应 → WSGI响应</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 输入: Django HttpResponse</span><br>response = HttpResponse(<span class="hljs-string">&quot;Hello World&quot;</span>)<br>response.status_code = <span class="hljs-number">200</span><br>response[<span class="hljs-string">&#x27;Content-Type&#x27;</span>] = <span class="hljs-string">&#x27;text/html&#x27;</span><br><br><span class="hljs-comment"># WSGIHandler 转换</span><br>status = <span class="hljs-string">&#x27;200 OK&#x27;</span><br>response_headers = [(<span class="hljs-string">&#x27;Content-Type&#x27;</span>, <span class="hljs-string">&#x27;text/html&#x27;</span>), (<span class="hljs-string">&#x27;Content-Length&#x27;</span>, <span class="hljs-string">&#x27;11&#x27;</span>)]<br>start_response(status, response_headers)<br><span class="hljs-keyword">return</span> [<span class="hljs-string">b&quot;Hello World&quot;</span>]<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-4-完整的请求处理流程"><a href="#2-4-完整的请求处理流程" class="headerlink" title="2.4 完整的请求处理流程"></a>2.4 完整的请求处理流程</h3><figure class="highlight scss"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs scss">HTTP请求到达<br>    ↓<br>WSGIServer 接收请求<br>    ↓<br>调用 WSGIHandler<span class="hljs-selector-class">.__call__</span>(environ, start_response)<br>    ↓<br>创建 WSGIRequest 对象（从environ字典）<br>    ↓<br>调用 self<span class="hljs-selector-class">.get_response</span>(request)<br>    ↓<br>经过中间件处理<br>    ↓<br>路由到对应的视图函数<br>    ↓<br>返回 HttpResponse 对象<br>    ↓<br>WSGIHandler 将响应转换为WSGI格式<br>    ↓<br>调用 <span class="hljs-built_in">start_response</span>(status, headers)<br>    ↓<br>返回响应内容<br></code></pre></td></tr></table></figure>
+
+<h2 id="3-WSGIServer-Socket服务器"><a href="#3-WSGIServer-Socket服务器" class="headerlink" title="3. WSGIServer Socket服务器"></a>3. WSGIServer Socket服务器</h2><h3 id="3-1-继承关系"><a href="#3-1-继承关系" class="headerlink" title="3.1 继承关系"></a>3.1 继承关系</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># django/core/servers/basehttp.py</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">WSGIServer</span>(simple_server.WSGIServer, <span class="hljs-built_in">object</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;BaseHTTPServer that implements the Python WSGI protocol&quot;&quot;&quot;</span><br><br><span class="hljs-comment"># wsgiref/simple_server.py (Python标准库)</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">WSGIServer</span>(<span class="hljs-title class_ inherited__">HTTPServer</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;BaseHTTPServer that implements the Python WSGI protocol&quot;&quot;&quot;</span><br><br><span class="hljs-comment"># http/server.py (Python标准库)</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">HTTPServer</span>(socketserver.TCPServer):<br>    <span class="hljs-string">&quot;&quot;&quot;HTTP server that implements the Python WSGI protocol&quot;&quot;&quot;</span><br><br><span class="hljs-comment"># socketserver.py (Python标准库)</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">TCPServer</span>(socketserver.BaseServer):<br>    <span class="hljs-string">&quot;&quot;&quot;TCP server class&quot;&quot;&quot;</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>继承链</strong>:</p>
+<figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-attribute">WSGIServer</span> → simple_server.WSGIServer → HTTPServer → TCPServer → BaseServer<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-2-Socket服务器本质"><a href="#3-2-Socket服务器本质" class="headerlink" title="3.2 Socket服务器本质"></a>3.2 Socket服务器本质</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">serve_forever</span>(<span class="hljs-params">self, poll_interval=<span class="hljs-number">0.5</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;Handle one request at a time until shutdown.&quot;&quot;&quot;</span><br>        <span class="hljs-variable language_">self</span>.__is_shut_down.clear()<br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-comment"># <span class="hljs-doctag">XXX:</span> Consider using another file descriptor or connecting to the</span><br>            <span class="hljs-comment"># socket to wake this up instead of polling. Polling reduces our</span><br>            <span class="hljs-comment"># responsiveness to a shutdown request and wastes cpu at all other</span><br>            <span class="hljs-comment"># times.</span><br>            <span class="hljs-comment"># 使用 selectors 进行非阻塞 I/O</span><br>            <span class="hljs-keyword">with</span> _ServerSelector() <span class="hljs-keyword">as</span> selector:<br>                selector.register(<span class="hljs-variable language_">self</span>, selectors.EVENT_READ)  <span class="hljs-comment"># 监听读事件</span><br><br>                <span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>.__shutdown_request:<br>                    ready = selector.select(poll_interval)  <span class="hljs-comment"># 等待 socket 可读</span><br>                    <span class="hljs-comment"># bpo-35017: shutdown() called during select(), exit immediately.</span><br>                    <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.__shutdown_request:  <span class="hljs-comment"># 如果需要关闭，则退出循环</span><br>                        <span class="hljs-keyword">break</span><br>                    <span class="hljs-keyword">if</span> ready:<br>                        <span class="hljs-variable language_">self</span>._handle_request_noblock()  <span class="hljs-comment"># 处理新请求</span><br><br>                    <span class="hljs-variable language_">self</span>.service_actions()  <span class="hljs-comment"># 处理其他操作</span><br>        <span class="hljs-keyword">finally</span>:<br>            <span class="hljs-variable language_">self</span>.__shutdown_request = <span class="hljs-literal">False</span><br>            <span class="hljs-variable language_">self</span>.__is_shut_down.<span class="hljs-built_in">set</span>()<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-3-Socket服务器工作流程"><a href="#3-3-Socket服务器工作流程" class="headerlink" title="3.3 Socket服务器工作流程"></a>3.3 Socket服务器工作流程</h3><h4 id="1-创建Socket"><a href="#1-创建Socket" class="headerlink" title="1. 创建Socket"></a>1. 创建Socket</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 在 WSGIServer 初始化时</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, server_address, RequestHandlerClass, bind_and_activate=<span class="hljs-literal">True</span></span>):<br>    <span class="hljs-comment"># 创建 TCP socket</span><br>    <span class="hljs-variable language_">self</span>.socket = socket.socket(<span class="hljs-variable language_">self</span>.address_family, <span class="hljs-variable language_">self</span>.socket_type)<br>    <span class="hljs-variable language_">self</span>.socket.setsockopt(socket.SOL_SOCKIT, socket.SO_REUSEADDR, <span class="hljs-number">1</span>)<br>    <span class="hljs-variable language_">self</span>.socket.bind(server_address)  <span class="hljs-comment"># 绑定地址和端口</span><br>    <span class="hljs-variable language_">self</span>.socket.listen(<span class="hljs-variable language_">self</span>.request_queue_size)  <span class="hljs-comment"># 开始监听</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="2-监听循环"><a href="#2-监听循环" class="headerlink" title="2. 监听循环"></a>2. 监听循环</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 持续监听连接</span><br><span class="hljs-keyword">while</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>.__shutdown_request:<br>    ready = selector.select(poll_interval)  <span class="hljs-comment"># 等待客户端连接</span><br>    <span class="hljs-keyword">if</span> ready:<br>        <span class="hljs-variable language_">self</span>._handle_request_noblock()  <span class="hljs-comment"># 处理新连接</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="3-处理请求"><a href="#3-处理请求" class="headerlink" title="3. 处理请求"></a>3. 处理请求</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_handle_request_noblock</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-keyword">try</span>:<br>        request, client_address = <span class="hljs-variable language_">self</span>.socket.accept()  <span class="hljs-comment"># 接受连接</span><br>        <span class="hljs-variable language_">self</span>.process_request(request, client_address)   <span class="hljs-comment"># 处理请求</span><br>    <span class="hljs-keyword">except</span> socket.error:<br>        <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-4-完整的HTTP处理流程"><a href="#3-4-完整的HTTP处理流程" class="headerlink" title="3.4 完整的HTTP处理流程"></a>3.4 完整的HTTP处理流程</h3><figure class="highlight markdown"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs markdown"><span class="hljs-bullet">1.</span> Socket 监听 (8000端口)<br>   ↓<br><span class="hljs-bullet">2.</span> 客户端连接 (浏览器)<br>   ↓<br><span class="hljs-bullet">3.</span> Socket.accept() 接受连接<br>   ↓<br><span class="hljs-bullet">4.</span> 创建 RequestHandler 处理 HTTP 请求<br>   ↓<br><span class="hljs-bullet">5.</span> 解析 HTTP 请求头<br>   ↓<br><span class="hljs-bullet">6.</span> 创建 WSGI 环境字典<br>   ↓<br><span class="hljs-bullet">7.</span> 调用 WSGIHandler(environ, start<span class="hljs-emphasis">_response)</span><br><span class="hljs-emphasis">   ↓</span><br><span class="hljs-emphasis">8. WSGIHandler 处理请求并返回响应</span><br><span class="hljs-emphasis">   ↓</span><br><span class="hljs-emphasis">9. 发送 HTTP 响应给客户端</span><br><span class="hljs-emphasis">   ↓</span><br><span class="hljs-emphasis">10. 关闭连接，继续监听下一个请求</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="4-开发环境-vs-生产环境"><a href="#4-开发环境-vs-生产环境" class="headerlink" title="4. 开发环境 vs 生产环境"></a>4. 开发环境 vs 生产环境</h2><h3 id="4-1-开发环境-runserver"><a href="#4-1-开发环境-runserver" class="headerlink" title="4.1 开发环境 (runserver)"></a>4.1 开发环境 (runserver)</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># django/core/management/commands/runserver.py</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">inner_run</span>(<span class="hljs-params">self, *args, **options</span>):<br>    handler = <span class="hljs-variable language_">self</span>.get_handler(*args, **options)  <span class="hljs-comment"># 获取 WSGIHandler</span><br>    run(<span class="hljs-variable language_">self</span>.addr, <span class="hljs-built_in">int</span>(<span class="hljs-variable language_">self</span>.port), handler,       <span class="hljs-comment"># 启动 WSGIServer</span><br>        ipv6=<span class="hljs-variable language_">self</span>.use_ipv6, threading=threading, server_cls=<span class="hljs-variable language_">self</span>.server_cls) <span class="hljs-comment"># server_cls就是WSGIServer</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>架构</strong>:</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs">浏览器 → WSGIServer → WSGIHandler → Django应用<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-2-生产环境"><a href="#4-2-生产环境" class="headerlink" title="4.2 生产环境"></a>4.2 生产环境</h3><p>在生产环境中，通常使用专业的 WSGI 服务器：</p>
+<h4 id="Gunicorn"><a href="#Gunicorn" class="headerlink" title="Gunicorn"></a>Gunicorn</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 启动命令</span><br>gunicorn myproject.wsgi:application<br><br><span class="hljs-comment"># 架构</span><br>浏览器 → Nginx → Gunicorn → WSGIHandler → Django应用<br></code></pre></td></tr></table></figure>
+
+<h4 id="uWSGI"><a href="#uWSGI" class="headerlink" title="uWSGI"></a>uWSGI</h4><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 启动命令</span><br>uwsgi --http :8000 --module myproject.wsgi:application<br><br><span class="hljs-comment"># 架构</span><br>浏览器 → Nginx → uWSGI → WSGIHandler → Django应用<br></code></pre></td></tr></table></figure>
+
+<h4 id="mod-wsgi-Apache"><a href="#mod-wsgi-Apache" class="headerlink" title="mod_wsgi (Apache)"></a>mod_wsgi (Apache)</h4><figure class="highlight apache"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs apache"><span class="hljs-comment"># Apache 配置</span><br><span class="hljs-attribute">LoadModule</span> wsgi_module modules/mod_wsgi.so<br><span class="hljs-attribute">WSGIScriptAlias</span> / /path/to/myproject/wsgi.py<br><br><span class="hljs-comment"># 架构</span><br>浏览器 → <span class="hljs-attribute">Apache</span> → mod_wsgi → WSGIHandler → Django应用<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-3-Django的WSGI入口"><a href="#4-3-Django的WSGI入口" class="headerlink" title="4.3 Django的WSGI入口"></a>4.3 Django的WSGI入口</h3><p>无论使用哪种服务器，Django的入口都是相同的：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># myproject/wsgi.py</span><br><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">from</span> django.core.wsgi <span class="hljs-keyword">import</span> get_wsgi_application<br><br>os.environ.setdefault(<span class="hljs-string">&#x27;DJANGO_SETTINGS_MODULE&#x27;</span>, <span class="hljs-string">&#x27;myproject.settings&#x27;</span>)<br>application = get_wsgi_application()  <span class="hljs-comment"># 返回 WSGIHandler 实例</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-4-关键区别"><a href="#4-4-关键区别" class="headerlink" title="4.4 关键区别"></a>4.4 关键区别</h3><h4 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># Django 自己启动服务器</span><br><span class="hljs-keyword">from</span> django.core.servers.basehttp <span class="hljs-keyword">import</span> WSGIServer, run<br><br>handler = get_wsgi_application()  <span class="hljs-comment"># WSGIHandler</span><br>run(<span class="hljs-string">&#x27;127.0.0.1&#x27;</span>, <span class="hljs-number">8000</span>, handler, server_cls=WSGIServer)  <span class="hljs-comment"># Django 启动 WSGIServer</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="生产环境"><a href="#生产环境" class="headerlink" title="生产环境"></a>生产环境</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 外部服务器启动，Django 只提供 WSGI 应用</span><br><span class="hljs-comment"># gunicorn/uwsgi/apache 启动</span><br>application = get_wsgi_application()  <span class="hljs-comment"># 只返回 WSGIHandler，不启动服务器</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="5-生产级WSGI服务器"><a href="#5-生产级WSGI服务器" class="headerlink" title="5. 生产级WSGI服务器"></a>5. 生产级WSGI服务器</h2><h3 id="5-1-Gunicorn-Socket实现"><a href="#5-1-Gunicorn-Socket实现" class="headerlink" title="5.1 Gunicorn Socket实现"></a>5.1 Gunicorn Socket实现</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># Gunicorn Master 进程 (简化版)</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Master</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, bind_addr, workers=<span class="hljs-number">4</span></span>):<br>        <span class="hljs-comment"># 创建主 Socket</span><br>        <span class="hljs-variable language_">self</span>.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)<br>        <span class="hljs-variable language_">self</span>.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, <span class="hljs-number">1</span>)<br>        <span class="hljs-variable language_">self</span>.socket.bind(bind_addr)  <span class="hljs-comment"># 绑定地址和端口</span><br>        <span class="hljs-variable language_">self</span>.socket.listen(<span class="hljs-number">1024</span>)     <span class="hljs-comment"># 开始监听</span><br>        <br>        <span class="hljs-comment"># 启动多个 Worker 进程</span><br>        <span class="hljs-variable language_">self</span>.workers = []<br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(workers):<br>            worker = Worker(<span class="hljs-variable language_">self</span>.socket)  <span class="hljs-comment"># 传递 Socket 给 Worker</span><br>            worker.start()<br>            <span class="hljs-variable language_">self</span>.workers.append(worker)<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-2-Gunicorn架构"><a href="#5-2-Gunicorn架构" class="headerlink" title="5.2 Gunicorn架构"></a>5.2 Gunicorn架构</h3><figure class="highlight mathematica"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs mathematica">┌─────────────────────────────────────────────────────────────┐<br>│                    <span class="hljs-variable">Gunicorn</span> 架构                            │<br>├─────────────────────────────────────────────────────────────┤<br>│  <span class="hljs-variable">Master</span> <span class="hljs-variable">Process</span> <span class="hljs-punctuation">(</span>主进程<span class="hljs-punctuation">)</span>                                    │<br>│  ├─ 监听 <span class="hljs-built_in">Socket</span> <span class="hljs-punctuation">(</span>主 <span class="hljs-built_in">Socket</span><span class="hljs-punctuation">)</span>                                │<br>│  ├─ 管理 <span class="hljs-variable">Worker</span> 进程                                       │<br>│  └─ 负载均衡                                               │<br>├─────────────────────────────────────────────────────────────┤<br>│  <span class="hljs-variable">Worker</span> <span class="hljs-built_in">Processes</span> <span class="hljs-punctuation">(</span>工作进程<span class="hljs-punctuation">)</span>                                │<br>│  ├─ <span class="hljs-variable">Worker</span> <span class="hljs-number">1</span><span class="hljs-operator">:</span> <span class="hljs-built_in">Socket</span> <span class="hljs-operator">+</span> <span class="hljs-variable">WSGIHandler</span>                        │<br>│  ├─ <span class="hljs-variable">Worker</span> <span class="hljs-number">2</span><span class="hljs-operator">:</span> <span class="hljs-built_in">Socket</span> <span class="hljs-operator">+</span> <span class="hljs-variable">WSGIHandler</span>                        │<br>│  ├─ <span class="hljs-variable">Worker</span> <span class="hljs-number">3</span><span class="hljs-operator">:</span> <span class="hljs-built_in">Socket</span> <span class="hljs-operator">+</span> <span class="hljs-variable">WSGIHandler</span>                        │<br>│  └─ <span class="hljs-variable">Worker</span> <span class="hljs-built_in">N</span><span class="hljs-operator">:</span> <span class="hljs-built_in">Socket</span> <span class="hljs-operator">+</span> <span class="hljs-variable">WSGIHandler</span>                        │<br>└─────────────────────────────────────────────────────────────┘<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-3-与Django-WSGIServer的对比"><a href="#5-3-与Django-WSGIServer的对比" class="headerlink" title="5.3 与Django WSGIServer的对比"></a>5.3 与Django WSGIServer的对比</h3><h4 id="Django-WSGIServer-简单Socket"><a href="#Django-WSGIServer-简单Socket" class="headerlink" title="Django WSGIServer (简单Socket)"></a>Django WSGIServer (简单Socket)</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 单进程，单线程</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">WSGIServer</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">serve_forever</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>            client, addr = <span class="hljs-variable language_">self</span>.socket.accept()  <span class="hljs-comment"># 阻塞等待</span><br>            <span class="hljs-variable language_">self</span>.handle_request(client)          <span class="hljs-comment"># 处理请求</span><br>            client.close()                       <span class="hljs-comment"># 关闭连接</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="Gunicorn-高级Socket"><a href="#Gunicorn-高级Socket" class="headerlink" title="Gunicorn (高级Socket)"></a>Gunicorn (高级Socket)</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 多进程，每个进程可以多线程</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">GunicornMaster</span>:<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">run</span>(<span class="hljs-params">self</span>):<br>        <span class="hljs-comment"># 1. 创建主 Socket</span><br>        <span class="hljs-variable language_">self</span>.socket = socket.socket()<br>        <span class="hljs-variable language_">self</span>.socket.bind((<span class="hljs-string">&#x27;0.0.0.0&#x27;</span>, <span class="hljs-number">8000</span>))<br>        <span class="hljs-variable language_">self</span>.socket.listen(<span class="hljs-number">1024</span>)<br>        <br>        <span class="hljs-comment"># 2. 启动多个 Worker 进程</span><br>        <span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> <span class="hljs-built_in">range</span>(<span class="hljs-number">4</span>):<br>            worker = Process(target=<span class="hljs-variable language_">self</span>.worker_process)<br>            worker.start()<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-4-生产级服务器的优势"><a href="#5-4-生产级服务器的优势" class="headerlink" title="5.4 生产级服务器的优势"></a>5.4 生产级服务器的优势</h3><ol>
+<li><strong>多进程&#x2F;多线程</strong>: 并发处理多个请求</li>
+<li><strong>高性能</strong>: 优化的 C 实现</li>
+<li><strong>负载均衡</strong>: 自动分发请求</li>
+<li><strong>进程管理</strong>: 自动重启、健康检查</li>
+<li><strong>安全特性</strong>: 请求限制、超时控制</li>
+</ol>
+<h2 id="6-实际部署示例"><a href="#6-实际部署示例" class="headerlink" title="6. 实际部署示例"></a>6. 实际部署示例</h2><h3 id="6-1-使用Gunicorn"><a href="#6-1-使用Gunicorn" class="headerlink" title="6.1 使用Gunicorn"></a>6.1 使用Gunicorn</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装</span><br>pip install gunicorn<br><br><span class="hljs-comment"># 启动</span><br>gunicorn --workers 4 --<span class="hljs-built_in">bind</span> 127.0.0.1:8000 myproject.wsgi:application<br><br><span class="hljs-comment"># 配置文件 gunicorn.conf.py</span><br><span class="hljs-built_in">bind</span> = <span class="hljs-string">&quot;127.0.0.1:8000&quot;</span><br>workers = 4<br>worker_class = <span class="hljs-string">&quot;sync&quot;</span><br>max_requests = 1000<br>max_requests_jitter = 100<br><span class="hljs-built_in">timeout</span> = 30<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-2-使用uWSGI"><a href="#6-2-使用uWSGI" class="headerlink" title="6.2 使用uWSGI"></a>6.2 使用uWSGI</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs bash"><span class="hljs-comment"># 安装</span><br>pip install uwsgi<br><br><span class="hljs-comment"># 启动</span><br>uwsgi --http :8000 --module myproject.wsgi:application --processes 4 --threads 2<br><br><span class="hljs-comment"># 配置文件 uwsgi.ini</span><br>[uwsgi]<br>http = :8000<br>module = myproject.wsgi:application<br>processes = 4<br>threads = 2<br>master = <span class="hljs-literal">true</span><br>vacuum = <span class="hljs-literal">true</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="6-3-Nginx配置"><a href="#6-3-Nginx配置" class="headerlink" title="6.3 Nginx配置"></a>6.3 Nginx配置</h3><figure class="highlight nginx"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs nginx"><span class="hljs-section">server</span> &#123;<br>    <span class="hljs-attribute">listen</span> <span class="hljs-number">80</span>;<br>    <span class="hljs-attribute">server_name</span> example.com;<br>    <br>    <span class="hljs-section">location</span> / &#123;<br>        <span class="hljs-attribute">proxy_pass</span> http://127.0.0.1:8000;  <span class="hljs-comment"># 转发到 Gunicorn</span><br>        <span class="hljs-attribute">proxy_set_header</span> Host <span class="hljs-variable">$host</span>;<br>        <span class="hljs-attribute">proxy_set_header</span> X-Real-IP <span class="hljs-variable">$remote_addr</span>;<br>    &#125;<br>    <br>    <span class="hljs-section">location</span> /static/ &#123;<br>        <span class="hljs-attribute">alias</span> /path/to/static/;  <span class="hljs-comment"># 直接服务静态文件</span><br>    &#125;<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-4-生产环境完整架构"><a href="#6-4-生产环境完整架构" class="headerlink" title="6.4 生产环境完整架构"></a>6.4 生产环境完整架构</h3><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs txt">┌─────────────┐    ┌─────────────┐    ┌─────────────┐    ┌─────────────┐<br>│   浏览器     │───▶│    Nginx     │───▶│  Gunicorn   │───▶│ WSGIHandler │<br>│             │    │  (反向代理)   │    │ (WSGI服务器) │    │ (Django)    │<br>└─────────────┘    └─────────────┘    └─────────────┘    └─────────────┘<br></code></pre></td></tr></table></figure>
+
+<h2 id="7-总结"><a href="#7-总结" class="headerlink" title="7. 总结"></a>7. 总结</h2><h3 id="7-1-核心概念"><a href="#7-1-核心概念" class="headerlink" title="7.1 核心概念"></a>7.1 核心概念</h3><ol>
+<li><strong>WSGIHandler</strong>: 不是服务器，而是请求处理器，负责将WSGI环境转换为Django请求对象，并走Django中间件流程</li>
+<li><strong>WSGIServer</strong>: 基于Socket的简单Web服务器，用于开发环境</li>
+<li><strong>runserver</strong>: Django的管理命令，启动WSGIServer并调用WSGIHandler</li>
+<li><strong>生产级服务器</strong>: Gunicorn、uWSGI等，基于Socket但提供高级特性</li>
+</ol>
+<h3 id="7-2-架构对比"><a href="#7-2-架构对比" class="headerlink" title="7.2 架构对比"></a>7.2 架构对比</h3><table>
+<thead>
+<tr>
+<th>组件</th>
+<th>开发环境</th>
+<th>生产环境</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>服务器</td>
+<td>WSGIServer</td>
+<td>Gunicorn&#x2F;uWSGI&#x2F;Apache</td>
+</tr>
+<tr>
+<td>请求处理器</td>
+<td>WSGIHandler</td>
+<td>WSGIHandler</td>
+</tr>
+<tr>
+<td>并发能力</td>
+<td>单进程单线程</td>
+<td>多进程多线程</td>
+</tr>
+<tr>
+<td>性能</td>
+<td>低</td>
+<td>高</td>
+</tr>
+<tr>
+<td>功能</td>
+<td>简单</td>
+<td>丰富</td>
+</tr>
+</tbody></table>
+<h3 id="7-3-关键理解"><a href="#7-3-关键理解" class="headerlink" title="7.3 关键理解"></a>7.3 关键理解</h3><ul>
+<li><strong>Django内部处理请求的始终是WSGIHandler</strong></li>
+<li><strong>开发环境使用WSGIServer，生产环境使用专业WSGI服务器</strong></li>
+<li><strong>所有WSGI服务器都基于Socket实现，但复杂度不同</strong></li>
+<li><strong>WSGI协议让Django能够运行在任何WSGI服务器上</strong></li>
+</ul>
+<p>这种设计让Django：</p>
+<ol>
+<li><strong>专注于业务逻辑</strong>: 不关心网络和并发处理</li>
+<li><strong>与服务器解耦</strong>: 可以运行在任何WSGI服务器上</li>
+<li><strong>性能优化</strong>: 使用专业的WSGI服务器处理并发</li>
+<li><strong>部署灵活</strong>: 可以根据需求选择不同的服务器</li>
+</ol>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Django/" class="print-no-link">#Django</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Django WSGI 架构深度解析</div>
+      <div>https://luffy997.github.io/2025/06/26/Django-WSGI-架构深度解析/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年6月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/06/26/Django%201.11%20%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" title="Django 1.11 源码学习计划">
+                        <span class="hidden-mobile">Django 1.11 源码学习计划</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
