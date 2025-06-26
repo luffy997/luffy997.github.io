@@ -1,0 +1,993 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="去年就打算看下Django的源码，看的3的版本，看不太懂，于是同事建议我看1版本的，这几天不太忙，也是正式把源码的阅读提上日程了。 环境：  Django 1.11  Python 2.7  PyCharm、Cursor   下面的学习计划是我让 Cursor 基于本地的Django源码生成的为期一个半月的阅读计划，平均每天投入1.5-2H，后面有笔记我也会同步过来，最终源码中写的注释我会推到gi">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django 1.11 源码学习计划">
+<meta property="og:url" content="https://luffy997.github.io/2025/06/26/Django%201.11%20%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="去年就打算看下Django的源码，看的3的版本，看不太懂，于是同事建议我看1版本的，这几天不太忙，也是正式把源码的阅读提上日程了。 环境：  Django 1.11  Python 2.7  PyCharm、Cursor   下面的学习计划是我让 Cursor 基于本地的Django源码生成的为期一个半月的阅读计划，平均每天投入1.5-2H，后面有笔记我也会同步过来，最终源码中写的注释我会推到gi">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s21.ax1x.com/2025/04/30/pEHJjt1.png">
+<meta property="article:published_time" content="2025-06-26T12:31:14.000Z">
+<meta property="article:modified_time" content="2025-06-26T12:38:37.155Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="Django">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s21.ax1x.com/2025/04/30/pEHJjt1.png">
+  
+  
+  
+  <title>Django 1.11 源码学习计划 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Django 1.11 源码学习计划"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-06-26 20:31" pubdate>
+          2025年6月26日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.2k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          19 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Django 1.11 源码学习计划</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>去年就打算看下Django的源码，看的3的版本，看不太懂，于是同事建议我看1版本的，这几天不太忙，也是正式把源码的阅读提上日程了。</p>
+<p>环境：</p>
+<ul>
+<li><p>Django 1.11</p>
+</li>
+<li><p>Python 2.7</p>
+</li>
+<li><p>PyCharm、Cursor</p>
+</li>
+</ul>
+<p>下面的学习计划是我让 Cursor 基于本地的Django源码生成的为期一个半月的阅读计划，平均每天投入1.5-2H，后面有笔记我也会同步过来，最终源码中写的注释我会推到github上。</p>
+<h2 id="学习目标"><a href="#学习目标" class="headerlink" title="学习目标"></a>学习目标</h2><ul>
+<li>深入理解Django框架的设计思想和架构模式</li>
+<li>掌握Django核心模块的实现原理</li>
+<li>学习优秀的Python代码设计和最佳实践</li>
+<li>提升代码阅读能力和架构设计思维</li>
+</ul>
+<h2 id="学习时间安排"><a href="#学习时间安排" class="headerlink" title="学习时间安排"></a>学习时间安排</h2><ul>
+<li><strong>每日投入时间</strong>: 1.5-2小时</li>
+<li><strong>总学习周期</strong>: 6周（42天）</li>
+<li><strong>学习方式</strong>: 源码阅读 + 笔记记录 + 实践验证</li>
+</ul>
+<hr>
+<h2 id="第一周：Django基础架构与核心概念"><a href="#第一周：Django基础架构与核心概念" class="headerlink" title="第一周：Django基础架构与核心概念"></a>第一周：Django基础架构与核心概念</h2><h3 id="Day-1-2-Django项目结构与初始化"><a href="#Day-1-2-Django项目结构与初始化" class="headerlink" title="Day 1-2: Django项目结构与初始化"></a>Day 1-2: Django项目结构与初始化</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/__init__.py</code> - Django框架入口</li>
+<li><code>django/__main__.py</code> - 命令行入口</li>
+<li><code>django/apps/</code> - 应用注册机制</li>
+<li><code>django/conf/</code> - 配置管理</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>Django的模块化设计</li>
+<li>应用注册和配置加载机制</li>
+<li>框架初始化流程</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>创建一个简单的Django项目，跟踪启动过程</li>
+<li>分析<code>manage.py</code>和Django启动的完整流程</li>
+</ul>
+<h3 id="Day-3-4-核心异常处理与信号系统"><a href="#Day-3-4-核心异常处理与信号系统" class="headerlink" title="Day 3-4: 核心异常处理与信号系统"></a>Day 3-4: 核心异常处理与信号系统</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/core/exceptions.py</code> - 异常类定义</li>
+<li><code>django/core/signals.py</code> - 信号系统</li>
+<li><code>django/dispatch/</code> - 信号分发机制</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>Django异常体系设计</li>
+<li>信号系统的实现原理</li>
+<li>观察者模式在Django中的应用</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>编写自定义信号和接收器</li>
+<li>分析Django内置信号的使用场景</li>
+</ul>
+<h3 id="Day-5-7-配置管理与验证系统"><a href="#Day-5-7-配置管理与验证系统" class="headerlink" title="Day 5-7: 配置管理与验证系统"></a>Day 5-7: 配置管理与验证系统</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/core/validators.py</code> - 数据验证器</li>
+<li><code>django/core/signing.py</code> - 数据签名</li>
+<li><code>django/core/paginator.py</code> - 分页器</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>验证器的设计模式和扩展性</li>
+<li>数据签名的安全机制</li>
+<li>分页算法的实现</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>编写自定义验证器</li>
+<li>实现数据签名和验证</li>
+<li>分析分页器的性能优化</li>
+</ul>
+<hr>
+<h2 id="第二周：HTTP处理与中间件系统"><a href="#第二周：HTTP处理与中间件系统" class="headerlink" title="第二周：HTTP处理与中间件系统"></a>第二周：HTTP处理与中间件系统</h2><h3 id="Day-8-10-HTTP请求处理流程"><a href="#Day-8-10-HTTP请求处理流程" class="headerlink" title="Day 8-10: HTTP请求处理流程"></a>Day 8-10: HTTP请求处理流程</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/http/</code> - HTTP请求&#x2F;响应处理</li>
+<li><code>django/core/handlers/</code> - 请求处理器</li>
+<li><code>django/core/wsgi.py</code> - WSGI接口</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>HTTP请求的生命周期</li>
+<li>WSGI协议在Django中的实现</li>
+<li>请求&#x2F;响应对象的封装</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>跟踪一个HTTP请求的完整处理流程</li>
+<li>分析请求&#x2F;响应对象的属性和方法</li>
+</ul>
+<h3 id="Day-11-13-中间件系统"><a href="#Day-11-13-中间件系统" class="headerlink" title="Day 11-13: 中间件系统"></a>Day 11-13: 中间件系统</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/middleware/</code> - 内置中间件</li>
+<li>中间件的执行顺序和机制</li>
+<li>自定义中间件的开发</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>中间件的设计模式</li>
+<li>请求&#x2F;响应处理管道</li>
+<li>中间件的性能影响</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>编写自定义中间件</li>
+<li>分析Django内置中间件的作用</li>
+<li>测试中间件的执行顺序</li>
+</ul>
+<h3 id="Day-14-URL路由系统"><a href="#Day-14-URL路由系统" class="headerlink" title="Day 14: URL路由系统"></a>Day 14: URL路由系统</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/urls/</code> - URL配置和解析</li>
+<li><code>django/core/urlresolvers.py</code> - URL解析器</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>URL模式匹配算法</li>
+<li>反向URL解析机制</li>
+<li>路由系统的扩展性</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>分析复杂的URL配置</li>
+<li>实现自定义URL处理器</li>
+</ul>
+<hr>
+<h2 id="第三周：数据库层与ORM系统"><a href="#第三周：数据库层与ORM系统" class="headerlink" title="第三周：数据库层与ORM系统"></a>第三周：数据库层与ORM系统</h2><h3 id="Day-15-17-数据库连接与配置"><a href="#Day-15-17-数据库连接与配置" class="headerlink" title="Day 15-17: 数据库连接与配置"></a>Day 15-17: 数据库连接与配置</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/db/</code> - 数据库抽象层</li>
+<li>数据库连接池管理</li>
+<li>多数据库支持</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>数据库抽象的设计思想</li>
+<li>连接池的实现机制</li>
+<li>事务管理</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>配置多数据库环境</li>
+<li>分析数据库连接的生命周期</li>
+</ul>
+<h3 id="Day-18-20-ORM查询系统"><a href="#Day-18-20-ORM查询系统" class="headerlink" title="Day 18-20: ORM查询系统"></a>Day 18-20: ORM查询系统</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/db/models/</code> - 模型定义</li>
+<li><code>django/db/models/query.py</code> - 查询集实现</li>
+<li><code>django/db/models/sql/</code> - SQL生成</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>QuerySet的惰性加载机制</li>
+<li>SQL查询的构建过程</li>
+<li>查询优化策略</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>分析复杂查询的SQL生成</li>
+<li>使用Django Debug Toolbar分析查询性能</li>
+</ul>
+<h3 id="Day-21-数据库迁移系统"><a href="#Day-21-数据库迁移系统" class="headerlink" title="Day 21: 数据库迁移系统"></a>Day 21: 数据库迁移系统</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/db/migrations/</code> - 迁移框架</li>
+<li>迁移文件的生成和执行</li>
+<li>数据迁移策略</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>迁移系统的设计原理</li>
+<li>版本控制和回滚机制</li>
+<li>数据完整性保证</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>创建复杂的数据库迁移</li>
+<li>分析迁移文件的生成逻辑</li>
+</ul>
+<hr>
+<h2 id="第四周：模板系统与表单处理"><a href="#第四周：模板系统与表单处理" class="headerlink" title="第四周：模板系统与表单处理"></a>第四周：模板系统与表单处理</h2><h3 id="Day-22-24-模板引擎"><a href="#Day-22-24-模板引擎" class="headerlink" title="Day 22-24: 模板引擎"></a>Day 22-24: 模板引擎</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/template/</code> - 模板引擎核心</li>
+<li><code>django/templatetags/</code> - 模板标签</li>
+<li>模板加载和渲染机制</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>模板编译和渲染流程</li>
+<li>模板标签和过滤器的实现</li>
+<li>模板缓存机制</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>编写自定义模板标签和过滤器</li>
+<li>分析模板渲染的性能优化</li>
+</ul>
+<h3 id="Day-25-27-表单系统"><a href="#Day-25-27-表单系统" class="headerlink" title="Day 25-27: 表单系统"></a>Day 25-27: 表单系统</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/forms/</code> - 表单处理框架</li>
+<li>表单验证和清理</li>
+<li>表单渲染和CSRF保护</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>表单的生命周期</li>
+<li>验证器的链式调用</li>
+<li>CSRF保护机制</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>创建复杂的表单验证逻辑</li>
+<li>分析CSRF令牌的生成和验证</li>
+</ul>
+<h3 id="Day-28-视图系统"><a href="#Day-28-视图系统" class="headerlink" title="Day 28: 视图系统"></a>Day 28: 视图系统</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/views/</code> - 视图基类</li>
+<li><code>django/shortcuts.py</code> - 常用快捷函数</li>
+<li>类视图和函数视图</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>视图的设计模式</li>
+<li>请求处理的通用流程</li>
+<li>视图的复用和扩展</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>实现自定义的类视图</li>
+<li>分析Django内置视图的实现</li>
+</ul>
+<hr>
+<h2 id="第五周：认证授权与Admin系统"><a href="#第五周：认证授权与Admin系统" class="headerlink" title="第五周：认证授权与Admin系统"></a>第五周：认证授权与Admin系统</h2><h3 id="Day-29-31-认证系统"><a href="#Day-29-31-认证系统" class="headerlink" title="Day 29-31: 认证系统"></a>Day 29-31: 认证系统</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/contrib/auth/</code> - 用户认证</li>
+<li>用户模型和权限系统</li>
+<li>会话管理</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>认证流程的设计</li>
+<li>权限系统的实现</li>
+<li>密码加密和验证</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>实现自定义用户模型</li>
+<li>创建复杂的权限控制逻辑</li>
+</ul>
+<h3 id="Day-32-34-Admin管理界面"><a href="#Day-32-34-Admin管理界面" class="headerlink" title="Day 32-34: Admin管理界面"></a>Day 32-34: Admin管理界面</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/contrib/admin/</code> - Admin系统</li>
+<li>Admin配置和自定义</li>
+<li>Admin权限控制</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>Admin系统的架构设计</li>
+<li>自动生成管理界面的机制</li>
+<li>Admin的扩展性</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>自定义Admin界面</li>
+<li>实现Admin的批量操作</li>
+</ul>
+<h3 id="Day-35-其他Contrib应用"><a href="#Day-35-其他Contrib应用" class="headerlink" title="Day 35: 其他Contrib应用"></a>Day 35: 其他Contrib应用</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/contrib/sessions/</code> - 会话管理</li>
+<li><code>django/contrib/messages/</code> - 消息框架</li>
+<li><code>django/contrib/staticfiles/</code> - 静态文件处理</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>会话存储机制</li>
+<li>消息系统的设计</li>
+<li>静态文件的服务策略</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>配置会话存储后端</li>
+<li>实现自定义消息类型</li>
+</ul>
+<hr>
+<h2 id="第六周：高级特性与性能优化"><a href="#第六周：高级特性与性能优化" class="headerlink" title="第六周：高级特性与性能优化"></a>第六周：高级特性与性能优化</h2><h3 id="Day-36-38-缓存系统"><a href="#Day-36-38-缓存系统" class="headerlink" title="Day 36-38: 缓存系统"></a>Day 36-38: 缓存系统</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/core/cache/</code> - 缓存框架</li>
+<li>缓存后端实现</li>
+<li>缓存策略和性能优化</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>缓存系统的抽象设计</li>
+<li>不同缓存后端的特性</li>
+<li>缓存失效策略</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>配置多种缓存后端</li>
+<li>实现缓存装饰器</li>
+</ul>
+<h3 id="Day-39-40-国际化与本地化"><a href="#Day-39-40-国际化与本地化" class="headerlink" title="Day 39-40: 国际化与本地化"></a>Day 39-40: 国际化与本地化</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/utils/translation/</code> - 翻译系统</li>
+<li>时区和本地化处理</li>
+<li>多语言支持</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>国际化框架的设计</li>
+<li>翻译文件的处理机制</li>
+<li>时区转换的实现</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>创建多语言应用</li>
+<li>实现时区感知的日期处理</li>
+</ul>
+<h3 id="Day-41-42-测试框架与部署"><a href="#Day-41-42-测试框架与部署" class="headerlink" title="Day 41-42: 测试框架与部署"></a>Day 41-42: 测试框架与部署</h3><p><strong>学习内容</strong>:</p>
+<ul>
+<li><code>django/test/</code> - 测试框架</li>
+<li>测试工具和最佳实践</li>
+<li>部署和性能监控</li>
+</ul>
+<p><strong>重点理解</strong>:</p>
+<ul>
+<li>测试框架的设计思想</li>
+<li>测试数据库的管理</li>
+<li>性能测试和优化</li>
+</ul>
+<p><strong>实践任务</strong>:</p>
+<ul>
+<li>编写完整的测试套件</li>
+<li>分析应用的性能瓶颈</li>
+</ul>
+<hr>
+<h2 id="学习建议"><a href="#学习建议" class="headerlink" title="学习建议"></a>学习建议</h2><h3 id="每日学习流程"><a href="#每日学习流程" class="headerlink" title="每日学习流程"></a>每日学习流程</h3><ol>
+<li><strong>预习</strong> (15分钟): 了解当天要学习的模块功能</li>
+<li><strong>源码阅读</strong> (60-75分钟): 深入阅读核心代码</li>
+<li><strong>笔记整理</strong> (15-30分钟): 记录关键设计思想和实现细节</li>
+<li><strong>实践验证</strong> (15-30分钟): 编写示例代码验证理解</li>
+</ol>
+<h3 id="学习工具"><a href="#学习工具" class="headerlink" title="学习工具"></a>学习工具</h3><ul>
+<li><strong>IDE</strong>: PyCharm或VS Code，支持代码跳转和调试</li>
+<li><strong>文档</strong>: Django官方文档作为参考</li>
+<li><strong>调试工具</strong>: Django Debug Toolbar</li>
+<li><strong>版本控制</strong>: Git，记录学习进度</li>
+</ul>
+<h3 id="重点关注的代码模式"><a href="#重点关注的代码模式" class="headerlink" title="重点关注的代码模式"></a>重点关注的代码模式</h3><ol>
+<li><strong>设计模式</strong>: 观察者模式、工厂模式、策略模式等</li>
+<li><strong>代码组织</strong>: 模块化设计、接口抽象、依赖注入</li>
+<li><strong>性能优化</strong>: 缓存策略、数据库查询优化、内存管理</li>
+<li><strong>安全机制</strong>: CSRF保护、SQL注入防护、XSS防护</li>
+</ol>
+<h3 id="学习输出"><a href="#学习输出" class="headerlink" title="学习输出"></a>学习输出</h3><ul>
+<li><strong>代码笔记</strong>: 记录关键实现细节</li>
+<li><strong>架构图</strong>: 绘制模块关系图</li>
+<li><strong>实践项目</strong>: 基于学习内容开发小项目</li>
+<li><strong>技术博客</strong>: 分享学习心得和发现</li>
+</ul>
+<hr>
+<h2 id="预期收获"><a href="#预期收获" class="headerlink" title="预期收获"></a>预期收获</h2><p>通过这个学习计划，您将能够：</p>
+<ul>
+<li>深入理解Django的架构设计思想</li>
+<li>掌握Web框架开发的核心技术</li>
+<li>提升代码阅读和架构设计能力</li>
+<li>为后续的技术选型和系统设计提供参考</li>
+<li>在面试中展示对框架原理的深度理解</li>
+</ul>
+<p>记住，源码学习是一个渐进的过程，不要急于求成。重点在于理解设计思想，而不是记住每一行代码。祝您学习愉快！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Django/" class="print-no-link">#Django</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Django 1.11 源码学习计划</div>
+      <div>https://luffy997.github.io/2025/06/26/Django 1.11 源码学习计划/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年6月26日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/05/20/Huey-%E6%9E%B6%E6%9E%84/" title="Huey 架构">
+                        <span class="hidden-mobile">Huey 架构</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
