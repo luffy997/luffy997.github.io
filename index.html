@@ -227,23 +227,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/06/26/Django-WSGI-%E6%9E%B6%E6%9E%84%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" target="_self">
-          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django WSGI 架构深度解析">
+        <a href="/2025/07/30/Django-View%E7%B1%BB%E6%A0%B8%E5%BF%83%E8%AE%BE%E8%AE%A1%E6%80%BB%E7%BB%93/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django View类核心设计">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/06/26/Django-WSGI-%E6%9E%B6%E6%9E%84%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" target="_self">
-          Django WSGI 架构深度解析
+        <a href="/2025/07/30/Django-View%E7%B1%BB%E6%A0%B8%E5%BF%83%E8%AE%BE%E8%AE%A1%E6%80%BB%E7%BB%93/" target="_self">
+          Django View类核心设计
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2025/06/26/Django-WSGI-%E6%9E%B6%E6%9E%84%E6%B7%B1%E5%BA%A6%E8%A7%A3%E6%9E%90/" target="_self">
+      <a class="index-excerpt " href="/2025/07/30/Django-View%E7%B1%BB%E6%A0%B8%E5%BF%83%E8%AE%BE%E8%AE%A1%E6%80%BB%E7%BB%93/" target="_self">
         <div>
-          概述本文档详细解析了Django的WSGI架构，包括开发环境的runserver命令、WSGIHandler请求处理器、WSGIServer服务器，以及生产环境的服务器选择。 1. Django runserver 命令解析1.1 命令概述12class Command(BaseCommand):    help = &quot;Starts a lightweight Web server fo
+          🎯 View类的核心设计理念Django View类是所有类视图的基础，采用了故意简单的设计哲学，只实现HTTP方法分发和基本检查。 核心功能 HTTP方法分发 - dispatch()方法根据请求类型调用对应处理方法 类到函数的转换 - as_view()方法将类视图转换为URLconf需要的函数 实例隔离 - 每次请求创建新实例，确保线程安全  🔄 核心工作流程1URL请求 → as_vi
         </div>
       </a>
 
@@ -251,8 +251,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-26 20:41" pubdate>
-              2025-06-26
+            <time datetime="2025-07-30 19:41" pubdate>
+              2025-07-30
             </time>
           </div>
         
@@ -273,23 +273,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/06/26/Django%201.11%20%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" target="_self">
-          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django 1.11 源码学习计划">
+        <a href="/2025/07/27/Django-ORM/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django ORM">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/06/26/Django%201.11%20%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" target="_self">
-          Django 1.11 源码学习计划
+        <a href="/2025/07/27/Django-ORM/" target="_self">
+          Django ORM
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2025/06/26/Django%201.11%20%E6%BA%90%E7%A0%81%E5%AD%A6%E4%B9%A0%E8%AE%A1%E5%88%92/" target="_self">
+      <a class="index-excerpt " href="/2025/07/27/Django-ORM/" target="_self">
         <div>
-          去年就打算看下Django的源码，看的3的版本，看不太懂，于是同事建议我看1版本的，这几天不太忙，也是正式把源码的阅读提上日程了。 环境：  Django 1.11  Python 2.7  PyCharm、Cursor   下面的学习计划是我让 Cursor 基于本地的Django源码生成的为期一个半月的阅读计划，平均每天投入1.5-2H，后面有笔记我也会同步过来，最终源码中写的注释我会推到gi
+          目录 1. 概述 2. 核心组件架构 3. Query 类详解 4. SQLCompiler 编译器 5. SQL 生成流程 6. 关键数据结构 7. 实战案例分析 8. 高级特性 9. 查询优化策略 10. 性能监控与调试 11. 最佳实践 12. 总结  1. 概述Django ORM 的 SQL 查询构建是一个复杂而精巧的系统，它将 Python 对象和方法调用转换为高效的 SQL 查询。这
         </div>
       </a>
 
@@ -297,8 +297,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-06-26 20:31" pubdate>
-              2025-06-26
+            <time datetime="2025-07-27 20:21" pubdate>
+              2025-07-27
             </time>
           </div>
         
@@ -319,23 +319,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/05/20/Huey-%E6%9E%B6%E6%9E%84/" target="_self">
-          <img src="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png" srcset="/img/loading.gif" lazyload alt="Huey 架构">
+        <a href="/2025/07/27/Django-QuerySet/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django QuerySet">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/05/20/Huey-%E6%9E%B6%E6%9E%84/" target="_self">
-          Huey 架构
+        <a href="/2025/07/27/Django-QuerySet/" target="_self">
+          Django QuerySet
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2025/05/20/Huey-%E6%9E%B6%E6%9E%84/" target="_self">
+      <a class="index-excerpt " href="/2025/07/27/Django-QuerySet/" target="_self">
         <div>
-          Huey 是一个轻量级的任务队列（Task Queue），适合中小型项目使用。它的架构虽然简单，但非常优雅，核心组成包括：  任务定义（@task &#x2F; @periodic_task） 任务调度器（Scheduler） 消费者（Consumer） 工作进程（Worker） 存储（Broker：Redis &#x2F; Sqlite）   ✅ Huey 的整体架构图我先画个图你一目了然地看清
+          1. 概述Django QuerySet 是 Django ORM 的核心组件，实现了数据库查询的惰性加载机制。本文档基于 Django 1.11 版本的源码，深入分析 QuerySet 的实现原理。 1.1 文件位置 主要源码文件：django/db/models/query.py 核心类：QuerySet、ModelIterable、RelatedPopulator  1.2 设计目标 惰性求
         </div>
       </a>
 
@@ -343,8 +343,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-05-20 11:54" pubdate>
-              2025-05-20
+            <time datetime="2025-07-27 19:53" pubdate>
+              2025-07-27
             </time>
           </div>
         
@@ -353,7 +353,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Python/">#Python</a>
+              <a href="/tags/Django/">#Django</a>
             
           </div>
         
@@ -365,23 +365,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/04/30/Python-%E5%8D%8F%E7%A8%8B/" target="_self">
-          <img src="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png" srcset="/img/loading.gif" lazyload alt="Python 协程">
+        <a href="/2025/07/22/Django-%E4%BA%8B%E5%8A%A1/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django 事务">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/04/30/Python-%E5%8D%8F%E7%A8%8B/" target="_self">
-          Python 协程
+        <a href="/2025/07/22/Django-%E4%BA%8B%E5%8A%A1/" target="_self">
+          Django 事务
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2025/04/30/Python-%E5%8D%8F%E7%A8%8B/" target="_self">
+      <a class="index-excerpt " href="/2025/07/22/Django-%E4%BA%8B%E5%8A%A1/" target="_self">
         <div>
-          介绍Python 中的协程是通过 async 和 await 关键字实现的，它们使你能够编写并发代码，就像编写普通的同步代码一样。以下是一个简单的示例，说明如何使用协程来异步执行任务。 首先，确保你有 Python 3.5 或更高的版本，因为 async 和 await 是从 Python 3.5 开始引入的。 基本用法单个任务12345678910111213141516171819202122
+          1.1 基本概念 Django 的事务管理依赖 数据库的原生事务能力，由 Python 层进行封装。 支持 ACID 中的 原子性，事务中的操作要么全部成功，要么全部失败回滚。 支持 嵌套事务（通过保存点实现）以及 多线程安全（使用 threading.local()）。  1.2 主要组件   类 &#x2F; 函数 作用    transaction.atomic 装饰器或上下文管理器，用于事
         </div>
       </a>
 
@@ -389,8 +389,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-04-30 08:52" pubdate>
-              2025-04-30
+            <time datetime="2025-07-22 22:10" pubdate>
+              2025-07-22
             </time>
           </div>
         
@@ -399,7 +399,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Python/">#Python</a>
+              <a href="/tags/Django/">#Django</a>
             
           </div>
         
@@ -411,23 +411,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/04/30/Python-%E5%86%85%E5%AD%98%E5%88%86%E6%9E%90/" target="_self">
-          <img src="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png" srcset="/img/loading.gif" lazyload alt="Python 内存分析">
+        <a href="/2025/07/21/Django-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django 数据库连接">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/04/30/Python-%E5%86%85%E5%AD%98%E5%88%86%E6%9E%90/" target="_self">
-          Python 内存分析
+        <a href="/2025/07/21/Django-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5/" target="_self">
+          Django 数据库连接
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2025/04/30/Python-%E5%86%85%E5%AD%98%E5%88%86%E6%9E%90/" target="_self">
+      <a class="index-excerpt " href="/2025/07/21/Django-%E6%95%B0%E6%8D%AE%E5%BA%93%E8%BF%9E%E6%8E%A5/" target="_self">
         <div>
-          memory_profiler 是一个 Python 模块，用于监控和分析 Python 程序的内存使用情况。下面是如何使用 memory_profiler 的基本示例。 安装 memory_profiler首先，你需要安装 memory_profiler 模块。你可以使用 pip 来安装： 1pip install memory_profiler  使用示例以下是一个简单的示例，演示如何使用 m
+          1. Django 如何管理数据库连接？ Django 通过 ConnectionHandler 类来管理所有数据库连接。 你平时用的 connections[&#39;default&#39;]、connections[&#39;mydb&#39;]，背后就是它在帮你创建和缓存连接。 每个线程有自己的数据库连接，互不干扰，保证线程安全。 默认没有连接池机制，每个线程只维护一个连接对象。  连接的
         </div>
       </a>
 
@@ -435,8 +435,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-04-30 08:50" pubdate>
-              2025-04-30
+            <time datetime="2025-07-21 21:03" pubdate>
+              2025-07-21
             </time>
           </div>
         
@@ -445,7 +445,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Python/">#Python</a>
+              <a href="/tags/Django/">#Django</a>
             
           </div>
         
@@ -457,23 +457,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/04/28/nc-%E5%91%BD%E4%BB%A4/" target="_self">
-          <img src="https://s21.ax1x.com/2025/04/30/pEHJFJ0.png" srcset="/img/loading.gif" lazyload alt="nc 命令">
+        <a href="/2025/07/21/Django-URL-%E5%8F%8D%E5%90%91%E8%A7%A3%E6%9E%90/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django URL 反向解析">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/04/28/nc-%E5%91%BD%E4%BB%A4/" target="_self">
-          nc 命令
+        <a href="/2025/07/21/Django-URL-%E5%8F%8D%E5%90%91%E8%A7%A3%E6%9E%90/" target="_self">
+          Django URL 反向解析
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2025/04/28/nc-%E5%91%BD%E4%BB%A4/" target="_self">
+      <a class="index-excerpt " href="/2025/07/21/Django-URL-%E5%8F%8D%E5%90%91%E8%A7%A3%E6%9E%90/" target="_self">
         <div>
-          nc 命令（也称为 “netcat”）是一个网络工具，主要用于读写网络连接。它可以在 TCP 或 UDP 协议上进行数据传输，具有多种用途，以下是一些常见的功能： 主要功能 端口扫描:    可以用来扫描网络上的开放端口。     数据传输:    允许在两个主机之间传输数据，适合简单的文件传输。     创建反向 Shell:    可以用于创建反向 shell，常用于测试和调试。     网络
+          为什么需要反向解析？1. 避免硬编码URL的问题传统硬编码方式的问题： 1234567# 不好的做法：硬编码URLdef some_view(request):    # 硬编码URL路径    return redirect(&#x27;/blog/posts/123/&#x27;)# 模板中硬编码# &lt;a href=&quot;/blog/posts/123/&quot;&gt;查看文章
         </div>
       </a>
 
@@ -481,8 +481,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-04-28 17:05" pubdate>
-              2025-04-28
+            <time datetime="2025-07-21 19:42" pubdate>
+              2025-07-21
             </time>
           </div>
         
@@ -491,7 +491,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/%E7%BD%91%E7%BB%9C/">#网络</a>
+              <a href="/tags/Django/">#Django</a>
             
           </div>
         
@@ -503,23 +503,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/04/14/Linux-%E5%BC%80%E6%9C%BA%E6%B5%81%E7%A8%8B/" target="_self">
-          <img src="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg" srcset="/img/loading.gif" lazyload alt="Linux 开机流程">
+        <a href="/2025/07/19/Django%E7%BC%93%E5%AD%98%E4%B8%AD%E9%97%B4%E4%BB%B6/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django 缓存中间件">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/04/14/Linux-%E5%BC%80%E6%9C%BA%E6%B5%81%E7%A8%8B/" target="_self">
-          Linux 开机流程
+        <a href="/2025/07/19/Django%E7%BC%93%E5%AD%98%E4%B8%AD%E9%97%B4%E4%BB%B6/" target="_self">
+          Django 缓存中间件
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2025/04/14/Linux-%E5%BC%80%E6%9C%BA%E6%B5%81%E7%A8%8B/" target="_self">
+      <a class="index-excerpt " href="/2025/07/19/Django%E7%BC%93%E5%AD%98%E4%B8%AD%E9%97%B4%E4%BB%B6/" target="_self">
         <div>
-          🧠 Linux 开机流程总体分为 4 个阶段： 第一阶段：BIOS&#x2F;UEFI 初始化 🔌 触发点：按下电源键  📦 工作内容：   加载 BIOS&#x2F;UEFI，执行硬件自检（POST） 读取启动顺序，找到第一个可启动设备   💥 常见问题点：   找不到启动设备（BIOS 设置错） 硬件检测失败（内存条没插好等）     第二阶段：Boot Loader（如 grub2）
+          1. 整体架构设计Django采用了分离式缓存设计，将缓存操作分为两个阶段： 12345678# 中间件配置顺序（非常重要！）MIDDLEWARE = [    &#x27;django.middleware.cache.UpdateCacheMiddleware&#x27;,  # 第一个    &#x27;django.middleware.security.SecurityMiddlewar
         </div>
       </a>
 
@@ -527,8 +527,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-04-14 00:19" pubdate>
-              2025-04-14
+            <time datetime="2025-07-19 12:21" pubdate>
+              2025-07-19
             </time>
           </div>
         
@@ -537,7 +537,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/linux/">#linux</a>
+              <a href="/tags/Django/">#Django</a>
             
           </div>
         
@@ -549,23 +549,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/04/12/Python%E5%92%8CJava-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E3%80%81%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/" target="_self">
-          <img src="https://s2.loli.net/2021/12/24/2ZqBOPsXbY83zRJ.png" srcset="/img/loading.gif" lazyload alt="Python和Java 多线程、多进程的使用场景">
+        <a href="/2025/07/18/Django-URL%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django URL匹配算法">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/04/12/Python%E5%92%8CJava-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E3%80%81%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/" target="_self">
-          Python和Java 多线程、多进程的使用场景
+        <a href="/2025/07/18/Django-URL%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95/" target="_self">
+          Django URL匹配算法
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2025/04/12/Python%E5%92%8CJava-%E5%A4%9A%E7%BA%BF%E7%A8%8B%E3%80%81%E5%A4%9A%E8%BF%9B%E7%A8%8B%E7%9A%84%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF/" target="_self">
+      <a class="index-excerpt " href="/2025/07/18/Django-URL%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95/" target="_self">
         <div>
-          🧠 一、Python 使用多线程 or 多进程的判断依据   应用场景 建议使用 说明    I&#x2F;O 密集型（如网络请求、文件读写、数据库操作） ✅ 多线程 线程切换开销小，适合等待型操作   CPU 密集型（如压缩、加密、图像处理、算法） ✅ 多进程 避开 GIL，多个进程可并发占满多个 CPU 核心   任务需隔离（如运行不受控制的工具&#x2F;脚本） ✅ 多进程 独立内存空间，
+          Django的URL匹配就像剥洋葱一样，一层一层地处理URL，每一层只负责匹配自己的部分，然后把剩下的部分交给下一层继续处理。 算法流程图1234567891011121314151617请求URL: /api/v1/users/123/profile/                ↓        [第1层] 根解析器 r&#x27;^/&#x27;         匹配成功，剩余：api/v
         </div>
       </a>
 
@@ -573,8 +573,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-04-12 21:16" pubdate>
-              2025-04-12
+            <time datetime="2025-07-18 20:21" pubdate>
+              2025-07-18
             </time>
           </div>
         
@@ -583,7 +583,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/Python/">#Python</a>
+              <a href="/tags/Django/">#Django</a>
             
           </div>
         
@@ -595,23 +595,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/04/09/Unix-Socket-%E5%92%8C-TCP-IP-Socker/" target="_self">
-          <img src="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg" srcset="/img/loading.gif" lazyload alt="Unix Socket 和 TCP/IP Socker">
+        <a href="/2025/07/17/Django-MultiPartParser/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django MultiPartParser">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/04/09/Unix-Socket-%E5%92%8C-TCP-IP-Socker/" target="_self">
-          Unix Socket 和 TCP/IP Socker
+        <a href="/2025/07/17/Django-MultiPartParser/" target="_self">
+          Django MultiPartParser
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2025/04/09/Unix-Socket-%E5%92%8C-TCP-IP-Socker/" target="_self">
+      <a class="index-excerpt " href="/2025/07/17/Django-MultiPartParser/" target="_self">
         <div>
-          🧱 一、通信机制区别   项目 Unix Domain Socket TCP&#x2F;IP Socket    通信类型 本地通信（同一台主机） 网络通信（本地或远程）   传输协议 使用文件系统路径作为地址标识，无需 IP 和端口 使用 IP 和端口作为地址标识   协议栈 不走网络协议栈，直接通过内核内存传输 走完整的网络协议栈（如 TCP&#x2F;IP）   性能 非常高（少了协议栈开
+          概述Django的 MultiPartParser 是处理 multipart/form-data 格式数据的核心组件，主要用于处理HTML表单的文件上传功能。它实现了符合RFC 2388标准的多部分数据解析，提供了强大的安全防护和性能优化。 核心组件架构1. 主要类结构123456789101112131415# 异常类class MultiPartParserError(Exception)c
         </div>
       </a>
 
@@ -619,8 +619,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-04-09 11:04" pubdate>
-              2025-04-09
+            <time datetime="2025-07-17 21:35" pubdate>
+              2025-07-17
             </time>
           </div>
         
@@ -629,7 +629,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/linux/">#linux</a>
+              <a href="/tags/Django/">#Django</a>
             
           </div>
         
@@ -641,23 +641,23 @@
     
     
       <div class="col-12 col-md-4 m-auto index-img">
-        <a href="/2025/03/28/RAID-%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97/" target="_self">
-          <img src="https://s21.ax1x.com/2025/04/30/pEHJ9ds.jpg" srcset="/img/loading.gif" lazyload alt="RAID 磁盘阵列">
+        <a href="/2025/07/16/Django-CSRF%E4%B8%AD%E9%97%B4%E4%BB%B6%E8%A7%A3%E6%9E%90/" target="_self">
+          <img src="https://s21.ax1x.com/2025/04/30/pEHJjt1.png" srcset="/img/loading.gif" lazyload alt="Django CSRF中间件解析">
         </a>
       </div>
     
     <article class="col-12 col-md-8 mx-auto index-info">
       <h2 class="index-header">
         
-        <a href="/2025/03/28/RAID-%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97/" target="_self">
-          RAID 磁盘阵列
+        <a href="/2025/07/16/Django-CSRF%E4%B8%AD%E9%97%B4%E4%BB%B6%E8%A7%A3%E6%9E%90/" target="_self">
+          Django CSRF中间件解析
         </a>
       </h2>
 
       
-      <a class="index-excerpt " href="/2025/03/28/RAID-%E7%A3%81%E7%9B%98%E9%98%B5%E5%88%97/" target="_self">
+      <a class="index-excerpt " href="/2025/07/16/Django-CSRF%E4%B8%AD%E9%97%B4%E4%BB%B6%E8%A7%A3%E6%9E%90/" target="_self">
         <div>
-          RAID 介绍RAID（Redundant Array of Independent Disks，独立磁盘冗余阵列）是一种数据存储技术，利用多个硬盘组合成一个逻辑存储单元，以提高数据冗余性、性能或两者兼顾。   RAID 主要分为 硬件 RAID 和 软件 RAID，不同级别的 RAID 提供不同的性能、容错能力和存储效率。  1. RAID 的分类RAID 主要分为以下几种常见级别：    RA
+          1. 什么是CSRF攻击CSRF（Cross-Site Request Forgery）是一种Web安全漏洞，攻击者诱导用户在已登录的网站上执行非预期的操作。 123456&lt;!-- 恶意网站的页面 --&gt;&lt;form action=&quot;https://bank.com/transfer&quot; method=&quot;POST&quot; style=&quot;di
         </div>
       </a>
 
@@ -665,8 +665,8 @@
         
           <div class="post-meta mr-3">
             <i class="iconfont icon-date"></i>
-            <time datetime="2025-03-28 20:34" pubdate>
-              2025-03-28
+            <time datetime="2025-07-16 19:29" pubdate>
+              2025-07-16
             </time>
           </div>
         
@@ -675,7 +675,7 @@
           <div class="post-meta">
             <i class="iconfont icon-tags"></i>
             
-              <a href="/tags/linux/">#linux</a>
+              <a href="/tags/Django/">#Django</a>
             
           </div>
         
@@ -687,7 +687,7 @@
 
   <nav aria-label="navigation">
     <span class="pagination" id="pagination">
-      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#board">8</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
+      <span class="page-number current">1</span><a class="page-number" href="/page/2/#board">2</a><a class="page-number" href="/page/3/#board">3</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/#board">10</a><a class="extend next" rel="next" href="/page/2/#board"><i class="iconfont icon-arrowright"></i></a>
     </span>
   </nav>
 

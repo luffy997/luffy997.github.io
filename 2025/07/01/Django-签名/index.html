@@ -1,0 +1,753 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="📚 概述Django的签名系统是一个强大的安全工具，用于创建和验证数字签名，确保数据的完整性和真实性。它基于HMAC-SHA1算法，使用SECRET_KEY进行签名，防止数据被篡改或伪造。 🔐 核心概念什么是数字签名？数字签名是一种加密技术，用于：  验证数据完整性 - 确保数据没有被篡改 验证数据来源 - 确保数据确实来自你的服务器   防止伪造 - 防止恶意用户伪造数据  签名格式123I">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django 签名">
+<meta property="og:url" content="https://luffy997.github.io/2025/07/01/Django-%E7%AD%BE%E5%90%8D/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="📚 概述Django的签名系统是一个强大的安全工具，用于创建和验证数字签名，确保数据的完整性和真实性。它基于HMAC-SHA1算法，使用SECRET_KEY进行签名，防止数据被篡改或伪造。 🔐 核心概念什么是数字签名？数字签名是一种加密技术，用于：  验证数据完整性 - 确保数据没有被篡改 验证数据来源 - 确保数据确实来自你的服务器   防止伪造 - 防止恶意用户伪造数据  签名格式123I">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s21.ax1x.com/2025/04/30/pEHJjt1.png">
+<meta property="article:published_time" content="2025-07-01T12:38:09.000Z">
+<meta property="article:modified_time" content="2026-01-07T14:26:13.275Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="Django">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s21.ax1x.com/2025/04/30/pEHJjt1.png">
+  
+  
+  
+  <title>Django 签名 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Django 签名"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-01 20:38" pubdate>
+          2025年7月1日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          20 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Django 签名</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="📚-概述"><a href="#📚-概述" class="headerlink" title="📚 概述"></a>📚 概述</h2><p>Django的签名系统是一个强大的安全工具，用于创建和验证<strong>数字签名</strong>，确保数据的完整性和真实性。它基于HMAC-SHA1算法，使用SECRET_KEY进行签名，防止数据被篡改或伪造。</p>
+<h2 id="🔐-核心概念"><a href="#🔐-核心概念" class="headerlink" title="🔐 核心概念"></a>🔐 核心概念</h2><h3 id="什么是数字签名？"><a href="#什么是数字签名？" class="headerlink" title="什么是数字签名？"></a>什么是数字签名？</h3><p>数字签名是一种<strong>加密技术</strong>，用于：</p>
+<ol>
+<li><strong>验证数据完整性</strong> - 确保数据没有被篡改</li>
+<li><strong>验证数据来源</strong> - 确保数据确实来自你的服务器  </li>
+<li><strong>防止伪造</strong> - 防止恶意用户伪造数据</li>
+</ol>
+<h3 id="签名格式"><a href="#签名格式" class="headerlink" title="签名格式"></a>签名格式</h3><figure class="highlight avrasm"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs avrasm"><span class="hljs-symbol">ImhlbGxvIg:</span><span class="hljs-number">1</span>QaUZC:YIye-ze3TTx7gtSv422nZA4sgmk<br>│─────────│──────│─────────────────────────────────│<br>│  数据   │时间戳│           HMAC签名              │<br></code></pre></td></tr></table></figure>
+
+<p>三部分用冒号分隔：</p>
+<ul>
+<li><strong>数据部分</strong>：原始数据的Base64编码</li>
+<li><strong>时间戳</strong>：Base62编码的时间戳（仅TimestampSigner）</li>
+<li><strong>签名部分</strong>：HMAC-SHA1签名</li>
+</ul>
+<h2 id="🛠️-核心类和函数"><a href="#🛠️-核心类和函数" class="headerlink" title="🛠️ 核心类和函数"></a>🛠️ 核心类和函数</h2><h3 id="1-Signer类"><a href="#1-Signer类" class="headerlink" title="1. Signer类"></a>1. Signer类</h3><p>基础签名器，提供基本的签名和验证功能。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.core.signing <span class="hljs-keyword">import</span> Signer<br><br>signer = Signer(<span class="hljs-string">&#x27;my-secret-key&#x27;</span>)<br>signed_value = signer.sign(<span class="hljs-string">&#x27;hello world&#x27;</span>)<br><span class="hljs-built_in">print</span>(signed_value)  <span class="hljs-comment"># &#x27;hello world:signature&#x27;</span><br><br><span class="hljs-comment"># 验证签名</span><br>original_value = signer.unsign(signed_value)<br><span class="hljs-built_in">print</span>(original_value)  <span class="hljs-comment"># &#x27;hello world&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-TimestampSigner类"><a href="#2-TimestampSigner类" class="headerlink" title="2. TimestampSigner类"></a>2. TimestampSigner类</h3><p>继承自Signer，添加时间戳功能，支持过期验证。</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.core.signing <span class="hljs-keyword">import</span> TimestampSigner<br><br>signer = TimestampSigner(<span class="hljs-string">&#x27;my-secret-key&#x27;</span>)<br>signed_value = signer.sign(<span class="hljs-string">&#x27;hello world&#x27;</span>)<br><span class="hljs-built_in">print</span>(signed_value)  <span class="hljs-comment"># &#x27;hello world:timestamp:signature&#x27;</span><br><br><span class="hljs-comment"># 验证签名（不检查过期）</span><br>original_value = signer.unsign(signed_value)<br><br><span class="hljs-comment"># 验证签名（检查过期时间）</span><br><span class="hljs-keyword">try</span>:<br>    original_value = signer.unsign(signed_value, max_age=<span class="hljs-number">3600</span>)  <span class="hljs-comment"># 1小时有效</span><br><span class="hljs-keyword">except</span> SignatureExpired:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;签名已过期&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-便利函数：dumps-和-loads"><a href="#3-便利函数：dumps-和-loads" class="headerlink" title="3. 便利函数：dumps() 和 loads()"></a>3. 便利函数：dumps() 和 loads()</h3><h4 id="dumps-序列化并签名"><a href="#dumps-序列化并签名" class="headerlink" title="dumps() - 序列化并签名"></a>dumps() - 序列化并签名</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.core <span class="hljs-keyword">import</span> signing<br><br><span class="hljs-comment"># 基本用法</span><br>token = signing.dumps(&#123;<span class="hljs-string">&#x27;user_id&#x27;</span>: <span class="hljs-number">123</span>, <span class="hljs-string">&#x27;action&#x27;</span>: <span class="hljs-string">&#x27;reset_password&#x27;</span>&#125;)<br><span class="hljs-built_in">print</span>(token)  <span class="hljs-comment"># &#x27;eyJ1c2VyX2lkIjoxMjMsImFjdGlvbiI6InJlc2V0X3Bhc3N3b3JkIn0:1QaUZC:abc123...&#x27;</span><br><br><span class="hljs-comment"># 启用压缩</span><br>compressed_token = signing.dumps(large_data, compress=<span class="hljs-literal">True</span>)<br><br><span class="hljs-comment"># 自定义salt</span><br>custom_token = signing.dumps(data, salt=<span class="hljs-string">&#x27;my.custom.salt&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="loads-验证并反序列化"><a href="#loads-验证并反序列化" class="headerlink" title="loads() - 验证并反序列化"></a>loads() - 验证并反序列化</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 基本验证</span><br><span class="hljs-keyword">try</span>:<br>    data = signing.loads(token)<br>    <span class="hljs-built_in">print</span>(data)  <span class="hljs-comment"># &#123;&#x27;user_id&#x27;: 123, &#x27;action&#x27;: &#x27;reset_password&#x27;&#125;</span><br><span class="hljs-keyword">except</span> signing.BadSignature:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;签名无效&quot;</span>)<br><br><span class="hljs-comment"># 带过期检查</span><br><span class="hljs-keyword">try</span>:<br>    data = signing.loads(token, max_age=<span class="hljs-number">3600</span>)  <span class="hljs-comment"># 1小时有效期</span><br><span class="hljs-keyword">except</span> signing.SignatureExpired:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;签名已过期&quot;</span>)<br><span class="hljs-keyword">except</span> signing.BadSignature:<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;签名无效&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="⏰-时间戳机制详解"><a href="#⏰-时间戳机制详解" class="headerlink" title="⏰ 时间戳机制详解"></a>⏰ 时间戳机制详解</h2><h3 id="时间戳生成"><a href="#时间戳生成" class="headerlink" title="时间戳生成"></a>时间戳生成</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">timestamp</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-keyword">return</span> baseconv.base62.encode(<span class="hljs-built_in">int</span>(time.time()))<br></code></pre></td></tr></table></figure>
+
+<h3 id="时间戳验证"><a href="#时间戳验证" class="headerlink" title="时间戳验证"></a>时间戳验证</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">unsign</span>(<span class="hljs-params">self, value, max_age=<span class="hljs-literal">None</span></span>):<br>    <span class="hljs-comment"># 提取时间戳</span><br>    value, timestamp = result.rsplit(<span class="hljs-variable language_">self</span>.sep, <span class="hljs-number">1</span>)<br>    timestamp = baseconv.base62.decode(timestamp)<br>    <br>    <span class="hljs-keyword">if</span> max_age <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>        <span class="hljs-comment"># 计算签名年龄</span><br>        age = time.time() - timestamp<br>        <span class="hljs-keyword">if</span> age &gt; max_age:<br>            <span class="hljs-keyword">raise</span> SignatureExpired(...)<br>    <br>    <span class="hljs-keyword">return</span> value<br></code></pre></td></tr></table></figure>
+
+<h3 id="Base62编码"><a href="#Base62编码" class="headerlink" title="Base62编码"></a>Base62编码</h3><p>Django使用Base62编码时间戳，包含62个字符：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs python">BASE62_ALPHABET = <span class="hljs-string">&#x27;0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<p>优势：</p>
+<ul>
+<li><strong>URL安全</strong>：不包含特殊字符</li>
+<li><strong>紧凑性</strong>：比十进制更短</li>
+<li><strong>可读性</strong>：混合数字和字母</li>
+</ul>
+<h2 id="🎯-实际应用场景"><a href="#🎯-实际应用场景" class="headerlink" title="🎯 实际应用场景"></a>🎯 实际应用场景</h2><h3 id="1-CSRF防护"><a href="#1-CSRF防护" class="headerlink" title="1. CSRF防护"></a>1. CSRF防护</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># django/middleware/csrf.py</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_token</span>(<span class="hljs-params">request</span>):<br>    csrf_secret = _get_new_csrf_string()<br>    request.META[<span class="hljs-string">&quot;CSRF_COOKIE&quot;</span>] = _salt_cipher_secret(csrf_secret)<br>    <span class="hljs-keyword">return</span> _salt_cipher_secret(csrf_secret)<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-Session数据（签名Cookie）"><a href="#2-Session数据（签名Cookie）" class="headerlink" title="2. Session数据（签名Cookie）"></a>2. Session数据（签名Cookie）</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># django/contrib/sessions/backends/signed_cookies.py</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">_get_session_key</span>(<span class="hljs-params">self</span>):<br>    session_cache = <span class="hljs-built_in">getattr</span>(<span class="hljs-variable language_">self</span>, <span class="hljs-string">&#x27;_session_cache&#x27;</span>, &#123;&#125;)<br>    <span class="hljs-keyword">return</span> signing.dumps(<br>        session_cache, compress=<span class="hljs-literal">True</span>,<br>        salt=<span class="hljs-string">&#x27;django.contrib.sessions.backends.signed_cookies&#x27;</span>,<br>    )<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">load</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-keyword">return</span> signing.loads(<br>        <span class="hljs-variable language_">self</span>.session_key,<br>        max_age=settings.SESSION_COOKIE_AGE,<br>        salt=<span class="hljs-string">&#x27;django.contrib.sessions.backends.signed_cookies&#x27;</span>,<br>    )<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-密码重置令牌"><a href="#3-密码重置令牌" class="headerlink" title="3. 密码重置令牌"></a>3. 密码重置令牌</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># django/contrib/auth/forms.py</span><br>context = &#123;<br>    <span class="hljs-string">&#x27;uid&#x27;</span>: urlsafe_base64_encode(force_bytes(user.pk)),<br>    <span class="hljs-string">&#x27;token&#x27;</span>: token_generator.make_token(user),<br>    <span class="hljs-string">&#x27;protocol&#x27;</span>: <span class="hljs-string">&#x27;https&#x27;</span> <span class="hljs-keyword">if</span> use_https <span class="hljs-keyword">else</span> <span class="hljs-string">&#x27;http&#x27;</span>,<br>&#125;<br></code></pre></td></tr></table></figure>
+
+<h3 id="4-邮件激活链接"><a href="#4-邮件激活链接" class="headerlink" title="4. 邮件激活链接"></a>4. 邮件激活链接</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 生成激活令牌</span><br>activation_token = signing.dumps(&#123;<br>    <span class="hljs-string">&#x27;user_id&#x27;</span>: user.<span class="hljs-built_in">id</span>,<br>    <span class="hljs-string">&#x27;email&#x27;</span>: user.email,<br>    <span class="hljs-string">&#x27;action&#x27;</span>: <span class="hljs-string">&#x27;activate_account&#x27;</span><br>&#125;)<br><br><span class="hljs-comment"># 验证激活令牌</span><br><span class="hljs-keyword">try</span>:<br>    data = signing.loads(token, max_age=<span class="hljs-number">24</span>*<span class="hljs-number">3600</span>)  <span class="hljs-comment"># 24小时有效</span><br>    user_id = data[<span class="hljs-string">&#x27;user_id&#x27;</span>]<br>    <span class="hljs-comment"># 激活用户账户...</span><br><span class="hljs-keyword">except</span> signing.SignatureExpired:<br>    <span class="hljs-keyword">return</span> HttpResponse(<span class="hljs-string">&quot;激活链接已过期&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="⚙️-配置设置"><a href="#⚙️-配置设置" class="headerlink" title="⚙️ 配置设置"></a>⚙️ 配置设置</h2><h3 id="默认过期时间设置"><a href="#默认过期时间设置" class="headerlink" title="默认过期时间设置"></a>默认过期时间设置</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># django/conf/global_settings.py</span><br><br><span class="hljs-comment"># TimestampSigner本身：默认永不过期（max_age=None）</span><br><span class="hljs-comment"># 只有明确指定max_age参数才会检查过期</span><br><br><span class="hljs-comment"># Session会话：2周</span><br>SESSION_COOKIE_AGE = <span class="hljs-number">60</span> * <span class="hljs-number">60</span> * <span class="hljs-number">24</span> * <span class="hljs-number">7</span> * <span class="hljs-number">2</span>  <span class="hljs-comment"># 1,209,600秒</span><br><br><span class="hljs-comment"># 密码重置：3天  </span><br>PASSWORD_RESET_TIMEOUT_DAYS = <span class="hljs-number">3</span>  <span class="hljs-comment"># 259,200秒</span><br><br><span class="hljs-comment"># CSRF令牌：1年</span><br>CSRF_COOKIE_AGE = <span class="hljs-number">60</span> * <span class="hljs-number">60</span> * <span class="hljs-number">24</span> * <span class="hljs-number">7</span> * <span class="hljs-number">52</span>  <span class="hljs-comment"># 31,449,600秒</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="签名后端配置"><a href="#签名后端配置" class="headerlink" title="签名后端配置"></a>签名后端配置</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 默认签名后端</span><br>SIGNING_BACKEND = <span class="hljs-string">&#x27;django.core.signing.TimestampSigner&#x27;</span><br><br><span class="hljs-comment"># SECRET_KEY用于签名</span><br>SECRET_KEY = <span class="hljs-string">&#x27;your-secret-key-here&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="🔒-安全特性"><a href="#🔒-安全特性" class="headerlink" title="🔒 安全特性"></a>🔒 安全特性</h2><h3 id="1-基于HMAC-SHA1"><a href="#1-基于HMAC-SHA1" class="headerlink" title="1. 基于HMAC-SHA1"></a>1. 基于HMAC-SHA1</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">base64_hmac</span>(<span class="hljs-params">salt, value, key</span>):<br>    <span class="hljs-keyword">return</span> b64_encode(salted_hmac(salt, value, key).digest())<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-盐值机制"><a href="#2-盐值机制" class="headerlink" title="2. 盐值机制"></a>2. 盐值机制</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">signature</span>(<span class="hljs-params">self, value</span>):<br>    signature = base64_hmac(<span class="hljs-variable language_">self</span>.salt + <span class="hljs-string">&#x27;signer&#x27;</span>, value, <span class="hljs-variable language_">self</span>.key)<br>    <span class="hljs-keyword">return</span> force_str(signature)<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-常量时间比较"><a href="#3-常量时间比较" class="headerlink" title="3. 常量时间比较"></a>3. 常量时间比较</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">unsign</span>(<span class="hljs-params">self, signed_value</span>):<br>    <span class="hljs-comment"># ...</span><br>    <span class="hljs-keyword">if</span> constant_time_compare(sig, <span class="hljs-variable language_">self</span>.signature(value)):<br>        <span class="hljs-keyword">return</span> force_text(value)<br>    <span class="hljs-keyword">raise</span> BadSignature(...)<br></code></pre></td></tr></table></figure>
+
+<h2 id="📋-异常处理"><a href="#📋-异常处理" class="headerlink" title="📋 异常处理"></a>📋 异常处理</h2><h3 id="异常类型"><a href="#异常类型" class="headerlink" title="异常类型"></a>异常类型</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">BadSignature</span>(<span class="hljs-title class_ inherited__">Exception</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;签名不匹配&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">pass</span><br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">SignatureExpired</span>(<span class="hljs-title class_ inherited__">BadSignature</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;签名时间戳超过required max_age&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="异常处理示例"><a href="#异常处理示例" class="headerlink" title="异常处理示例"></a>异常处理示例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.core <span class="hljs-keyword">import</span> signing<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">verify_token</span>(<span class="hljs-params">token</span>):<br>    <span class="hljs-keyword">try</span>:<br>        data = signing.loads(token, max_age=<span class="hljs-number">3600</span>)<br>        <span class="hljs-keyword">return</span> data, <span class="hljs-literal">None</span><br>    <span class="hljs-keyword">except</span> signing.SignatureExpired:<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;令牌已过期，请重新获取&quot;</span><br>    <span class="hljs-keyword">except</span> signing.BadSignature:<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;令牌无效，可能被篡改&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="💡-最佳实践"><a href="#💡-最佳实践" class="headerlink" title="💡 最佳实践"></a>💡 最佳实践</h2><h3 id="1-根据场景设置合适的有效期"><a href="#1-根据场景设置合适的有效期" class="headerlink" title="1. 根据场景设置合适的有效期"></a>1. 根据场景设置合适的有效期</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 密码重置 - 较短有效期</span><br>password_reset_token = signing.dumps(user_data)<br>signing.loads(password_reset_token, max_age=<span class="hljs-number">3600</span>)  <span class="hljs-comment"># 1小时</span><br><br><span class="hljs-comment"># 记住登录 - 较长有效期  </span><br>remember_token = signing.dumps(user_data)<br>signing.loads(remember_token, max_age=<span class="hljs-number">30</span>*<span class="hljs-number">24</span>*<span class="hljs-number">3600</span>)  <span class="hljs-comment"># 30天</span><br><br><span class="hljs-comment"># 临时操作 - 很短有效期</span><br>temp_token = signing.dumps(operation_data)<br>signing.loads(temp_token, max_age=<span class="hljs-number">300</span>)  <span class="hljs-comment"># 5分钟</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-使用不同的salt"><a href="#2-使用不同的salt" class="headerlink" title="2. 使用不同的salt"></a>2. 使用不同的salt</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 不同用途使用不同的salt</span><br>email_token = signing.dumps(data, salt=<span class="hljs-string">&#x27;email.verification&#x27;</span>)<br>download_token = signing.dumps(data, salt=<span class="hljs-string">&#x27;file.download&#x27;</span>)<br>api_token = signing.dumps(data, salt=<span class="hljs-string">&#x27;api.access&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-处理异常"><a href="#3-处理异常" class="headerlink" title="3. 处理异常"></a>3. 处理异常</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">safe_loads</span>(<span class="hljs-params">token, max_age=<span class="hljs-literal">None</span></span>):<br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">return</span> signing.loads(token, max_age=max_age), <span class="hljs-literal">None</span><br>    <span class="hljs-keyword">except</span> signing.SignatureExpired:<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;TOKEN_EXPIRED&quot;</span><br>    <span class="hljs-keyword">except</span> signing.BadSignature:<br>        <span class="hljs-keyword">return</span> <span class="hljs-literal">None</span>, <span class="hljs-string">&quot;TOKEN_INVALID&quot;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="4-生产环境考虑"><a href="#4-生产环境考虑" class="headerlink" title="4. 生产环境考虑"></a>4. 生产环境考虑</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 确保SECRET_KEY安全</span><br>SECRET_KEY = os.environ.get(<span class="hljs-string">&#x27;DJANGO_SECRET_KEY&#x27;</span>)<br><br><span class="hljs-comment"># 考虑时钟偏移</span><br>max_age = <span class="hljs-number">3600</span> + <span class="hljs-number">60</span>  <span class="hljs-comment"># 多给60秒缓冲时间</span><br><br><span class="hljs-comment"># 日志记录</span><br><span class="hljs-keyword">import</span> logging<br>logger = logging.getLogger(__name__)<br><br><span class="hljs-keyword">try</span>:<br>    data = signing.loads(token, max_age=<span class="hljs-number">3600</span>)<br><span class="hljs-keyword">except</span> signing.SignatureExpired:<br>    logger.warning(<span class="hljs-string">f&quot;Token expired for user <span class="hljs-subst">&#123;request.user.<span class="hljs-built_in">id</span>&#125;</span>&quot;</span>)<br>    <span class="hljs-keyword">raise</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="🔄-完整工作流程"><a href="#🔄-完整工作流程" class="headerlink" title="🔄 完整工作流程"></a>🔄 完整工作流程</h2><h3 id="签名生成流程"><a href="#签名生成流程" class="headerlink" title="签名生成流程"></a>签名生成流程</h3><ol>
+<li><strong>数据序列化</strong>：将Python对象转换为JSON</li>
+<li><strong>数据压缩</strong>：可选，如果启用compress&#x3D;True</li>
+<li><strong>Base64编码</strong>：将数据转换为URL安全格式</li>
+<li><strong>添加时间戳</strong>：TimestampSigner添加当前时间戳</li>
+<li><strong>生成签名</strong>：使用HMAC-SHA1和SECRET_KEY生成签名</li>
+<li><strong>组合结果</strong>：将数据、时间戳、签名用冒号连接</li>
+</ol>
+<h3 id="签名验证流程"><a href="#签名验证流程" class="headerlink" title="签名验证流程"></a>签名验证流程</h3><ol>
+<li><strong>分离组件</strong>：按冒号分离数据、时间戳、签名</li>
+<li><strong>验证签名</strong>：重新计算签名并与提供的签名比较</li>
+<li><strong>检查时间</strong>：如果指定max_age，检查是否过期</li>
+<li><strong>解码数据</strong>：Base64解码和JSON反序列化</li>
+<li><strong>返回结果</strong>：返回原始数据或抛出异常</li>
+</ol>
+<h2 id="🚀-示例：构建邮件验证系统"><a href="#🚀-示例：构建邮件验证系统" class="headerlink" title="🚀 示例：构建邮件验证系统"></a>🚀 示例：构建邮件验证系统</h2><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">from</span> django.core <span class="hljs-keyword">import</span> signing<br><span class="hljs-keyword">from</span> django.shortcuts <span class="hljs-keyword">import</span> render, redirect<br><span class="hljs-keyword">from</span> django.http <span class="hljs-keyword">import</span> HttpResponse<br><span class="hljs-keyword">import</span> datetime<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">send_verification_email</span>(<span class="hljs-params">request</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;发送验证邮件&quot;&quot;&quot;</span><br>    user_email = request.POST.get(<span class="hljs-string">&#x27;email&#x27;</span>)<br>    <br>    <span class="hljs-comment"># 生成验证令牌（24小时有效）</span><br>    token_data = &#123;<br>        <span class="hljs-string">&#x27;email&#x27;</span>: user_email,<br>        <span class="hljs-string">&#x27;action&#x27;</span>: <span class="hljs-string">&#x27;verify_email&#x27;</span>,<br>        <span class="hljs-string">&#x27;user_id&#x27;</span>: request.user.<span class="hljs-built_in">id</span><br>    &#125;<br>    <br>    verification_token = signing.dumps(token_data, salt=<span class="hljs-string">&#x27;email.verification&#x27;</span>)<br>    <br>    <span class="hljs-comment"># 构建验证链接</span><br>    verification_url = <span class="hljs-string">f&quot;https://example.com/verify/<span class="hljs-subst">&#123;verification_token&#125;</span>/&quot;</span><br>    <br>    <span class="hljs-comment"># 发送邮件（这里省略邮件发送代码）</span><br>    <span class="hljs-comment"># send_email(user_email, verification_url)</span><br>    <br>    <span class="hljs-keyword">return</span> HttpResponse(<span class="hljs-string">&quot;验证邮件已发送&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">verify_email</span>(<span class="hljs-params">request, token</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;验证邮件&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-comment"># 验证令牌（24小时有效期）</span><br>        data = signing.loads(<br>            token, <br>            salt=<span class="hljs-string">&#x27;email.verification&#x27;</span>, <br>            max_age=<span class="hljs-number">24</span>*<span class="hljs-number">3600</span><br>        )<br>        <br>        <span class="hljs-comment"># 提取数据</span><br>        email = data[<span class="hljs-string">&#x27;email&#x27;</span>]<br>        user_id = data[<span class="hljs-string">&#x27;user_id&#x27;</span>]<br>        action = data[<span class="hljs-string">&#x27;action&#x27;</span>]<br>        <br>        <span class="hljs-keyword">if</span> action != <span class="hljs-string">&#x27;verify_email&#x27;</span>:<br>            <span class="hljs-keyword">return</span> HttpResponse(<span class="hljs-string">&quot;无效的验证类型&quot;</span>, status=<span class="hljs-number">400</span>)<br>        <br>        <span class="hljs-comment"># 更新用户邮箱验证状态</span><br>        <span class="hljs-comment"># User.objects.filter(id=user_id).update(email_verified=True)</span><br>        <br>        <span class="hljs-keyword">return</span> HttpResponse(<span class="hljs-string">&quot;邮箱验证成功！&quot;</span>)<br>        <br>    <span class="hljs-keyword">except</span> signing.SignatureExpired:<br>        <span class="hljs-keyword">return</span> HttpResponse(<span class="hljs-string">&quot;验证链接已过期，请重新发送验证邮件&quot;</span>, status=<span class="hljs-number">400</span>)<br>    <span class="hljs-keyword">except</span> signing.BadSignature:<br>        <span class="hljs-keyword">return</span> HttpResponse(<span class="hljs-string">&quot;无效的验证链接&quot;</span>, status=<span class="hljs-number">400</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="📊-性能考虑"><a href="#📊-性能考虑" class="headerlink" title="📊 性能考虑"></a>📊 性能考虑</h2><h3 id="时间复杂度"><a href="#时间复杂度" class="headerlink" title="时间复杂度"></a>时间复杂度</h3><ul>
+<li><strong>签名生成</strong>：O(n)，n为数据大小</li>
+<li><strong>签名验证</strong>：O(n)，n为数据大小</li>
+<li><strong>时间戳编码&#x2F;解码</strong>：O(1)</li>
+</ul>
+<h3 id="空间效率"><a href="#空间效率" class="headerlink" title="空间效率"></a>空间效率</h3><ul>
+<li><strong>Base62编码</strong>：比Base10更紧凑</li>
+<li><strong>压缩选项</strong>：大数据可以启用compress&#x3D;True</li>
+<li><strong>签名开销</strong>：固定大小的签名部分</li>
+</ul>
+<h3 id="缓存策略"><a href="#缓存策略" class="headerlink" title="缓存策略"></a>缓存策略</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 可以缓存经常验证的令牌结果</span><br><span class="hljs-keyword">from</span> django.core.cache <span class="hljs-keyword">import</span> cache<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">cached_verify_token</span>(<span class="hljs-params">token</span>):<br>    cache_key = <span class="hljs-string">f&quot;token_verify_<span class="hljs-subst">&#123;<span class="hljs-built_in">hash</span>(token)&#125;</span>&quot;</span><br>    result = cache.get(cache_key)<br>    <br>    <span class="hljs-keyword">if</span> result <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>        <span class="hljs-keyword">try</span>:<br>            result = signing.loads(token, max_age=<span class="hljs-number">3600</span>)<br>            cache.<span class="hljs-built_in">set</span>(cache_key, result, timeout=<span class="hljs-number">300</span>)  <span class="hljs-comment"># 缓存5分钟</span><br>        <span class="hljs-keyword">except</span> signing.BadSignature:<br>            result = <span class="hljs-literal">False</span><br>            cache.<span class="hljs-built_in">set</span>(cache_key, result, timeout=<span class="hljs-number">60</span>)   <span class="hljs-comment"># 缓存失败1分钟</span><br>    <br>    <span class="hljs-keyword">return</span> result<br></code></pre></td></tr></table></figure>
+
+<h2 id="🔍-调试技巧"><a href="#🔍-调试技巧" class="headerlink" title="🔍 调试技巧"></a>🔍 调试技巧</h2><h3 id="查看签名组成"><a href="#查看签名组成" class="headerlink" title="查看签名组成"></a>查看签名组成</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">debug_signature</span>(<span class="hljs-params">signed_value</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;调试签名组成部分&quot;&quot;&quot;</span><br>    parts = signed_value.split(<span class="hljs-string">&#x27;:&#x27;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;总共 <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(parts)&#125;</span> 部分:&quot;</span>)<br>    <br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(parts) &gt;= <span class="hljs-number">2</span>:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;数据部分: <span class="hljs-subst">&#123;parts[<span class="hljs-number">0</span>]&#125;</span>&quot;</span>)<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;最后部分(签名): <span class="hljs-subst">&#123;parts[-<span class="hljs-number">1</span>]&#125;</span>&quot;</span>)<br>        <br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(parts) == <span class="hljs-number">3</span>:<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;时间戳部分: <span class="hljs-subst">&#123;parts[<span class="hljs-number">1</span>]&#125;</span>&quot;</span>)<br>            <span class="hljs-keyword">from</span> django.utils <span class="hljs-keyword">import</span> baseconv<br>            timestamp = baseconv.base62.decode(parts[<span class="hljs-number">1</span>])<br>            <span class="hljs-keyword">import</span> datetime<br>            dt = datetime.datetime.fromtimestamp(timestamp)<br>            <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;生成时间: <span class="hljs-subst">&#123;dt&#125;</span>&quot;</span>)<br><br><span class="hljs-comment"># 使用示例</span><br>token = signing.dumps(<span class="hljs-string">&quot;hello world&quot;</span>)<br>debug_signature(token)<br></code></pre></td></tr></table></figure>
+
+<h3 id="测试不同场景"><a href="#测试不同场景" class="headerlink" title="测试不同场景"></a>测试不同场景</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">import</span> time<br><span class="hljs-keyword">from</span> django.core <span class="hljs-keyword">import</span> signing<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">test_signing_scenarios</span>():<br>    <span class="hljs-string">&quot;&quot;&quot;测试各种签名场景&quot;&quot;&quot;</span><br>    <br>    <span class="hljs-comment"># 测试基本签名</span><br>    signer = signing.Signer()<br>    simple_signed = signer.sign(<span class="hljs-string">&quot;test data&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;基本签名:&quot;</span>, simple_signed)<br>    <br>    <span class="hljs-comment"># 测试时间戳签名</span><br>    timestamp_signer = signing.TimestampSigner()<br>    time_signed = timestamp_signer.sign(<span class="hljs-string">&quot;test data&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;时间戳签名:&quot;</span>, time_signed)<br>    <br>    <span class="hljs-comment"># 测试复杂数据</span><br>    complex_data = &#123;<br>        <span class="hljs-string">&#x27;user_id&#x27;</span>: <span class="hljs-number">123</span>,<br>        <span class="hljs-string">&#x27;permissions&#x27;</span>: [<span class="hljs-string">&#x27;read&#x27;</span>, <span class="hljs-string">&#x27;write&#x27;</span>],<br>        <span class="hljs-string">&#x27;expires&#x27;</span>: <span class="hljs-string">&#x27;2024-12-31&#x27;</span><br>    &#125;<br>    complex_signed = signing.dumps(complex_data)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;复杂数据签名:&quot;</span>, complex_signed)<br>    <br>    <span class="hljs-comment"># 测试压缩</span><br>    large_data = <span class="hljs-built_in">list</span>(<span class="hljs-built_in">range</span>(<span class="hljs-number">100</span>))<br>    compressed = signing.dumps(large_data, compress=<span class="hljs-literal">True</span>)<br>    uncompressed = signing.dumps(large_data, compress=<span class="hljs-literal">False</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;压缩后长度: <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(compressed)&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;未压缩长度: <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(uncompressed)&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;压缩率: <span class="hljs-subst">&#123;<span class="hljs-built_in">len</span>(compressed)/<span class="hljs-built_in">len</span>(uncompressed)*<span class="hljs-number">100</span>:<span class="hljs-number">.1</span>f&#125;</span>%&quot;</span>)<br><br>test_signing_scenarios()<br></code></pre></td></tr></table></figure>
+
+<h2 id="🎯-总结"><a href="#🎯-总结" class="headerlink" title="🎯 总结"></a>🎯 总结</h2><p>Django的签名系统是一个精心设计的安全工具，具有以下特点：</p>
+<h3 id="✅-优势"><a href="#✅-优势" class="headerlink" title="✅ 优势"></a>✅ 优势</h3><ol>
+<li><strong>安全可靠</strong>：基于HMAC-SHA1，使用SECRET_KEY</li>
+<li><strong>使用简单</strong>：提供便利的dumps&#x2F;loads接口</li>
+<li><strong>功能完整</strong>：支持时间戳、压缩、自定义salt</li>
+<li><strong>性能良好</strong>：高效的编码和签名算法</li>
+<li><strong>应用广泛</strong>：CSRF、Session、密码重置等场景</li>
+</ol>
+<h3 id="⚠️-注意事项"><a href="#⚠️-注意事项" class="headerlink" title="⚠️ 注意事项"></a>⚠️ 注意事项</h3><ol>
+<li><strong>SECRET_KEY安全</strong>：必须保证SECRET_KEY的安全性</li>
+<li><strong>时间同步</strong>：服务器时间需要准确同步</li>
+<li><strong>过期处理</strong>：合理设置max_age参数</li>
+<li><strong>异常处理</strong>：正确处理签名异常</li>
+<li><strong>性能监控</strong>：大量签名操作需要性能监控</li>
+</ol>
+<h3 id="🔮-适用场景"><a href="#🔮-适用场景" class="headerlink" title="🔮 适用场景"></a>🔮 适用场景</h3><ul>
+<li>✅ 无状态令牌验证</li>
+<li>✅ 临时链接生成</li>
+<li>✅ 客户端数据存储</li>
+<li>✅ API认证令牌</li>
+<li>❌ 长期存储加密</li>
+<li>❌ 敏感数据加密</li>
+</ul>
+<p>Django签名系统为现代Web应用提供了强大的安全基础，是构建安全可靠应用的重要工具。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Django/" class="print-no-link">#Django</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Django 签名</div>
+      <div>https://luffy997.github.io/2025/07/01/Django-签名/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月1日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/02/Django%E5%88%86%E9%A1%B5%E5%99%A8-Paginator/" title="Django 分页器 Paginator">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Django 分页器 Paginator</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/01/Django-%E4%BF%A1%E5%8F%B7/" title="Django 信号">
+                        <span class="hidden-mobile">Django 信号</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

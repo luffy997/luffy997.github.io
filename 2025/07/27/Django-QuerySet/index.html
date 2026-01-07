@@ -1,0 +1,880 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="1. 概述Django QuerySet 是 Django ORM 的核心组件，实现了数据库查询的惰性加载机制。本文档基于 Django 1.11 版本的源码，深入分析 QuerySet 的实现原理。 1.1 文件位置 主要源码文件：django&#x2F;db&#x2F;models&#x2F;query.py 核心类：QuerySet、ModelIterable、RelatedPopulator  1.2 设计目标 惰性求">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django QuerySet">
+<meta property="og:url" content="https://luffy997.github.io/2025/07/27/Django-QuerySet/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="1. 概述Django QuerySet 是 Django ORM 的核心组件，实现了数据库查询的惰性加载机制。本文档基于 Django 1.11 版本的源码，深入分析 QuerySet 的实现原理。 1.1 文件位置 主要源码文件：django&#x2F;db&#x2F;models&#x2F;query.py 核心类：QuerySet、ModelIterable、RelatedPopulator  1.2 设计目标 惰性求">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s21.ax1x.com/2025/04/30/pEHJjt1.png">
+<meta property="article:published_time" content="2025-07-27T11:53:03.000Z">
+<meta property="article:modified_time" content="2026-01-07T14:33:32.901Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="Django">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s21.ax1x.com/2025/04/30/pEHJjt1.png">
+  
+  
+  
+  <title>Django QuerySet - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Django QuerySet"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-27 19:53" pubdate>
+          2025年7月27日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          3.5k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          30 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Django QuerySet</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><p>Django QuerySet 是 Django ORM 的核心组件，实现了数据库查询的惰性加载机制。本文档基于 Django 1.11 版本的源码，深入分析 QuerySet 的实现原理。</p>
+<h3 id="1-1-文件位置"><a href="#1-1-文件位置" class="headerlink" title="1.1 文件位置"></a>1.1 文件位置</h3><ul>
+<li>主要源码文件：<code>django/db/models/query.py</code></li>
+<li>核心类：<code>QuerySet</code>、<code>ModelIterable</code>、<code>RelatedPopulator</code></li>
+</ul>
+<h3 id="1-2-设计目标"><a href="#1-2-设计目标" class="headerlink" title="1.2 设计目标"></a>1.2 设计目标</h3><ul>
+<li><strong>惰性求值</strong>：只有在真正需要数据时才执行数据库查询</li>
+<li><strong>链式操作</strong>：支持方法链调用，保持代码简洁</li>
+<li><strong>结果缓存</strong>：避免重复的数据库查询</li>
+<li><strong>内存优化</strong>：支持大数据集的高效处理</li>
+</ul>
+<h2 id="2-QuerySet-惰性加载机制"><a href="#2-QuerySet-惰性加载机制" class="headerlink" title="2. QuerySet 惰性加载机制"></a>2. QuerySet 惰性加载机制</h2><h3 id="2-1-整体流程图"><a href="#2-1-整体流程图" class="headerlink" title="2.1 整体流程图"></a>2.1 整体流程图</h3><pre><code class=" mermaid">flowchart TD
+    A[&quot;创建 QuerySet&quot;] --&gt; B&#123;&quot;是否有过滤/排序操作?&quot;&#125;
+    B --&gt;|是| C[&quot;链式操作创建新 QuerySet&quot;]
+    B --&gt;|否| D[&quot;QuerySet 对象准备完成&quot;]
+    C --&gt; D
+    D --&gt; E&#123;&quot;是否触发求值操作?&quot;&#125;
+    E --&gt;|否| F[&quot;保持惰性状态&lt;br/&gt;_result_cache = None&quot;]
+    E --&gt;|是| G[&quot;检查 _result_cache&quot;]
+    G --&gt; H&#123;&quot;缓存是否为空?&quot;&#125;
+    H --&gt;|否| I[&quot;直接返回缓存结果&quot;]
+    H --&gt;|是| J[&quot;执行 _fetch_all&quot;]
+    J --&gt; K[&quot;创建 SQL 编译器&quot;]
+    K --&gt; L[&quot;执行数据库查询&quot;]
+    L --&gt; M[&quot;创建模型实例&quot;]
+    M --&gt; N[&quot;处理关联对象&quot;]
+    N --&gt; O[&quot;存储到 _result_cache&quot;]
+    O --&gt; P[&quot;返回结果&quot;]
+    
+    F --&gt; E
+    
+    style A fill:#e1f5fe
+    style F fill:#fff3e0
+    style P fill:#e8f5e8
+    style L fill:#ffebee
+</code></pre>
+
+<h3 id="2-2-惰性加载的核心原理"><a href="#2-2-惰性加载的核心原理" class="headerlink" title="2.2 惰性加载的核心原理"></a>2.2 惰性加载的核心原理</h3><p>惰性加载通过以下几个关键机制实现：</p>
+<ol>
+<li><strong>延迟执行</strong>：QuerySet 创建时不执行数据库查询</li>
+<li><strong>结果缓存</strong>：<code>_result_cache</code> 属性控制查询的执行和缓存</li>
+<li><strong>触发机制</strong>：特定操作触发实际的数据库查询</li>
+</ol>
+<h2 id="3-核心类和方法分析"><a href="#3-核心类和方法分析" class="headerlink" title="3. 核心类和方法分析"></a>3. 核心类和方法分析</h2><h3 id="3-1-QuerySet-类初始化"><a href="#3-1-QuerySet-类初始化" class="headerlink" title="3.1 QuerySet 类初始化"></a>3.1 QuerySet 类初始化</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">QuerySet</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, model=<span class="hljs-literal">None</span>, query=<span class="hljs-literal">None</span>, using=<span class="hljs-literal">None</span>, hints=<span class="hljs-literal">None</span></span>):<br>        <span class="hljs-variable language_">self</span>.model = model<br>        <span class="hljs-variable language_">self</span>._db = using<br>        <span class="hljs-variable language_">self</span>._hints = hints <span class="hljs-keyword">or</span> &#123;&#125;<br>        <span class="hljs-variable language_">self</span>.query = query <span class="hljs-keyword">or</span> sql.Query(<span class="hljs-variable language_">self</span>.model)<br>        <span class="hljs-variable language_">self</span>._result_cache = <span class="hljs-literal">None</span>  <span class="hljs-comment"># 🔑 关键：结果缓存初始为 None</span><br>        <span class="hljs-variable language_">self</span>._sticky_filter = <span class="hljs-literal">False</span><br>        <span class="hljs-variable language_">self</span>._for_write = <span class="hljs-literal">False</span><br>        <span class="hljs-variable language_">self</span>._prefetch_related_lookups = ()<br>        <span class="hljs-variable language_">self</span>._prefetch_done = <span class="hljs-literal">False</span><br>        <span class="hljs-variable language_">self</span>._known_related_objects = &#123;&#125;<br>        <span class="hljs-variable language_">self</span>._iterable_class = ModelIterable<br>        <span class="hljs-variable language_">self</span>._fields = <span class="hljs-literal">None</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>关键点分析</strong>：</p>
+<ul>
+<li><code>_result_cache = None</code>：这是惰性加载的核心，只有在真正需要数据时才会填充</li>
+<li><code>query</code> 对象：封装了 SQL 查询逻辑，但不立即执行</li>
+<li><code>_iterable_class</code>：定义了如何将数据库行转换为模型实例</li>
+</ul>
+<h3 id="3-2-链式操作机制"><a href="#3-2-链式操作机制" class="headerlink" title="3.2 链式操作机制"></a>3.2 链式操作机制</h3><pre><code class=" mermaid">flowchart LR
+    A[&quot;User.objects&quot;] --&gt; B[&quot;.filter age__gt=18&quot;]
+    B --&gt; C[&quot;新 QuerySet 1&lt;br/&gt;仍然惰性&quot;]
+    C --&gt; D[&quot;.filter name__startswith=&#x27;A&#x27;&quot;]
+    D --&gt; E[&quot;新 QuerySet 2&lt;br/&gt;仍然惰性&quot;]
+    E --&gt; F[&quot;.order_by &#x27;id&#x27;&quot;]
+    F --&gt; G[&quot;新 QuerySet 3&lt;br/&gt;仍然惰性&quot;]
+    G --&gt; H[&quot;触发求值操作&lt;br/&gt;如 list, len, for循环&quot;]
+    H --&gt; I[&quot;执行数据库查询&quot;]
+    
+    style A fill:#e3f2fd
+    style C fill:#fff3e0
+    style E fill:#fff3e0
+    style G fill:#fff3e0
+    style I fill:#ffebee
+</code></pre>
+
+<h4 id="filter-方法实现"><a href="#filter-方法实现" class="headerlink" title="filter 方法实现"></a>filter 方法实现</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">filter</span>(<span class="hljs-params">self, *args, **kwargs</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;返回新的 QuerySet 实例，不执行查询&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._filter_or_exclude(<span class="hljs-literal">False</span>, *args, **kwargs)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">_filter_or_exclude</span>(<span class="hljs-params">self, negate, *args, **kwargs</span>):<br>    clone = <span class="hljs-variable language_">self</span>._clone()  <span class="hljs-comment"># 🔑 克隆当前 QuerySet</span><br>    <span class="hljs-keyword">if</span> negate:<br>        clone.query.add_q(~Q(*args, **kwargs))<br>    <span class="hljs-keyword">else</span>:<br>        clone.query.add_q(Q(*args, **kwargs))<br>    <span class="hljs-keyword">return</span> clone  <span class="hljs-comment"># 返回新的 QuerySet，仍然惰性</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>设计要点</strong>：</p>
+<ul>
+<li>每个过滤操作都返回新的 QuerySet 对象</li>
+<li>原始 QuerySet 保持不变（不可变性）</li>
+<li>新 QuerySet 的 <code>_result_cache</code> 仍然为 <code>None</code></li>
+</ul>
+<h3 id="3-3-触发求值的操作"><a href="#3-3-触发求值的操作" class="headerlink" title="3.3 触发求值的操作"></a>3.3 触发求值的操作</h3><pre><code class=" mermaid">flowchart TD
+    A[&quot;QuerySet 对象&lt;br/&gt;_result_cache = None&quot;] --&gt; B&#123;&quot;触发方式&quot;&#125;
+    
+    B --&gt;|迭代| C[&quot;for item in qs:&lt;br/&gt;__iter__&quot;]
+    B --&gt;|长度| D[&quot;len qs&lt;br/&gt;__len__&quot;]
+    B --&gt;|布尔值| E[&quot;if qs:&lt;br/&gt;__bool__&quot;]
+    B --&gt;|索引访问| F[&quot;qs[0]&lt;br/&gt;__getitem__&quot;]
+    B --&gt;|列表转换| G[&quot;list qs&quot;]
+    B --&gt;|计数| H[&quot;qs.count&quot;]
+    B --&gt;|存在性检查| I[&quot;qs.exists&quot;]
+    
+    C --&gt; J[&quot;调用 _fetch_all&quot;]
+    D --&gt; J
+    E --&gt; J
+    F --&gt; K&#123;&quot;是否有缓存?&quot;&#125;
+    G --&gt; J
+    H --&gt; L[&quot;直接执行 COUNT 查询&quot;]
+    I --&gt; M[&quot;执行 EXISTS 查询&quot;]
+    
+    K --&gt;|有| N[&quot;直接返回缓存结果&quot;]
+    K --&gt;|无| O[&quot;创建限制查询&quot;]
+    
+    J --&gt; P[&quot;执行完整查询&lt;br/&gt;填充 _result_cache&quot;]
+    O --&gt; Q[&quot;执行单条/切片查询&quot;]
+    
+    style A fill:#e1f5fe
+    style J fill:#fff3e0
+    style P fill:#e8f5e8
+    style L fill:#e8f5e8
+    style M fill:#e8f5e8
+</code></pre>
+
+<h4 id="关键方法实现"><a href="#关键方法实现" class="headerlink" title="关键方法实现"></a>关键方法实现</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__iter__</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;迭代器协议实现&quot;&quot;&quot;</span><br>    <span class="hljs-variable language_">self</span>._fetch_all()  <span class="hljs-comment"># 🔑 触发实际的数据库查询</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">iter</span>(<span class="hljs-variable language_">self</span>._result_cache)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">__len__</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;长度计算&quot;&quot;&quot;</span><br>    <span class="hljs-variable language_">self</span>._fetch_all()<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">len</span>(<span class="hljs-variable language_">self</span>._result_cache)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">__bool__</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;布尔值判断&quot;&quot;&quot;</span><br>    <span class="hljs-variable language_">self</span>._fetch_all()<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">bool</span>(<span class="hljs-variable language_">self</span>._result_cache)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">__getitem__</span>(<span class="hljs-params">self, k</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;索引/切片访问&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._result_cache <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>:<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._result_cache[k]  <span class="hljs-comment"># 如果已有缓存，直接返回</span><br>    <br>    <span class="hljs-comment"># 切片操作：创建新 QuerySet 而不是执行查询</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">isinstance</span>(k, <span class="hljs-built_in">slice</span>):<br>        qs = <span class="hljs-variable language_">self</span>._clone()<br>        qs.query.set_limits(k.start, k.stop)<br>        <span class="hljs-keyword">return</span> <span class="hljs-built_in">list</span>(qs)[::k.step] <span class="hljs-keyword">if</span> k.step <span class="hljs-keyword">else</span> qs<br>    <br>    <span class="hljs-comment"># 单个元素访问</span><br>    qs = <span class="hljs-variable language_">self</span>._clone()<br>    qs.query.set_limits(k, k + <span class="hljs-number">1</span>)<br>    <span class="hljs-keyword">return</span> <span class="hljs-built_in">list</span>(qs)[<span class="hljs-number">0</span>]<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-4-fetch-all-核心方法"><a href="#3-4-fetch-all-核心方法" class="headerlink" title="3.4 _fetch_all 核心方法"></a>3.4 _fetch_all 核心方法</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_fetch_all</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;惰性加载的核心实现&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._result_cache <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:  <span class="hljs-comment"># 🔑 只有缓存为空时才执行查询</span><br>        <span class="hljs-variable language_">self</span>._result_cache = <span class="hljs-built_in">list</span>(<span class="hljs-variable language_">self</span>._iterable_class(<span class="hljs-variable language_">self</span>))<br>    <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._prefetch_related_lookups <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>._prefetch_done:<br>        <span class="hljs-variable language_">self</span>._prefetch_related_objects()<br></code></pre></td></tr></table></figure>
+
+<h4 id="执行流程时序图"><a href="#执行流程时序图" class="headerlink" title="执行流程时序图"></a>执行流程时序图</h4><pre><code class=" mermaid">sequenceDiagram
+    participant User as &quot;用户代码&quot;
+    participant QS as &quot;QuerySet&quot;
+    participant Iter as &quot;ModelIterable&quot;
+    participant Comp as &quot;SQL Compiler&quot;
+    participant DB as &quot;数据库&quot;
+    participant Model as &quot;Model 实例&quot;
+
+    User-&gt;&gt;QS: &quot;触发求值操作 如 for 循环&quot;
+    QS-&gt;&gt;QS: &quot;检查 _result_cache&quot;
+    
+    alt &quot;_result_cache 为 None&quot;
+        QS-&gt;&gt;QS: &quot;调用 _fetch_all&quot;
+        QS-&gt;&gt;Iter: &quot;创建 ModelIterable&quot;
+        Iter-&gt;&gt;Comp: &quot;query.get_compiler&quot;
+        Comp-&gt;&gt;DB: &quot;execute_sql&quot;
+        DB--&gt;&gt;Comp: &quot;返回原始数据行&quot;
+        
+        loop &quot;处理每一行数据&quot;
+            Comp-&gt;&gt;Model: &quot;model_cls.from_db&quot;
+            Model--&gt;&gt;Comp: &quot;返回模型实例&quot;
+            Comp-&gt;&gt;Comp: &quot;处理关联对象和注解&quot;
+        end
+        
+        Iter--&gt;&gt;QS: &quot;返回模型实例列表&quot;
+        QS-&gt;&gt;QS: &quot;存储到 _result_cache&quot;
+    else &quot;_result_cache 已存在&quot;
+        QS-&gt;&gt;QS: &quot;直接使用缓存&quot;
+    end
+    
+    QS--&gt;&gt;User: &quot;返回结果&quot;
+</code></pre>
+
+<h3 id="3-5-ModelIterable-类分析"><a href="#3-5-ModelIterable-类分析" class="headerlink" title="3.5 ModelIterable 类分析"></a>3.5 ModelIterable 类分析</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">ModelIterable</span>(<span class="hljs-title class_ inherited__">BaseIterable</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;为每一行生成一个模型实例&quot;&quot;&quot;</span><br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__iter__</span>(<span class="hljs-params">self</span>):<br>        queryset = <span class="hljs-variable language_">self</span>.queryset<br>        db = queryset.db<br>        compiler = queryset.query.get_compiler(using=db)<br>        <br>        <span class="hljs-comment"># 执行查询，这里才真正访问数据库</span><br>        results = compiler.execute_sql(chunked_fetch=<span class="hljs-variable language_">self</span>.chunked_fetch)<br>        <br>        <span class="hljs-comment"># 获取选择字段、类信息等</span><br>        select, klass_info, annotation_col_map = (<br>            compiler.select, compiler.klass_info, compiler.annotation_col_map<br>        )<br>        model_cls = klass_info[<span class="hljs-string">&#x27;model&#x27;</span>]<br>        select_fields = klass_info[<span class="hljs-string">&#x27;select_fields&#x27;</span>]<br>        model_fields_start, model_fields_end = select_fields[<span class="hljs-number">0</span>], select_fields[-<span class="hljs-number">1</span>] + <span class="hljs-number">1</span><br>        init_list = [f[<span class="hljs-number">0</span>].target.attname<br>                     <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> select[model_fields_start:model_fields_end]]<br>        <br>        <span class="hljs-comment"># 获取关联对象填充器</span><br>        related_populators = get_related_populators(klass_info, select, db)<br>        <br>        <span class="hljs-comment"># 逐行处理结果，创建模型实例</span><br>        <span class="hljs-keyword">for</span> row <span class="hljs-keyword">in</span> compiler.results_iter(results):<br>            obj = model_cls.from_db(db, init_list, row[model_fields_start:model_fields_end])<br>            <br>            <span class="hljs-comment"># 处理关联对象</span><br>            <span class="hljs-keyword">if</span> related_populators:<br>                <span class="hljs-keyword">for</span> rel_populator <span class="hljs-keyword">in</span> related_populators:<br>                    rel_populator.populate(row, obj)<br>                    <br>            <span class="hljs-comment"># 处理注解字段</span><br>            <span class="hljs-keyword">if</span> annotation_col_map:<br>                <span class="hljs-keyword">for</span> attr_name, col_pos <span class="hljs-keyword">in</span> annotation_col_map.items():<br>                    <span class="hljs-built_in">setattr</span>(obj, attr_name, row[col_pos])<br><br>            <span class="hljs-comment"># 处理已知的关联对象</span><br>            <span class="hljs-keyword">if</span> queryset._known_related_objects:<br>                <span class="hljs-keyword">for</span> field, rel_objs <span class="hljs-keyword">in</span> queryset._known_related_objects.items():<br>                    <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(obj, field.get_cache_name()):<br>                        <span class="hljs-keyword">continue</span><br>                    pk = <span class="hljs-built_in">getattr</span>(obj, field.get_attname())<br>                    <span class="hljs-keyword">try</span>:<br>                        rel_obj = rel_objs[pk]<br>                    <span class="hljs-keyword">except</span> KeyError:<br>                        <span class="hljs-keyword">pass</span><br>                    <span class="hljs-keyword">else</span>:<br>                        <span class="hljs-built_in">setattr</span>(obj, field.name, rel_obj)<br><br>            <span class="hljs-keyword">yield</span> obj  <span class="hljs-comment"># 🔑 生成器模式，逐个返回对象</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>关键特性</strong>：</p>
+<ul>
+<li>使用生成器模式，内存效率高</li>
+<li>支持分块获取数据（<code>chunked_fetch</code>）</li>
+<li>自动处理关联对象和注解字段</li>
+</ul>
+<h2 id="4-流程图详解"><a href="#4-流程图详解" class="headerlink" title="4. 流程图详解"></a>4. 流程图详解</h2><h3 id="4-1-QuerySet-状态变化"><a href="#4-1-QuerySet-状态变化" class="headerlink" title="4.1 QuerySet 状态变化"></a>4.1 QuerySet 状态变化</h3><pre><code class=" mermaid">stateDiagram-v2
+    [*] --&gt; Created: &quot;创建 QuerySet&quot;
+    Created --&gt; Filtered: &quot;添加过滤条件&quot;
+    Filtered --&gt; Filtered: &quot;链式操作&quot;
+    Filtered --&gt; Evaluated: &quot;触发求值&quot;
+    Created --&gt; Evaluated: &quot;直接求值&quot;
+    Evaluated --&gt; Cached: &quot;结果已缓存&quot;
+    Cached --&gt; Cached: &quot;重复访问缓存&quot;
+    
+    note right of Created
+        &quot;_result_cache = None&lt;br/&gt;query 对象已创建&quot;
+    end note
+    
+    note right of Filtered
+        &quot;仍然 _result_cache = None&lt;br/&gt;query 对象被修改&quot;
+    end note
+    
+    note right of Evaluated
+        &quot;执行数据库查询&lt;br/&gt;_fetch_all 被调用&quot;
+    end note
+    
+    note right of Cached
+        &quot;_result_cache 包含结果&lt;br/&gt;后续访问无需查询数据库&quot;
+    end note
+</code></pre>
+
+<h3 id="4-2-内存使用优化策略"><a href="#4-2-内存使用优化策略" class="headerlink" title="4.2 内存使用优化策略"></a>4.2 内存使用优化策略</h3><pre><code class=" mermaid">flowchart TD
+    A[&quot;大量数据查询&quot;] --&gt; B&#123;&quot;选择迭代方式&quot;&#125;
+    
+    B --&gt;|&quot;使用 QuerySet 直接迭代&quot;| C[&quot;list qs&lt;br/&gt;加载所有数据到内存&quot;]
+    B --&gt;|&quot;使用 iterator&quot;| D[&quot;qs.iterator&lt;br/&gt;逐条获取，低内存占用&quot;]
+    B --&gt;|&quot;使用 批量处理&quot;| E[&quot;分批处理&lt;br/&gt;batch_size 参数&quot;]
+    
+    C --&gt; F[&quot;高内存使用&lt;br/&gt;适合小数据集&quot;]
+    D --&gt; G[&quot;低内存使用&lt;br/&gt;适合大数据集&lt;br/&gt;但不能重复迭代&quot;]
+    E --&gt; H[&quot;平衡内存和性能&lt;br/&gt;可控制批次大小&quot;]
+    
+    style C fill:#ffebee
+    style D fill:#e8f5e8
+    style E fill:#fff3e0
+</code></pre>
+
+<h2 id="5-性能优化机制"><a href="#5-性能优化机制" class="headerlink" title="5. 性能优化机制"></a>5. 性能优化机制</h2><h3 id="5-1-select-related-优化"><a href="#5-1-select-related-优化" class="headerlink" title="5.1 select_related 优化"></a>5.1 select_related 优化</h3><pre><code class=" mermaid">flowchart TD
+    A[&quot;QuerySet.select_related &#x27;foreign_key&#x27;&quot;] --&gt; B[&quot;修改 SQL 查询添加 JOIN&quot;]
+    B --&gt; C[&quot;执行单次数据库查询&quot;]
+    C --&gt; D[&quot;获取包含关联数据的结果行&quot;]
+    D --&gt; E[&quot;创建主模型实例&quot;]
+    E --&gt; F[&quot;RelatedPopulator.populate&quot;]
+    F --&gt; G[&quot;从同一行数据创建关联对象&quot;]
+    G --&gt; H[&quot;设置对象间的关联关系&quot;]
+    H --&gt; I[&quot;避免额外的数据库查询&quot;]
+    
+    J[&quot;不使用 select_related&quot;] --&gt; K[&quot;创建主模型实例&quot;]
+    K --&gt; L[&quot;访问关联属性时&quot;]
+    L --&gt; M[&quot;触发额外的数据库查询&quot;]
+    M --&gt; N[&quot;N+1 查询问题&quot;]
+    
+    style A fill:#e8f5e8
+    style I fill:#e8f5e8
+    style N fill:#ffebee
+</code></pre>
+
+<h4 id="RelatedPopulator-类实现"><a href="#RelatedPopulator-类实现" class="headerlink" title="RelatedPopulator 类实现"></a>RelatedPopulator 类实现</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">RelatedPopulator</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    RelatedPopulator 用于 select_related 对象实例化。</span><br><span class="hljs-string">    </span><br><span class="hljs-string">    思路是每个 select_related 模型都由不同的 RelatedPopulator 实例填充。</span><br><span class="hljs-string">    RelatedPopulator 实例获取 klass_info 和 select（在 SQLCompiler 中计算）</span><br><span class="hljs-string">    以及使用的数据库作为初始化输入。</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, klass_info, select, db</span>):<br>        <span class="hljs-variable language_">self</span>.db = db<br>        <span class="hljs-comment"># 预计算需要的属性</span><br>        select_fields = klass_info[<span class="hljs-string">&#x27;select_fields&#x27;</span>]<br>        from_parent = klass_info[<span class="hljs-string">&#x27;from_parent&#x27;</span>]<br>        <br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> from_parent:<br>            <span class="hljs-comment"># 简单情况：字段顺序与 __init__ 期望的顺序相同</span><br>            <span class="hljs-variable language_">self</span>.cols_start = select_fields[<span class="hljs-number">0</span>]<br>            <span class="hljs-variable language_">self</span>.cols_end = select_fields[-<span class="hljs-number">1</span>] + <span class="hljs-number">1</span><br>            <span class="hljs-variable language_">self</span>.init_list = [<br>                f[<span class="hljs-number">0</span>].target.attname <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> select[<span class="hljs-variable language_">self</span>.cols_start:<span class="hljs-variable language_">self</span>.cols_end]<br>            ]<br>            <span class="hljs-variable language_">self</span>.reorder_for_init = <span class="hljs-literal">None</span><br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-comment"># 复杂情况：需要重新排序字段数据</span><br>            model_init_attnames = [<br>                f.attname <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> klass_info[<span class="hljs-string">&#x27;model&#x27;</span>]._meta.concrete_fields<br>            ]<br>            reorder_map = []<br>            <span class="hljs-keyword">for</span> idx <span class="hljs-keyword">in</span> select_fields:<br>                field = select[idx][<span class="hljs-number">0</span>].target<br>                init_pos = model_init_attnames.index(field.attname)<br>                reorder_map.append((init_pos, field.attname, idx))<br>            reorder_map.sort()<br>            <span class="hljs-variable language_">self</span>.init_list = [v[<span class="hljs-number">1</span>] <span class="hljs-keyword">for</span> v <span class="hljs-keyword">in</span> reorder_map]<br>            pos_list = [row_pos <span class="hljs-keyword">for</span> _, _, row_pos <span class="hljs-keyword">in</span> reorder_map]<br><br>            <span class="hljs-keyword">def</span> <span class="hljs-title function_">reorder_for_init</span>(<span class="hljs-params">row</span>):<br>                <span class="hljs-keyword">return</span> [row[row_pos] <span class="hljs-keyword">for</span> row_pos <span class="hljs-keyword">in</span> pos_list]<br>            <span class="hljs-variable language_">self</span>.reorder_for_init = reorder_for_init<br><br>        <span class="hljs-variable language_">self</span>.model_cls = klass_info[<span class="hljs-string">&#x27;model&#x27;</span>]<br>        <span class="hljs-variable language_">self</span>.pk_idx = <span class="hljs-variable language_">self</span>.init_list.index(<span class="hljs-variable language_">self</span>.model_cls._meta.pk.attname)<br>        <span class="hljs-variable language_">self</span>.related_populators = get_related_populators(klass_info, select, <span class="hljs-variable language_">self</span>.db)<br>        <br>        <span class="hljs-comment"># 设置缓存名称</span><br>        field = klass_info[<span class="hljs-string">&#x27;field&#x27;</span>]<br>        reverse = klass_info[<span class="hljs-string">&#x27;reverse&#x27;</span>]<br>        <span class="hljs-variable language_">self</span>.reverse_cache_name = <span class="hljs-literal">None</span><br>        <span class="hljs-keyword">if</span> reverse:<br>            <span class="hljs-variable language_">self</span>.cache_name = field.remote_field.get_cache_name()<br>            <span class="hljs-variable language_">self</span>.reverse_cache_name = field.get_cache_name()<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-variable language_">self</span>.cache_name = field.get_cache_name()<br>            <span class="hljs-keyword">if</span> field.unique:<br>                <span class="hljs-variable language_">self</span>.reverse_cache_name = field.remote_field.get_cache_name()<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">populate</span>(<span class="hljs-params">self, row, from_obj</span>):<br>        <span class="hljs-string">&quot;&quot;&quot;从数据库行填充关联对象&quot;&quot;&quot;</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.reorder_for_init:<br>            obj_data = <span class="hljs-variable language_">self</span>.reorder_for_init(row)<br>        <span class="hljs-keyword">else</span>:<br>            obj_data = row[<span class="hljs-variable language_">self</span>.cols_start:<span class="hljs-variable language_">self</span>.cols_end]<br>            <br>        <span class="hljs-keyword">if</span> obj_data[<span class="hljs-variable language_">self</span>.pk_idx] <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>            obj = <span class="hljs-literal">None</span><br>        <span class="hljs-keyword">else</span>:<br>            obj = <span class="hljs-variable language_">self</span>.model_cls.from_db(<span class="hljs-variable language_">self</span>.db, <span class="hljs-variable language_">self</span>.init_list, obj_data)<br>            <br>        <span class="hljs-comment"># 递归处理嵌套的关联对象</span><br>        <span class="hljs-keyword">if</span> obj <span class="hljs-keyword">and</span> <span class="hljs-variable language_">self</span>.related_populators:<br>            <span class="hljs-keyword">for</span> rel_iter <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.related_populators:<br>                rel_iter.populate(row, obj)<br>                <br>        <span class="hljs-comment"># 设置关联对象到主对象上</span><br>        <span class="hljs-built_in">setattr</span>(from_obj, <span class="hljs-variable language_">self</span>.cache_name, obj)<br>        <span class="hljs-keyword">if</span> obj <span class="hljs-keyword">and</span> <span class="hljs-variable language_">self</span>.reverse_cache_name:<br>            <span class="hljs-built_in">setattr</span>(obj, <span class="hljs-variable language_">self</span>.reverse_cache_name, from_obj)<br></code></pre></td></tr></table></figure>
+
+<h3 id="5-2-prefetch-related-机制"><a href="#5-2-prefetch-related-机制" class="headerlink" title="5.2 prefetch_related 机制"></a>5.2 prefetch_related 机制</h3><p>prefetch_related 通过单独的查询来获取关联对象，然后在 Python 中进行关联：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">prefetch_related_objects</span>(<span class="hljs-params">model_instances, *related_lookups</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;</span><br><span class="hljs-string">    为模型实例列表填充预取的对象缓存，基于给定的查找/Prefetch 实例。</span><br><span class="hljs-string">    &quot;&quot;&quot;</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">len</span>(model_instances) == <span class="hljs-number">0</span>:<br>        <span class="hljs-keyword">return</span>  <span class="hljs-comment"># 没有什么可做的</span><br><br>    related_lookups = normalize_prefetch_lookups(related_lookups)<br>    <br>    <span class="hljs-comment"># 需要能够动态添加到我们查找的 prefetch_related 查找列表中</span><br>    done_queries = &#123;&#125;    <span class="hljs-comment"># 类似 &#x27;foo__bar&#x27;: [results] 的字典</span><br>    auto_lookups = <span class="hljs-built_in">set</span>()  <span class="hljs-comment"># 我们在进行过程中添加到这里</span><br>    followed_descriptors = <span class="hljs-built_in">set</span>()  <span class="hljs-comment"># 递归保护</span><br><br>    all_lookups = deque(related_lookups)<br>    <span class="hljs-keyword">while</span> all_lookups:<br>        lookup = all_lookups.popleft()<br>        <span class="hljs-keyword">if</span> lookup.prefetch_to <span class="hljs-keyword">in</span> done_queries:<br>            <span class="hljs-keyword">if</span> lookup.queryset:<br>                <span class="hljs-keyword">raise</span> ValueError(<span class="hljs-string">&quot;&#x27;%s&#x27; lookup was already seen with a different queryset. &quot;</span><br>                                 <span class="hljs-string">&quot;You may need to adjust the ordering of your lookups.&quot;</span> % lookup.prefetch_to)<br>            <span class="hljs-keyword">continue</span><br><br>        <span class="hljs-comment"># 顶层，要装饰的对象列表是主 QuerySet 的结果缓存</span><br>        obj_list = model_instances<br>        <br>        <span class="hljs-comment"># 处理查找路径的每个部分</span><br>        through_attrs = lookup.prefetch_through.split(LOOKUP_SEP)<br>        <span class="hljs-keyword">for</span> level, through_attr <span class="hljs-keyword">in</span> <span class="hljs-built_in">enumerate</span>(through_attrs):<br>            <span class="hljs-comment"># ... 复杂的预取逻辑</span><br>            <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="6-实战案例分析"><a href="#6-实战案例分析" class="headerlink" title="6. 实战案例分析"></a>6. 实战案例分析</h2><h3 id="6-1-基础用法示例"><a href="#6-1-基础用法示例" class="headerlink" title="6.1 基础用法示例"></a>6.1 基础用法示例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 示例模型</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">User</span>(models.Model):<br>    name = models.CharField(max_length=<span class="hljs-number">100</span>)<br>    age = models.IntegerField()<br><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">Post</span>(models.Model):<br>    title = models.CharField(max_length=<span class="hljs-number">200</span>)<br>    author = models.ForeignKey(User, on_delete=models.CASCADE)<br><br><span class="hljs-comment"># 惰性加载示例</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">lazy_loading_example</span>():<br>    <span class="hljs-comment"># 1. 创建 QuerySet - 惰性的，不执行查询</span><br>    qs = User.objects.<span class="hljs-built_in">filter</span>(age__gt=<span class="hljs-number">18</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;QuerySet 已创建，但未执行查询&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;QuerySet._result_cache: <span class="hljs-subst">&#123;qs._result_cache&#125;</span>&quot;</span>)  <span class="hljs-comment"># None</span><br>    <br>    <span class="hljs-comment"># 2. 链式操作 - 仍然惰性的</span><br>    qs = qs.<span class="hljs-built_in">filter</span>(name__startswith=<span class="hljs-string">&#x27;A&#x27;</span>).order_by(<span class="hljs-string">&#x27;id&#x27;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;添加了更多过滤条件，仍未执行查询&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;QuerySet._result_cache: <span class="hljs-subst">&#123;qs._result_cache&#125;</span>&quot;</span>)  <span class="hljs-comment"># 仍然是 None</span><br>    <br>    <span class="hljs-comment"># 3. 触发求值的操作</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;现在开始执行查询...&quot;</span>)<br>    <br>    <span class="hljs-comment"># 方式1：迭代触发</span><br>    <span class="hljs-keyword">for</span> user <span class="hljs-keyword">in</span> qs:  <span class="hljs-comment"># 这里触发 __iter__ -&gt; _fetch_all</span><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;User: <span class="hljs-subst">&#123;user.name&#125;</span>&quot;</span>)<br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;QuerySet._result_cache: <span class="hljs-subst">&#123;qs._result_cache <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span>&#125;</span>&quot;</span>)  <span class="hljs-comment"># True</span><br>    <br>    <span class="hljs-comment"># 方式2：长度计算触发（使用缓存，不会重新查询）</span><br>    count = <span class="hljs-built_in">len</span>(qs)  <span class="hljs-comment"># 使用已缓存的结果</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;Count: <span class="hljs-subst">&#123;count&#125;</span>&quot;</span>)<br>    <br>    <span class="hljs-comment"># 方式3：布尔值判断（使用缓存）</span><br>    <span class="hljs-keyword">if</span> qs:  <span class="hljs-comment"># 使用已缓存的结果</span><br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;有数据&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-2-性能优化示例"><a href="#6-2-性能优化示例" class="headerlink" title="6.2 性能优化示例"></a>6.2 性能优化示例</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">optimization_examples</span>():<br>    <span class="hljs-comment"># ❌ N+1 查询问题</span><br>    posts = Post.objects.<span class="hljs-built_in">all</span>()<br>    <span class="hljs-keyword">for</span> post <span class="hljs-keyword">in</span> posts:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;post.title&#125;</span> by <span class="hljs-subst">&#123;post.author.name&#125;</span>&quot;</span>)  <span class="hljs-comment"># 每次都查询数据库</span><br>    <br>    <span class="hljs-comment"># ✅ 使用 select_related 优化 实现原理就是把user和book进行inner join了</span><br>    posts = Post.objects.select_related(<span class="hljs-string">&#x27;author&#x27;</span>).<span class="hljs-built_in">all</span>()<br>    <span class="hljs-keyword">for</span> post <span class="hljs-keyword">in</span> posts:<br>        <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;<span class="hljs-subst">&#123;post.title&#125;</span> by <span class="hljs-subst">&#123;post.author.name&#125;</span>&quot;</span>)  <span class="hljs-comment"># 只查询一次数据库</span><br>    <br>    <span class="hljs-comment"># ✅ 大数据集的内存优化</span><br>    <span class="hljs-comment"># 方式1：使用 iterator，低内存占用</span><br>    <span class="hljs-keyword">for</span> user <span class="hljs-keyword">in</span> User.objects.<span class="hljs-built_in">all</span>().iterator():<br>        process_user(user)<br>    <br>    <span class="hljs-comment"># 方式2：分批处理</span><br>    batch_size = <span class="hljs-number">1000</span><br>    <span class="hljs-keyword">for</span> user <span class="hljs-keyword">in</span> User.objects.<span class="hljs-built_in">all</span>().iterator(chunk_size=batch_size):<br>        process_user(user)<br></code></pre></td></tr></table></figure>
+
+<h3 id="6-3-切片操作的惰性特性"><a href="#6-3-切片操作的惰性特性" class="headerlink" title="6.3 切片操作的惰性特性"></a>6.3 切片操作的惰性特性</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">slicing_examples</span>():<br>    <span class="hljs-comment"># 切片操作仍然保持惰性</span><br>    qs = User.objects.<span class="hljs-built_in">filter</span>(age__gt=<span class="hljs-number">18</span>)<br>    <br>    <span class="hljs-comment"># 获取前10个用户 - 创建新的 QuerySet，添加 LIMIT 10</span><br>    first_10 = qs[:<span class="hljs-number">10</span>]  <span class="hljs-comment"># 仍然惰性，未执行查询</span><br>    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;first_10._result_cache: <span class="hljs-subst">&#123;first_10._result_cache&#125;</span>&quot;</span>)  <span class="hljs-comment"># None</span><br>    <br>    <span class="hljs-comment"># 只有在实际使用时才执行查询</span><br>    users = <span class="hljs-built_in">list</span>(first_10)  <span class="hljs-comment"># 现在执行查询，SQL 包含 LIMIT 10</span><br>    <br>    <span class="hljs-comment"># 获取单个用户</span><br>    first_user = qs[<span class="hljs-number">0</span>]  <span class="hljs-comment"># 创建 LIMIT 1 的查询并立即执行</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="7-总结"><a href="#7-总结" class="headerlink" title="7. 总结"></a>7. 总结</h2><h3 id="7-1-核心设计原则"><a href="#7-1-核心设计原则" class="headerlink" title="7.1 核心设计原则"></a>7.1 核心设计原则</h3><ol>
+<li><strong>惰性求值</strong>：延迟执行直到真正需要数据</li>
+<li><strong>不可变性</strong>：QuerySet 操作返回新对象，保持原对象不变</li>
+<li><strong>缓存机制</strong>：避免重复的数据库查询</li>
+<li><strong>内存效率</strong>：支持大数据集的流式处理</li>
+</ol>
+<h3 id="7-2-关键技术点"><a href="#7-2-关键技术点" class="headerlink" title="7.2 关键技术点"></a>7.2 关键技术点</h3><ul>
+<li><code>_result_cache</code> 控制查询执行和结果缓存</li>
+<li><code>_fetch_all</code> 是惰性加载的核心入口</li>
+<li><code>ModelIterable</code> 使用生成器模式处理数据行</li>
+<li><code>RelatedPopulator</code> 优化关联对象的加载</li>
+<li>多层迭代器架构支持灵活的数据处理</li>
+</ul>
+<h3 id="7-3-性能优化建议"><a href="#7-3-性能优化建议" class="headerlink" title="7.3 性能优化建议"></a>7.3 性能优化建议</h3><ol>
+<li><strong>合理使用 select_related</strong>：避免 N+1 查询问题</li>
+<li><strong>大数据集使用 iterator</strong>：降低内存使用</li>
+<li><strong>避免不必要的求值</strong>：保持 QuerySet 的惰性特性</li>
+<li><strong>重用 QuerySet 对象</strong>：利用结果缓存机制</li>
+</ol>
+<h3 id="7-4-学习要点"><a href="#7-4-学习要点" class="headerlink" title="7.4 学习要点"></a>7.4 学习要点</h3><ul>
+<li>理解惰性加载的触发时机</li>
+<li>掌握 QuerySet 的状态变化过程</li>
+<li>熟悉各种优化技术的使用场景</li>
+<li>关注内存使用和查询效率的平衡</li>
+</ul>
+<p>Django QuerySet 的设计是现代 ORM 框架的典型代表，通过巧妙的惰性加载机制，在提供简洁 API 的同时保证了良好的性能特性。深入理解其实现原理，有助于我们更好地使用 Django ORM，编写高效的数据库查询代码。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Django/" class="print-no-link">#Django</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Django QuerySet</div>
+      <div>https://luffy997.github.io/2025/07/27/Django-QuerySet/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月27日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/27/Django-ORM/" title="Django ORM">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Django ORM</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/22/Django-%E4%BA%8B%E5%8A%A1/" title="Django 事务">
+                        <span class="hidden-mobile">Django 事务</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

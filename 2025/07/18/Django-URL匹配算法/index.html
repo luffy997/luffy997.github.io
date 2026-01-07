@@ -1,0 +1,677 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="Django的URL匹配就像剥洋葱一样，一层一层地处理URL，每一层只负责匹配自己的部分，然后把剩下的部分交给下一层继续处理。 算法流程图1234567891011121314151617请求URL: &#x2F;api&#x2F;v1&#x2F;users&#x2F;123&#x2F;profile&#x2F;                ↓        [第1层] 根解析器 r&#x27;^&#x2F;&#x27;         匹配成功，剩余：api&#x2F;v">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django URL匹配算法">
+<meta property="og:url" content="https://luffy997.github.io/2025/07/18/Django-URL%E5%8C%B9%E9%85%8D%E7%AE%97%E6%B3%95/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="Django的URL匹配就像剥洋葱一样，一层一层地处理URL，每一层只负责匹配自己的部分，然后把剩下的部分交给下一层继续处理。 算法流程图1234567891011121314151617请求URL: &#x2F;api&#x2F;v1&#x2F;users&#x2F;123&#x2F;profile&#x2F;                ↓        [第1层] 根解析器 r&#x27;^&#x2F;&#x27;         匹配成功，剩余：api&#x2F;v">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s21.ax1x.com/2025/04/30/pEHJjt1.png">
+<meta property="article:published_time" content="2025-07-18T12:21:54.000Z">
+<meta property="article:modified_time" content="2026-01-07T14:29:22.205Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="Django">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s21.ax1x.com/2025/04/30/pEHJjt1.png">
+  
+  
+  
+  <title>Django URL匹配算法 - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Django URL匹配算法"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-18 20:21" pubdate>
+          2025年7月18日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.3k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          11 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Django URL匹配算法</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <p>Django的URL匹配就像<strong>剥洋葱</strong>一样，一层一层地处理URL，每一层只负责匹配自己的部分，然后把剩下的部分交给下一层继续处理。</p>
+<h2 id="算法流程图"><a href="#算法流程图" class="headerlink" title="算法流程图"></a>算法流程图</h2><figure class="highlight awk"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs awk">请求URL: <span class="hljs-regexp">/api/</span>v1<span class="hljs-regexp">/users/</span><span class="hljs-number">123</span><span class="hljs-regexp">/profile/</span><br>                ↓<br>        [第<span class="hljs-number">1</span>层] 根解析器 <span class="hljs-string">r&#x27;^/&#x27;</span><br>         匹配成功，剩余：api<span class="hljs-regexp">/v1/u</span>sers<span class="hljs-regexp">/123/</span>profile/<br>                ↓<br>        [第<span class="hljs-number">2</span>层] API解析器 <span class="hljs-string">r&#x27;^api/v(\d+)/&#x27;</span><br>         匹配成功，剩余：users<span class="hljs-regexp">/123/</span>profile/<br>         捕获参数：version=<span class="hljs-string">&#x27;1&#x27;</span><br>                ↓<br>        [第<span class="hljs-number">3</span>层] Users解析器 <span class="hljs-string">r&#x27;^users/&#x27;</span><br>         匹配成功，剩余：<span class="hljs-number">123</span><span class="hljs-regexp">/profile/</span><br>                ↓<br>        [第<span class="hljs-number">4</span>层] Profile模式 <span class="hljs-string">r&#x27;^(?P&lt;user_id&gt;\d+)/profile/$&#x27;</span><br>         匹配成功，剩余：空<br>         捕获参数：user_id=<span class="hljs-string">&#x27;123&#x27;</span><br>                ↓<br>        最终结果：views.profile(request, version=<span class="hljs-string">&#x27;1&#x27;</span>, user_id=<span class="hljs-string">&#x27;123&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="具体示例说明"><a href="#具体示例说明" class="headerlink" title="具体示例说明"></a>具体示例说明</h2><h3 id="1-URL配置结构"><a href="#1-URL配置结构" class="headerlink" title="1. URL配置结构"></a>1. URL配置结构</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 主urls.py (根URLconf)</span><br>urlpatterns = [<br>    url(<span class="hljs-string">r&#x27;^admin/&#x27;</span>, admin.site.urls),<br>    url(<span class="hljs-string">r&#x27;^api/v(\d+)/&#x27;</span>, include(<span class="hljs-string">&#x27;api.urls&#x27;</span>)),  <span class="hljs-comment"># API版本控制</span><br>    url(<span class="hljs-string">r&#x27;^blog/&#x27;</span>, include(<span class="hljs-string">&#x27;blog.urls&#x27;</span>)),<br>]<br><br><span class="hljs-comment"># api/urls.py</span><br>urlpatterns = [<br>    url(<span class="hljs-string">r&#x27;^users/&#x27;</span>, include(<span class="hljs-string">&#x27;users.urls&#x27;</span>)),<br>    url(<span class="hljs-string">r&#x27;^posts/&#x27;</span>, include(<span class="hljs-string">&#x27;posts.urls&#x27;</span>)),<br>]<br><br><span class="hljs-comment"># users/urls.py</span><br>urlpatterns = [<br>    url(<span class="hljs-string">r&#x27;^$&#x27;</span>, views.user_list, name=<span class="hljs-string">&#x27;user-list&#x27;</span>),<br>    url(<span class="hljs-string">r&#x27;^(?P&lt;user_id&gt;\d+)/$&#x27;</span>, views.user_detail, name=<span class="hljs-string">&#x27;user-detail&#x27;</span>),<br>    url(<span class="hljs-string">r&#x27;^(?P&lt;user_id&gt;\d+)/profile/$&#x27;</span>, views.user_profile, name=<span class="hljs-string">&#x27;user-profile&#x27;</span>),<br>]<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-匹配过程详解"><a href="#2-匹配过程详解" class="headerlink" title="2. 匹配过程详解"></a>2. 匹配过程详解</h3><p>当用户访问 <code>/api/v1/users/123/profile/</code> 时：</p>
+<h4 id="第1步：根解析器处理"><a href="#第1步：根解析器处理" class="headerlink" title="第1步：根解析器处理"></a>第1步：根解析器处理</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># RegexURLResolver(r&#x27;^/&#x27;, 主urls.py)</span><br>path = <span class="hljs-string">&#x27;/api/v1/users/123/profile/&#x27;</span><br><span class="hljs-keyword">match</span> = <span class="hljs-string">r&#x27;^/&#x27;</span>.search(path)  <span class="hljs-comment"># 匹配成功</span><br>new_path = <span class="hljs-string">&#x27;api/v1/users/123/profile/&#x27;</span>  <span class="hljs-comment"># 去掉开头的 &#x27;/&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="第2步：遍历主URLconf的模式"><a href="#第2步：遍历主URLconf的模式" class="headerlink" title="第2步：遍历主URLconf的模式"></a>第2步：遍历主URLconf的模式</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">for</span> pattern <span class="hljs-keyword">in</span> [admin_pattern, api_pattern, blog_pattern]:<br>    <span class="hljs-comment"># 尝试 r&#x27;^api/v(\d+)/&#x27; 模式</span><br>    sub_match = api_pattern.resolve(<span class="hljs-string">&#x27;api/v1/users/123/profile/&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h4 id="第3步：API解析器处理"><a href="#第3步：API解析器处理" class="headerlink" title="第3步：API解析器处理"></a>第3步：API解析器处理</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># RegexURLResolver(r&#x27;^api/v(\d+)/&#x27;, &#x27;api.urls&#x27;)</span><br>path = <span class="hljs-string">&#x27;api/v1/users/123/profile/&#x27;</span><br><span class="hljs-keyword">match</span> = <span class="hljs-string">r&#x27;^api/v(\d+)/&#x27;</span>.search(path)  <span class="hljs-comment"># 匹配成功</span><br><span class="hljs-comment"># 捕获组：groups() = (&#x27;1&#x27;,)  # 版本号</span><br>new_path = <span class="hljs-string">&#x27;users/123/profile/&#x27;</span>  <span class="hljs-comment"># 剩余路径</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="第4步：Users解析器处理"><a href="#第4步：Users解析器处理" class="headerlink" title="第4步：Users解析器处理"></a>第4步：Users解析器处理</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># RegexURLResolver(r&#x27;^users/&#x27;, &#x27;users.urls&#x27;) </span><br>path = <span class="hljs-string">&#x27;users/123/profile/&#x27;</span><br><span class="hljs-keyword">match</span> = <span class="hljs-string">r&#x27;^users/&#x27;</span>.search(path)  <span class="hljs-comment"># 匹配成功</span><br>new_path = <span class="hljs-string">&#x27;123/profile/&#x27;</span>  <span class="hljs-comment"># 剩余路径</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="第5步：Profile模式匹配"><a href="#第5步：Profile模式匹配" class="headerlink" title="第5步：Profile模式匹配"></a>第5步：Profile模式匹配</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># RegexURLPattern(r&#x27;^(?P&lt;user_id&gt;\d+)/profile/$&#x27;, views.user_profile)</span><br>path = <span class="hljs-string">&#x27;123/profile/&#x27;</span><br><span class="hljs-keyword">match</span> = <span class="hljs-string">r&#x27;^(?P&lt;user_id&gt;\d+)/profile/$&#x27;</span>.search(path)  <span class="hljs-comment"># 匹配成功</span><br><span class="hljs-comment"># 命名组：groupdict() = &#123;&#x27;user_id&#x27;: &#x27;123&#x27;&#125;</span><br>new_path = <span class="hljs-string">&#x27;&#x27;</span>  <span class="hljs-comment"># 完全匹配，无剩余</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="第6步：参数合并"><a href="#第6步：参数合并" class="headerlink" title="第6步：参数合并"></a>第6步：参数合并</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 合并所有层级的参数</span><br>final_args = (<span class="hljs-string">&#x27;1&#x27;</span>,)  <span class="hljs-comment"># 来自第3步的位置参数</span><br>final_kwargs = &#123;<span class="hljs-string">&#x27;user_id&#x27;</span>: <span class="hljs-string">&#x27;123&#x27;</span>&#125;  <span class="hljs-comment"># 来自第5步的命名参数</span><br><br><span class="hljs-comment"># 创建最终结果</span><br><span class="hljs-keyword">return</span> ResolverMatch(<br>    func=views.user_profile,<br>    args=(<span class="hljs-string">&#x27;1&#x27;</span>,),<br>    kwargs=&#123;<span class="hljs-string">&#x27;user_id&#x27;</span>: <span class="hljs-string">&#x27;123&#x27;</span>&#125;,<br>    url_name=<span class="hljs-string">&#x27;user-profile&#x27;</span>,<br>    app_names=[],<br>    namespaces=[]<br>)<br></code></pre></td></tr></table></figure>
+
+<h2 id="关键算法特点"><a href="#关键算法特点" class="headerlink" title="关键算法特点"></a>关键算法特点</h2><h3 id="1-分层匹配策略"><a href="#1-分层匹配策略" class="headerlink" title="1. 分层匹配策略"></a>1. 分层匹配策略</h3><ul>
+<li><strong>每层只管自己的事</strong>：每个URLResolver只匹配自己的正则表达式</li>
+<li><strong>剩余路径传递</strong>：匹配成功后，将剩余部分传给下一层</li>
+<li><strong>递归处理</strong>：通过 <code>pattern.resolve(new_path)</code> 实现递归</li>
+</ul>
+<h3 id="2-参数处理规则"><a href="#2-参数处理规则" class="headerlink" title="2. 参数处理规则"></a>2. 参数处理规则</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 规则：有命名参数时，忽略位置参数</span><br><span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> sub_match_dict:  <span class="hljs-comment"># 如果没有命名参数</span><br>    sub_match_args = <span class="hljs-keyword">match</span>.groups() + sub_match.args  <span class="hljs-comment"># 合并位置参数</span><br><span class="hljs-keyword">else</span>:  <span class="hljs-comment"># 有命名参数</span><br>    sub_match_args = sub_match.args  <span class="hljs-comment"># 只使用子层的位置参数</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>示例对比</strong>：</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 情况1：混合参数</span><br><span class="hljs-string">r&#x27;^api/v(\d+)/&#x27;</span>  →  <span class="hljs-string">r&#x27;^users/(?P&lt;user_id&gt;\d+)/$&#x27;</span><br><span class="hljs-comment"># 结果：args=(), kwargs=&#123;&#x27;user_id&#x27;: &#x27;123&#x27;&#125;  # 忽略版本号位置参数</span><br><br><span class="hljs-comment"># 情况2：纯位置参数  </span><br><span class="hljs-string">r&#x27;^api/v(\d+)/&#x27;</span>  →  <span class="hljs-string">r&#x27;^users/(\d+)/$&#x27;</span><br><span class="hljs-comment"># 结果：args=(&#x27;1&#x27;, &#x27;123&#x27;), kwargs=&#123;&#125;  # 合并位置参数</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="3-错误追踪机制"><a href="#3-错误追踪机制" class="headerlink" title="3. 错误追踪机制"></a>3. 错误追踪机制</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 记录所有尝试过的模式，用于生成404错误信息</span><br>tried = []<br><span class="hljs-keyword">for</span> pattern <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.url_patterns:<br>    <span class="hljs-keyword">try</span>:<br>        sub_match = pattern.resolve(new_path)<br>    <span class="hljs-keyword">except</span> Resolver404 <span class="hljs-keyword">as</span> e:<br>        tried.extend([pattern] + t <span class="hljs-keyword">for</span> t <span class="hljs-keyword">in</span> e.args[<span class="hljs-number">0</span>].get(<span class="hljs-string">&#x27;tried&#x27;</span>, []))<br></code></pre></td></tr></table></figure>
+
+<h2 id="性能优化策略"><a href="#性能优化策略" class="headerlink" title="性能优化策略"></a>性能优化策略</h2><h3 id="1-正则表达式缓存"><a href="#1-正则表达式缓存" class="headerlink" title="1. 正则表达式缓存"></a>1. 正则表达式缓存</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@cached_property  </span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">regex</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-keyword">return</span> re.<span class="hljs-built_in">compile</span>(<span class="hljs-variable language_">self</span>._regex, re.UNICODE)<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-URLconf模块缓存"><a href="#2-URLconf模块缓存" class="headerlink" title="2. URLconf模块缓存"></a>2. URLconf模块缓存</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@lru_cache.lru_cache(<span class="hljs-params">maxsize=<span class="hljs-literal">None</span></span>)</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_resolver</span>(<span class="hljs-params">urlconf=<span class="hljs-literal">None</span></span>):<br>    <span class="hljs-keyword">return</span> RegexURLResolver(<span class="hljs-string">r&#x27;^/&#x27;</span>, urlconf)<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-反向查找字典预构建"><a href="#3-反向查找字典预构建" class="headerlink" title="3. 反向查找字典预构建"></a>3. 反向查找字典预构建</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_populate</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-comment"># 一次性构建所有反向查找字典</span><br>    <span class="hljs-comment"># 避免运行时重复计算</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="实际应用场景"><a href="#实际应用场景" class="headerlink" title="实际应用场景"></a>实际应用场景</h2><h3 id="复杂嵌套URL"><a href="#复杂嵌套URL" class="headerlink" title="复杂嵌套URL"></a>复杂嵌套URL</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 电商网站示例</span><br>urlpatterns = [<br>    url(<span class="hljs-string">r&#x27;^shop/&#x27;</span>, include([<br>        url(<span class="hljs-string">r&#x27;^categories/(?P&lt;cat_id&gt;\d+)/&#x27;</span>, include([<br>            url(<span class="hljs-string">r&#x27;^products/&#x27;</span>, include([<br>                url(<span class="hljs-string">r&#x27;^(?P&lt;product_id&gt;\d+)/&#x27;</span>, include([<br>                    url(<span class="hljs-string">r&#x27;^$&#x27;</span>, views.product_detail),<br>                    url(<span class="hljs-string">r&#x27;^reviews/$&#x27;</span>, views.product_reviews),<br>                    url(<span class="hljs-string">r&#x27;^buy/$&#x27;</span>, views.purchase),<br>                ])),<br>            ])),<br>        ])),<br>    ])),<br>]<br><br><span class="hljs-comment"># URL: /shop/categories/5/products/123/reviews/</span><br><span class="hljs-comment"># 最终调用: views.product_reviews(request, cat_id=&#x27;5&#x27;, product_id=&#x27;123&#x27;)</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="命名空间支持"><a href="#命名空间支持" class="headerlink" title="命名空间支持"></a>命名空间支持</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 多版本API</span><br>urlpatterns = [<br>    url(<span class="hljs-string">r&#x27;^api/v1/&#x27;</span>, include(<span class="hljs-string">&#x27;api.v1.urls&#x27;</span>, namespace=<span class="hljs-string">&#x27;v1&#x27;</span>)),<br>    url(<span class="hljs-string">r&#x27;^api/v2/&#x27;</span>, include(<span class="hljs-string">&#x27;api.v2.urls&#x27;</span>, namespace=<span class="hljs-string">&#x27;v2&#x27;</span>)),<br>]<br><br><span class="hljs-comment"># 反向解析</span><br>reverse(<span class="hljs-string">&#x27;v1:user-list&#x27;</span>)  <span class="hljs-comment"># /api/v1/users/</span><br>reverse(<span class="hljs-string">&#x27;v2:user-list&#x27;</span>)  <span class="hljs-comment"># /api/v2/users/</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Django的URL匹配算法核心是<strong>分层递归</strong>：</p>
+<ol>
+<li><strong>分层</strong>：将复杂URL分解为多个简单层级</li>
+<li><strong>递归</strong>：每层处理自己的部分，递归处理剩余部分  </li>
+<li><strong>高效</strong>：通过缓存和预编译提升性能</li>
+<li><strong>灵活</strong>：支持复杂嵌套和命名空间</li>
+<li><strong>调试友好</strong>：完整记录匹配尝试过程</li>
+</ol>
+<p>这种设计让Django能够优雅地处理各种复杂的URL结构，同时保持代码的可读性和可维护性。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Django/" class="print-no-link">#Django</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Django URL匹配算法</div>
+      <div>https://luffy997.github.io/2025/07/18/Django-URL匹配算法/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月18日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/19/Django%E7%BC%93%E5%AD%98%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="Django 缓存中间件">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Django 缓存中间件</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/17/Django-MultiPartParser/" title="Django MultiPartParser">
+                        <span class="hidden-mobile">Django MultiPartParser</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

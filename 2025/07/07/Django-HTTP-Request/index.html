@@ -1,0 +1,789 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/fluid.png">
+  <link rel="icon" href="/img/fluid.png">
+  
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#2f4154">
+  <meta name="author" content="Luffy997">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="概述Django的HTTP请求处理是一个分层架构，以HttpRequest作为基础抽象类，WSGIRequest作为实际生产环境中使用的实现类。通过中间件系统，Django动态地扩展请求对象的功能，提供了完整的Web请求处理能力。 核心架构1. 类继承关系12345678# 基础抽象类class HttpRequest(object)# 实际使用的WSGI实现  class WSGIRequest">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Django HTTP Request">
+<meta property="og:url" content="https://luffy997.github.io/2025/07/07/Django-HTTP-Request/index.html">
+<meta property="og:site_name" content="Luffy997&#39;s Blog">
+<meta property="og:description" content="概述Django的HTTP请求处理是一个分层架构，以HttpRequest作为基础抽象类，WSGIRequest作为实际生产环境中使用的实现类。通过中间件系统，Django动态地扩展请求对象的功能，提供了完整的Web请求处理能力。 核心架构1. 类继承关系12345678# 基础抽象类class HttpRequest(object)# 实际使用的WSGI实现  class WSGIRequest">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s21.ax1x.com/2025/04/30/pEHJjt1.png">
+<meta property="article:published_time" content="2025-07-07T13:19:41.000Z">
+<meta property="article:modified_time" content="2026-01-07T14:27:19.936Z">
+<meta property="article:author" content="Luffy997">
+<meta property="article:tag" content="Django">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://s21.ax1x.com/2025/04/30/pEHJjt1.png">
+  
+  
+  
+  <title>Django HTTP Request - Luffy997&#39;s Blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1749284_5i9bdhy70f8.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/c/font_1736178_k526ubmyhba.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"luffy997.github.io","root":"/","version":"1.9.8","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false},"umami":{"src":null,"website_id":null,"domains":null,"start_time":"2024-01-01T00:00:00.000Z","token":null,"api_server":null}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.3.0"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 70vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>Luffy997的博客</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/default.png') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.3)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Django HTTP Request"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2025-07-07 21:19" pubdate>
+          2025年7月7日 晚上
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          2.6k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          22 分钟
+        
+      </span>
+    
+
+    
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Django HTTP Request</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <h2 id="概述"><a href="#概述" class="headerlink" title="概述"></a>概述</h2><p>Django的HTTP请求处理是一个分层架构，以<code>HttpRequest</code>作为基础抽象类，<code>WSGIRequest</code>作为实际生产环境中使用的实现类。通过中间件系统，Django动态地扩展请求对象的功能，提供了完整的Web请求处理能力。</p>
+<h2 id="核心架构"><a href="#核心架构" class="headerlink" title="核心架构"></a>核心架构</h2><h3 id="1-类继承关系"><a href="#1-类继承关系" class="headerlink" title="1. 类继承关系"></a>1. 类继承关系</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># 基础抽象类</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">HttpRequest</span>(<span class="hljs-title class_ inherited__">object</span>)<br><br><span class="hljs-comment"># 实际使用的WSGI实现  </span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">WSGIRequest</span>(<span class="hljs-title class_ inherited__">HttpRequest</span>)<br><br><span class="hljs-comment"># 专用的查询字典</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">QueryDict</span>(<span class="hljs-title class_ inherited__">MultiValueDict</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="2-主要组件"><a href="#2-主要组件" class="headerlink" title="2. 主要组件"></a>2. 主要组件</h3><ul>
+<li><strong>HttpRequest</strong>: 基础HTTP请求抽象</li>
+<li><strong>WSGIRequest</strong>: WSGI环境下的具体实现</li>
+<li><strong>QueryDict</strong>: 处理查询字符串和表单数据</li>
+<li><strong>MultiValueDict</strong>: 支持一键多值的字典实现</li>
+</ul>
+<h2 id="HttpRequest-基础类详解"><a href="#HttpRequest-基础类详解" class="headerlink" title="HttpRequest 基础类详解"></a>HttpRequest 基础类详解</h2><h3 id="核心属性"><a href="#核心属性" class="headerlink" title="核心属性"></a>核心属性</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-variable language_">self</span>.GET = QueryDict(mutable=<span class="hljs-literal">True</span>)          <span class="hljs-comment"># GET参数</span><br>    <span class="hljs-variable language_">self</span>.POST = QueryDict(mutable=<span class="hljs-literal">True</span>)         <span class="hljs-comment"># POST数据  </span><br>    <span class="hljs-variable language_">self</span>.COOKIES = &#123;&#125;                           <span class="hljs-comment"># Cookie数据</span><br>    <span class="hljs-variable language_">self</span>.META = &#123;&#125;                              <span class="hljs-comment"># HTTP头和环境变量</span><br>    <span class="hljs-variable language_">self</span>.FILES = MultiValueDict()               <span class="hljs-comment"># 上传文件</span><br>    <br>    <span class="hljs-variable language_">self</span>.path = <span class="hljs-string">&#x27;&#x27;</span>                              <span class="hljs-comment"># 请求路径</span><br>    <span class="hljs-variable language_">self</span>.path_info = <span class="hljs-string">&#x27;&#x27;</span>                         <span class="hljs-comment"># 路径信息</span><br>    <span class="hljs-variable language_">self</span>.method = <span class="hljs-literal">None</span>                          <span class="hljs-comment"># HTTP方法</span><br>    <span class="hljs-variable language_">self</span>.resolver_match = <span class="hljs-literal">None</span>                  <span class="hljs-comment"># URL解析匹配</span><br>    <span class="hljs-variable language_">self</span>._post_parse_error = <span class="hljs-literal">False</span>              <span class="hljs-comment"># POST解析错误标志</span><br>    <span class="hljs-variable language_">self</span>.content_type = <span class="hljs-literal">None</span>                    <span class="hljs-comment"># 内容类型</span><br>    <span class="hljs-variable language_">self</span>.content_params = <span class="hljs-literal">None</span>                  <span class="hljs-comment"># 内容参数</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="主机和安全处理"><a href="#主机和安全处理" class="headerlink" title="主机和安全处理"></a>主机和安全处理</h3><h4 id="主机头验证-防Host头攻击"><a href="#主机头验证-防Host头攻击" class="headerlink" title="主机头验证 (防Host头攻击)"></a>主机头验证 (防Host头攻击)</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_host</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;返回HTTP主机，进行安全验证&quot;&quot;&quot;</span><br>    host = <span class="hljs-variable language_">self</span>._get_raw_host()<br>    <br>    <span class="hljs-comment"># 调试模式下允许localhost变体</span><br>    allowed_hosts = settings.ALLOWED_HOSTS<br>    <span class="hljs-keyword">if</span> settings.DEBUG <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> allowed_hosts:<br>        allowed_hosts = [<span class="hljs-string">&#x27;localhost&#x27;</span>, <span class="hljs-string">&#x27;127.0.0.1&#x27;</span>, <span class="hljs-string">&#x27;[::1]&#x27;</span>]<br>    <br>    domain, port = split_domain_port(host)<br>    <span class="hljs-keyword">if</span> domain <span class="hljs-keyword">and</span> validate_host(domain, allowed_hosts):<br>        <span class="hljs-keyword">return</span> host<br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-comment"># 抛出DisallowedHost异常，防止Host头攻击</span><br>        <span class="hljs-keyword">raise</span> DisallowedHost(<span class="hljs-string">&quot;Invalid HTTP_HOST header&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<p><strong>安全价值</strong>：防止攻击者通过伪造Host头进行缓存污染或密码重置攻击。</p>
+<h4 id="签名Cookie支持"><a href="#签名Cookie支持" class="headerlink" title="签名Cookie支持"></a>签名Cookie支持</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_signed_cookie</span>(<span class="hljs-params">self, key, default=RAISE_ERROR, salt=<span class="hljs-string">&#x27;&#x27;</span>, max_age=<span class="hljs-literal">None</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;获取签名cookie，防止篡改&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">try</span>:<br>        cookie_value = <span class="hljs-variable language_">self</span>.COOKIES[key]<br>        value = signing.get_cookie_signer(salt=key + salt).unsign(<br>            cookie_value, max_age=max_age)<br>        <span class="hljs-keyword">return</span> value<br>    <span class="hljs-keyword">except</span> signing.BadSignature:<br>        <span class="hljs-comment"># 签名验证失败</span><br>        <span class="hljs-keyword">if</span> default <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> RAISE_ERROR:<br>            <span class="hljs-keyword">return</span> default<br>        <span class="hljs-keyword">else</span>:<br>            <span class="hljs-keyword">raise</span><br></code></pre></td></tr></table></figure>
+
+<h4 id="HTTPS检测"><a href="#HTTPS检测" class="headerlink" title="HTTPS检测"></a>HTTPS检测</h4><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@property</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">scheme</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-comment"># 支持代理服务器的HTTPS检测</span><br>    <span class="hljs-keyword">if</span> settings.SECURE_PROXY_SSL_HEADER:<br>        header, value = settings.SECURE_PROXY_SSL_HEADER<br>        <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.META.get(header) == value:<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;https&#x27;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._get_scheme()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">is_secure</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.scheme == <span class="hljs-string">&#x27;https&#x27;</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="URL构建功能"><a href="#URL构建功能" class="headerlink" title="URL构建功能"></a>URL构建功能</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">get_full_path</span>(<span class="hljs-params">self, force_append_slash=<span class="hljs-literal">False</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;获取完整路径包含查询字符串&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-string">&#x27;%s%s%s&#x27;</span> % (<br>        escape_uri_path(<span class="hljs-variable language_">self</span>.path),<br>        <span class="hljs-string">&#x27;/&#x27;</span> <span class="hljs-keyword">if</span> force_append_slash <span class="hljs-keyword">and</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>.path.endswith(<span class="hljs-string">&#x27;/&#x27;</span>) <span class="hljs-keyword">else</span> <span class="hljs-string">&#x27;&#x27;</span>,<br>        (<span class="hljs-string">&#x27;?&#x27;</span> + iri_to_uri(<span class="hljs-variable language_">self</span>.META.get(<span class="hljs-string">&#x27;QUERY_STRING&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>))) <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.META.get(<span class="hljs-string">&#x27;QUERY_STRING&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>) <span class="hljs-keyword">else</span> <span class="hljs-string">&#x27;&#x27;</span><br>    )<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">build_absolute_uri</span>(<span class="hljs-params">self, location=<span class="hljs-literal">None</span></span>):<br>    <span class="hljs-string">&quot;&quot;&quot;构建绝对URI&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">if</span> location <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span>:<br>        location = <span class="hljs-string">&#x27;//%s&#x27;</span> % <span class="hljs-variable language_">self</span>.get_full_path()<br>    <span class="hljs-comment"># ... 处理相对路径和绝对路径的逻辑</span><br>    <span class="hljs-keyword">return</span> iri_to_uri(location)<br></code></pre></td></tr></table></figure>
+
+<h3 id="编码处理"><a href="#编码处理" class="headerlink" title="编码处理"></a>编码处理</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@encoding.setter</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">encoding</span>(<span class="hljs-params">self, val</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;设置GET/POST访问的编码&quot;&quot;&quot;</span><br>    <span class="hljs-variable language_">self</span>._encoding = val<br>    <span class="hljs-comment"># 编码改变时重新创建GET和POST字典</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(<span class="hljs-variable language_">self</span>, <span class="hljs-string">&#x27;GET&#x27;</span>):<br>        <span class="hljs-keyword">del</span> <span class="hljs-variable language_">self</span>.GET<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(<span class="hljs-variable language_">self</span>, <span class="hljs-string">&#x27;_post&#x27;</span>):<br>        <span class="hljs-keyword">del</span> <span class="hljs-variable language_">self</span>._post<br></code></pre></td></tr></table></figure>
+
+<h3 id="文件上传处理"><a href="#文件上传处理" class="headerlink" title="文件上传处理"></a>文件上传处理</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_initialize_handlers</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;初始化文件上传处理器&quot;&quot;&quot;</span><br>    <span class="hljs-variable language_">self</span>._upload_handlers = [uploadhandler.load_handler(handler, <span class="hljs-variable language_">self</span>)<br>                             <span class="hljs-keyword">for</span> handler <span class="hljs-keyword">in</span> settings.FILE_UPLOAD_HANDLERS]<br><br><span class="hljs-meta">@property</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">upload_handlers</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>._upload_handlers:<br>        <span class="hljs-variable language_">self</span>._initialize_handlers()<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._upload_handlers<br><br><span class="hljs-meta">@upload_handlers.setter  </span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">upload_handlers</span>(<span class="hljs-params">self, upload_handlers</span>):<br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(<span class="hljs-variable language_">self</span>, <span class="hljs-string">&#x27;_files&#x27;</span>):<br>        <span class="hljs-keyword">raise</span> AttributeError(<span class="hljs-string">&quot;You cannot set the upload handlers after the upload has been processed.&quot;</span>)<br>    <span class="hljs-variable language_">self</span>._upload_handlers = upload_handlers<br></code></pre></td></tr></table></figure>
+
+<h3 id="请求体处理"><a href="#请求体处理" class="headerlink" title="请求体处理"></a>请求体处理</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@property</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">body</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">hasattr</span>(<span class="hljs-variable language_">self</span>, <span class="hljs-string">&#x27;_body&#x27;</span>):<br>        <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>._read_started:<br>            <span class="hljs-keyword">raise</span> RawPostDataException(<span class="hljs-string">&quot;You cannot access body after reading from request&#x27;s data stream&quot;</span>)<br><br>        <span class="hljs-comment"># 检查请求体大小限制</span><br>        <span class="hljs-keyword">if</span> (settings.DATA_UPLOAD_MAX_MEMORY_SIZE <span class="hljs-keyword">is</span> <span class="hljs-keyword">not</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">and</span><br>                <span class="hljs-built_in">int</span>(<span class="hljs-variable language_">self</span>.META.get(<span class="hljs-string">&#x27;CONTENT_LENGTH&#x27;</span>) <span class="hljs-keyword">or</span> <span class="hljs-number">0</span>) &gt; settings.DATA_UPLOAD_MAX_MEMORY_SIZE):<br>            <span class="hljs-keyword">raise</span> RequestDataTooBig(<span class="hljs-string">&#x27;Request body exceeded settings.DATA_UPLOAD_MAX_MEMORY_SIZE.&#x27;</span>)<br><br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-variable language_">self</span>._body = <span class="hljs-variable language_">self</span>.read()<br>        <span class="hljs-keyword">except</span> IOError <span class="hljs-keyword">as</span> e:<br>            six.reraise(UnreadablePostError, UnreadablePostError(*e.args), sys.exc_info()[<span class="hljs-number">2</span>])<br>        <span class="hljs-variable language_">self</span>._stream = BytesIO(<span class="hljs-variable language_">self</span>._body)<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._body<br></code></pre></td></tr></table></figure>
+
+<h3 id="POST数据解析"><a href="#POST数据解析" class="headerlink" title="POST数据解析"></a>POST数据解析</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_load_post_and_files</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;根据content-type解析POST数据和文件&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.method != <span class="hljs-string">&#x27;POST&#x27;</span>:<br>        <span class="hljs-variable language_">self</span>._post, <span class="hljs-variable language_">self</span>._files = QueryDict(encoding=<span class="hljs-variable language_">self</span>._encoding), MultiValueDict()<br>        <span class="hljs-keyword">return</span><br>    <br>    <span class="hljs-keyword">if</span> <span class="hljs-variable language_">self</span>.content_type == <span class="hljs-string">&#x27;multipart/form-data&#x27;</span>:<br>        <span class="hljs-comment"># 处理文件上传</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(<span class="hljs-variable language_">self</span>, <span class="hljs-string">&#x27;_body&#x27;</span>):<br>            data = BytesIO(<span class="hljs-variable language_">self</span>._body)<br>        <span class="hljs-keyword">else</span>:<br>            data = <span class="hljs-variable language_">self</span><br>        <span class="hljs-keyword">try</span>:<br>            <span class="hljs-variable language_">self</span>._post, <span class="hljs-variable language_">self</span>._files = <span class="hljs-variable language_">self</span>.parse_file_upload(<span class="hljs-variable language_">self</span>.META, data)<br>        <span class="hljs-keyword">except</span> MultiPartParserError:<br>            <span class="hljs-variable language_">self</span>._mark_post_parse_error()<br>            <span class="hljs-keyword">raise</span><br>    <span class="hljs-keyword">elif</span> <span class="hljs-variable language_">self</span>.content_type == <span class="hljs-string">&#x27;application/x-www-form-urlencoded&#x27;</span>:<br>        <span class="hljs-comment"># 处理表单数据</span><br>        <span class="hljs-variable language_">self</span>._post, <span class="hljs-variable language_">self</span>._files = QueryDict(<span class="hljs-variable language_">self</span>.body, encoding=<span class="hljs-variable language_">self</span>._encoding), MultiValueDict()<br>    <span class="hljs-keyword">else</span>:<br>        <span class="hljs-comment"># 其他类型（如JSON）</span><br>        <span class="hljs-variable language_">self</span>._post, <span class="hljs-variable language_">self</span>._files = QueryDict(encoding=<span class="hljs-variable language_">self</span>._encoding), MultiValueDict()<br></code></pre></td></tr></table></figure>
+
+<h3 id="流式接口"><a href="#流式接口" class="headerlink" title="流式接口"></a>流式接口</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">read</span>(<span class="hljs-params">self, *args, **kwargs</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;读取请求体数据&quot;&quot;&quot;</span><br>    <span class="hljs-variable language_">self</span>._read_started = <span class="hljs-literal">True</span><br>    <span class="hljs-keyword">try</span>:<br>        <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._stream.read(*args, **kwargs)<br>    <span class="hljs-keyword">except</span> IOError <span class="hljs-keyword">as</span> e:<br>        six.reraise(UnreadablePostError, UnreadablePostError(*e.args), sys.exc_info()[<span class="hljs-number">2</span>])<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">__iter__</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;支持迭代器协议，用于大文件流处理&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>.xreadlines()<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">xreadlines</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;生成器形式的逐行读取&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">while</span> <span class="hljs-literal">True</span>:<br>        buf = <span class="hljs-variable language_">self</span>.readline()<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> buf:<br>            <span class="hljs-keyword">break</span><br>        <span class="hljs-keyword">yield</span> buf<br></code></pre></td></tr></table></figure>
+
+<h2 id="WSGIRequest-实际实现"><a href="#WSGIRequest-实际实现" class="headerlink" title="WSGIRequest 实际实现"></a>WSGIRequest 实际实现</h2><h3 id="与HttpRequest的区别"><a href="#与HttpRequest的区别" class="headerlink" title="与HttpRequest的区别"></a>与HttpRequest的区别</h3><p><strong>关键差异</strong>：</p>
+<ol>
+<li><strong>不调用父类__init__</strong>：直接重新实现所有初始化逻辑</li>
+<li><strong>直接使用WSGI环境</strong>：<code>self.META = environ</code></li>
+<li><strong>流处理优化</strong>：使用<code>LimitedStream</code>进行安全的请求体读取</li>
+</ol>
+<h3 id="初始化过程"><a href="#初始化过程" class="headerlink" title="初始化过程"></a>初始化过程</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">WSGIRequest</span>(http.HttpRequest):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, environ</span>):<br>        <span class="hljs-comment"># 解析WSGI路径信息</span><br>        script_name = get_script_name(environ)<br>        path_info = get_path_info(environ)<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> path_info:<br>            path_info = <span class="hljs-string">&#x27;/&#x27;</span><br>            <br>        <span class="hljs-comment"># 直接设置属性，不调用父类__init__</span><br>        <span class="hljs-variable language_">self</span>.environ = environ<br>        <span class="hljs-variable language_">self</span>.path_info = path_info<br>        <span class="hljs-variable language_">self</span>.path = <span class="hljs-string">&#x27;%s/%s&#x27;</span> % (script_name.rstrip(<span class="hljs-string">&#x27;/&#x27;</span>), path_info.replace(<span class="hljs-string">&#x27;/&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>, <span class="hljs-number">1</span>))<br>        <span class="hljs-variable language_">self</span>.META = environ  <span class="hljs-comment"># 直接使用WSGI环境作为META</span><br>        <span class="hljs-variable language_">self</span>.META[<span class="hljs-string">&#x27;PATH_INFO&#x27;</span>] = path_info<br>        <span class="hljs-variable language_">self</span>.META[<span class="hljs-string">&#x27;SCRIPT_NAME&#x27;</span>] = script_name<br>        <br>        <span class="hljs-comment"># HTTP方法和内容类型处理</span><br>        <span class="hljs-variable language_">self</span>.method = environ[<span class="hljs-string">&#x27;REQUEST_METHOD&#x27;</span>].upper()<br>        <span class="hljs-variable language_">self</span>.content_type, <span class="hljs-variable language_">self</span>.content_params = cgi.parse_header(environ.get(<span class="hljs-string">&#x27;CONTENT_TYPE&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>))<br>        <br>        <span class="hljs-comment"># 字符编码处理</span><br>        <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;charset&#x27;</span> <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>.content_params:<br>            <span class="hljs-keyword">try</span>:<br>                codecs.lookup(<span class="hljs-variable language_">self</span>.content_params[<span class="hljs-string">&#x27;charset&#x27;</span>])<br>                <span class="hljs-variable language_">self</span>.encoding = <span class="hljs-variable language_">self</span>.content_params[<span class="hljs-string">&#x27;charset&#x27;</span>]<br>            <span class="hljs-keyword">except</span> LookupError:<br>                <span class="hljs-keyword">pass</span><br>        <br>        <span class="hljs-comment"># 设置限制流用于安全读取请求体</span><br>        <span class="hljs-keyword">try</span>:<br>            content_length = <span class="hljs-built_in">int</span>(environ.get(<span class="hljs-string">&#x27;CONTENT_LENGTH&#x27;</span>))<br>        <span class="hljs-keyword">except</span> (ValueError, TypeError):<br>            content_length = <span class="hljs-number">0</span><br>        <span class="hljs-variable language_">self</span>._stream = LimitedStream(<span class="hljs-variable language_">self</span>.environ[<span class="hljs-string">&#x27;wsgi.input&#x27;</span>], content_length)<br>        <span class="hljs-variable language_">self</span>._read_started = <span class="hljs-literal">False</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="延迟属性加载"><a href="#延迟属性加载" class="headerlink" title="延迟属性加载"></a>延迟属性加载</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-meta">@cached_property</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">GET</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;延迟加载GET参数&quot;&quot;&quot;</span><br>    raw_query_string = get_bytes_from_wsgi(<span class="hljs-variable language_">self</span>.environ, <span class="hljs-string">&#x27;QUERY_STRING&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>)<br>    <span class="hljs-keyword">return</span> http.QueryDict(raw_query_string, encoding=<span class="hljs-variable language_">self</span>._encoding)<br><br><span class="hljs-meta">@cached_property  </span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">COOKIES</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;延迟加载Cookie&quot;&quot;&quot;</span><br>    raw_cookie = get_str_from_wsgi(<span class="hljs-variable language_">self</span>.environ, <span class="hljs-string">&#x27;HTTP_COOKIE&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>)<br>    <span class="hljs-keyword">return</span> http.parse_cookie(raw_cookie)<br><br><span class="hljs-meta">@property</span><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">FILES</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;延迟加载文件数据&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-built_in">hasattr</span>(<span class="hljs-variable language_">self</span>, <span class="hljs-string">&#x27;_files&#x27;</span>):<br>        <span class="hljs-variable language_">self</span>._load_post_and_files()<br>    <span class="hljs-keyword">return</span> <span class="hljs-variable language_">self</span>._files<br><br><span class="hljs-comment"># POST使用property而不是cached_property，允许动态修改</span><br>POST = <span class="hljs-built_in">property</span>(_get_post, _set_post)<br></code></pre></td></tr></table></figure>
+
+<h3 id="LimitedStream-安全流"><a href="#LimitedStream-安全流" class="headerlink" title="LimitedStream 安全流"></a>LimitedStream 安全流</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">LimitedStream</span>(<span class="hljs-title class_ inherited__">object</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;限制大小的流，防止内存耗尽攻击&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, stream, limit, buf_size=<span class="hljs-number">64</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span></span>):<br>        <span class="hljs-variable language_">self</span>.stream = stream<br>        <span class="hljs-variable language_">self</span>.remaining = limit<br>        <span class="hljs-variable language_">self</span>.buffer = <span class="hljs-string">b&#x27;&#x27;</span><br>        <span class="hljs-variable language_">self</span>.buf_size = buf_size<br><br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">_read_limited</span>(<span class="hljs-params">self, size=<span class="hljs-literal">None</span></span>):<br>        <span class="hljs-keyword">if</span> size <span class="hljs-keyword">is</span> <span class="hljs-literal">None</span> <span class="hljs-keyword">or</span> size &gt; <span class="hljs-variable language_">self</span>.remaining:<br>            size = <span class="hljs-variable language_">self</span>.remaining<br>        <span class="hljs-keyword">if</span> size == <span class="hljs-number">0</span>:<br>            <span class="hljs-keyword">return</span> <span class="hljs-string">b&#x27;&#x27;</span><br>        result = <span class="hljs-variable language_">self</span>.stream.read(size)<br>        <span class="hljs-variable language_">self</span>.remaining -= <span class="hljs-built_in">len</span>(result)<br>        <span class="hljs-keyword">return</span> result<br></code></pre></td></tr></table></figure>
+
+<h2 id="QueryDict-专用字典"><a href="#QueryDict-专用字典" class="headerlink" title="QueryDict 专用字典"></a>QueryDict 专用字典</h2><h3 id="设计目标"><a href="#设计目标" class="headerlink" title="设计目标"></a>设计目标</h3><p>QueryDict解决了Web表单的特殊需求：</p>
+<ul>
+<li><strong>多值支持</strong>：一个键可以有多个值（如复选框）</li>
+<li><strong>不可变性</strong>：默认不可变，防止意外修改</li>
+<li><strong>编码处理</strong>：自动处理字符编码转换</li>
+</ul>
+<h3 id="核心特性"><a href="#核心特性" class="headerlink" title="核心特性"></a>核心特性</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">QueryDict</span>(<span class="hljs-title class_ inherited__">MultiValueDict</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;专门处理查询字符串的MultiValueDict&quot;&quot;&quot;</span><br>    <br>    <span class="hljs-comment"># 默认不可变</span><br>    _mutable = <span class="hljs-literal">True</span><br>    _encoding = <span class="hljs-literal">None</span><br>    <br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">__init__</span>(<span class="hljs-params">self, query_string=<span class="hljs-literal">None</span>, mutable=<span class="hljs-literal">False</span>, encoding=<span class="hljs-literal">None</span></span>):<br>        <span class="hljs-built_in">super</span>(QueryDict, <span class="hljs-variable language_">self</span>).__init__()<br>        <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> encoding:<br>            encoding = settings.DEFAULT_CHARSET<br>        <span class="hljs-variable language_">self</span>.encoding = encoding<br>        <br>        <span class="hljs-comment"># 解析查询字符串</span><br>        <span class="hljs-keyword">for</span> key, value <span class="hljs-keyword">in</span> limited_parse_qsl(query_string, **parse_qsl_kwargs):<br>            <span class="hljs-variable language_">self</span>.appendlist(key, value)<br>        <br>        <span class="hljs-variable language_">self</span>._mutable = mutable<br></code></pre></td></tr></table></figure>
+
+<h3 id="不可变性保护"><a href="#不可变性保护" class="headerlink" title="不可变性保护"></a>不可变性保护</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_assert_mutable</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> <span class="hljs-variable language_">self</span>._mutable:<br>        <span class="hljs-keyword">raise</span> AttributeError(<span class="hljs-string">&quot;This QueryDict instance is immutable&quot;</span>)<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">__setitem__</span>(<span class="hljs-params">self, key, value</span>):<br>    <span class="hljs-variable language_">self</span>._assert_mutable()<br>    key = bytes_to_text(key, <span class="hljs-variable language_">self</span>.encoding)<br>    value = bytes_to_text(value, <span class="hljs-variable language_">self</span>.encoding)<br>    <span class="hljs-built_in">super</span>(QueryDict, <span class="hljs-variable language_">self</span>).__setitem__(key, value)<br></code></pre></td></tr></table></figure>
+
+<h3 id="MultiValueDict设计问题"><a href="#MultiValueDict设计问题" class="headerlink" title="MultiValueDict设计问题"></a>MultiValueDict设计问题</h3><p><strong>问题</strong>：<code>__setitem__</code> 会替换整个列表</p>
+<figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python">d = MultiValueDict()<br>d.appendlist(<span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-string">&#x27;Adrian&#x27;</span>)<br>d.appendlist(<span class="hljs-string">&#x27;name&#x27;</span>, <span class="hljs-string">&#x27;Simon&#x27;</span>)  <span class="hljs-comment"># [&#x27;Adrian&#x27;, &#x27;Simon&#x27;]</span><br>d[<span class="hljs-string">&#x27;name&#x27;</span>] = <span class="hljs-string">&#x27;John&#x27;</span>             <span class="hljs-comment"># [&#x27;John&#x27;] - 数据丢失！</span><br></code></pre></td></tr></table></figure>
+
+<p><strong>设计考虑</strong>：</p>
+<ul>
+<li><strong>兼容性</strong>：保持与标准字典相似的接口</li>
+<li><strong>Web语义</strong>：HTML表单中同名字段通常意味着”替换”</li>
+<li><strong>向后兼容</strong>：大量现有代码依赖当前行为</li>
+</ul>
+<p><strong>推荐做法</strong>：</p>
+<ul>
+<li>明确使用 <code>appendlist()</code> 来追加</li>
+<li>明确使用 <code>setlist()</code> 来替换</li>
+<li>避免混用 <code>d[key] = value</code> 和 <code>appendlist()</code></li>
+</ul>
+<h2 id="中间件扩展机制"><a href="#中间件扩展机制" class="headerlink" title="中间件扩展机制"></a>中间件扩展机制</h2><p>Django通过中间件系统动态地向HttpRequest对象添加属性：</p>
+<h3 id="用户认证"><a href="#用户认证" class="headerlink" title="用户认证"></a>用户认证</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># AuthenticationMiddleware</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">AuthenticationMiddleware</span>(<span class="hljs-title class_ inherited__">MiddlewareMixin</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">process_request</span>(<span class="hljs-params">self, request</span>):<br>        request.user = SimpleLazyObject(<span class="hljs-keyword">lambda</span>: get_user(request))<br></code></pre></td></tr></table></figure>
+
+<h3 id="会话支持"><a href="#会话支持" class="headerlink" title="会话支持"></a>会话支持</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># SessionMiddleware</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">SessionMiddleware</span>(<span class="hljs-title class_ inherited__">MiddlewareMixin</span>):<br>    <span class="hljs-keyword">def</span> <span class="hljs-title function_">process_request</span>(<span class="hljs-params">self, request</span>):<br>        session_key = request.COOKIES.get(settings.SESSION_COOKIE_NAME)<br>        request.session = <span class="hljs-variable language_">self</span>.SessionStore(session_key)<br></code></pre></td></tr></table></figure>
+
+<h3 id="CSRF保护"><a href="#CSRF保护" class="headerlink" title="CSRF保护"></a>CSRF保护</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># CsrfViewMiddleware</span><br><span class="hljs-comment"># 添加 csrf_token, META[&#x27;CSRF_COOKIE&#x27;] 等属性</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="消息框架"><a href="#消息框架" class="headerlink" title="消息框架"></a>消息框架</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-comment"># MessageMiddleware</span><br><span class="hljs-comment"># 添加 request._messages</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="安全特性总结"><a href="#安全特性总结" class="headerlink" title="安全特性总结"></a>安全特性总结</h2><h3 id="1-主机验证"><a href="#1-主机验证" class="headerlink" title="1. 主机验证"></a>1. 主机验证</h3><ul>
+<li><strong>Host头攻击防护</strong>：验证Host头在ALLOWED_HOSTS中</li>
+<li><strong>调试模式安全</strong>：调试时允许localhost变体</li>
+<li><strong>详细错误信息</strong>：提供明确的配置指导</li>
+</ul>
+<h3 id="2-Cookie安全"><a href="#2-Cookie安全" class="headerlink" title="2. Cookie安全"></a>2. Cookie安全</h3><ul>
+<li><strong>签名验证</strong>：防止客户端篡改cookie数据</li>
+<li><strong>时间验证</strong>：支持cookie过期时间检查</li>
+<li><strong>盐值支持</strong>：增强签名安全性</li>
+</ul>
+<h3 id="3-请求体保护"><a href="#3-请求体保护" class="headerlink" title="3. 请求体保护"></a>3. 请求体保护</h3><ul>
+<li><strong>大小限制</strong>：防止内存耗尽攻击</li>
+<li><strong>流式处理</strong>：支持大文件而不占用过多内存</li>
+<li><strong>错误恢复</strong>：IO错误时的优雅处理</li>
+</ul>
+<h3 id="4-编码安全"><a href="#4-编码安全" class="headerlink" title="4. 编码安全"></a>4. 编码安全</h3><ul>
+<li><strong>字符集处理</strong>：正确处理各种字符编码</li>
+<li><strong>错误替换</strong>：编码错误时的安全降级</li>
+<li><strong>Unicode标准化</strong>：防止编码相关的安全问题</li>
+</ul>
+<h2 id="性能优化特性"><a href="#性能优化特性" class="headerlink" title="性能优化特性"></a>性能优化特性</h2><h3 id="1-延迟加载"><a href="#1-延迟加载" class="headerlink" title="1. 延迟加载"></a>1. 延迟加载</h3><ul>
+<li><strong>属性延迟</strong>：GET、COOKIES等属性按需创建</li>
+<li><strong>POST延迟</strong>：只有访问时才解析POST数据</li>
+<li><strong>文件延迟</strong>：文件上传数据的延迟处理</li>
+</ul>
+<h3 id="2-内存管理"><a href="#2-内存管理" class="headerlink" title="2. 内存管理"></a>2. 内存管理</h3><ul>
+<li><strong>流式读取</strong>：大请求的分块处理</li>
+<li><strong>资源清理</strong>：确保文件句柄正确释放</li>
+<li><strong>缓存机制</strong>：适当的属性缓存</li>
+</ul>
+<h3 id="3-编码优化"><a href="#3-编码优化" class="headerlink" title="3. 编码优化"></a>3. 编码优化</h3><ul>
+<li><strong>编码缓存</strong>：避免重复的编码转换</li>
+<li><strong>批量处理</strong>：QueryDict的批量操作优化</li>
+</ul>
+<h2 id="错误处理机制"><a href="#错误处理机制" class="headerlink" title="错误处理机制"></a>错误处理机制</h2><h3 id="异常体系"><a href="#异常体系" class="headerlink" title="异常体系"></a>异常体系</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">class</span> <span class="hljs-title class_">UnreadablePostError</span>(<span class="hljs-title class_ inherited__">IOError</span>)          <span class="hljs-comment"># POST数据无法读取</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">RawPostDataException</span>(<span class="hljs-title class_ inherited__">Exception</span>)       <span class="hljs-comment"># 原始数据访问错误  </span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">DisallowedHost</span>(<span class="hljs-title class_ inherited__">Exception</span>)            <span class="hljs-comment"># 不允许的主机</span><br><span class="hljs-keyword">class</span> <span class="hljs-title class_">RequestDataTooBig</span>(<span class="hljs-title class_ inherited__">Exception</span>)         <span class="hljs-comment"># 请求数据过大</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="错误恢复"><a href="#错误恢复" class="headerlink" title="错误恢复"></a>错误恢复</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">_mark_post_parse_error</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;POST解析错误时的恢复机制&quot;&quot;&quot;</span><br>    <span class="hljs-variable language_">self</span>._post = QueryDict()<br>    <span class="hljs-variable language_">self</span>._files = MultiValueDict()<br>    <span class="hljs-variable language_">self</span>._post_parse_error = <span class="hljs-literal">True</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="资源清理"><a href="#资源清理" class="headerlink" title="资源清理"></a>资源清理</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">close</span>(<span class="hljs-params">self</span>):<br>    <span class="hljs-string">&quot;&quot;&quot;确保上传文件得到正确清理&quot;&quot;&quot;</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-built_in">hasattr</span>(<span class="hljs-variable language_">self</span>, <span class="hljs-string">&#x27;_files&#x27;</span>):<br>        <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> chain.from_iterable(l[<span class="hljs-number">1</span>] <span class="hljs-keyword">for</span> l <span class="hljs-keyword">in</span> <span class="hljs-variable language_">self</span>._files.lists()):<br>            f.close()<br></code></pre></td></tr></table></figure>
+
+<h2 id="设计模式和原则"><a href="#设计模式和原则" class="headerlink" title="设计模式和原则"></a>设计模式和原则</h2><h3 id="1-模板方法模式"><a href="#1-模板方法模式" class="headerlink" title="1. 模板方法模式"></a>1. 模板方法模式</h3><ul>
+<li><strong>HttpRequest</strong>：定义基本流程和接口</li>
+<li><strong>WSGIRequest</strong>：实现具体的WSGI环境处理</li>
+<li><strong>钩子方法</strong>：<code>_get_scheme()</code> 等可重写方法</li>
+</ul>
+<h3 id="2-代理模式"><a href="#2-代理模式" class="headerlink" title="2. 代理模式"></a>2. 代理模式</h3><ul>
+<li><strong>SimpleLazyObject</strong>：延迟加载用户对象</li>
+<li><strong>cached_property</strong>：属性级别的延迟计算</li>
+</ul>
+<h3 id="3-策略模式"><a href="#3-策略模式" class="headerlink" title="3. 策略模式"></a>3. 策略模式</h3><ul>
+<li><strong>上传处理器</strong>：可插拔的文件处理策略</li>
+<li><strong>编码处理</strong>：不同编码方式的处理策略</li>
+</ul>
+<h3 id="4-责任链模式"><a href="#4-责任链模式" class="headerlink" title="4. 责任链模式"></a>4. 责任链模式</h3><ul>
+<li><strong>中间件系统</strong>：请求处理的责任链</li>
+<li><strong>上传处理器链</strong>：文件处理的责任链</li>
+</ul>
+<h2 id="实际应用场景"><a href="#实际应用场景" class="headerlink" title="实际应用场景"></a>实际应用场景</h2><h3 id="1-Web应用开发"><a href="#1-Web应用开发" class="headerlink" title="1. Web应用开发"></a>1. Web应用开发</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">view</span>(<span class="hljs-params">request</span>):<br>    <span class="hljs-comment"># 基本信息访问</span><br>    method = request.method<br>    path = request.path<br>    user = request.user<br>    <br>    <span class="hljs-comment"># 参数获取</span><br>    search = request.GET.get(<span class="hljs-string">&#x27;q&#x27;</span>, <span class="hljs-string">&#x27;&#x27;</span>)<br>    username = request.POST.get(<span class="hljs-string">&#x27;username&#x27;</span>)<br>    <br>    <span class="hljs-comment"># 文件处理</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-string">&#x27;avatar&#x27;</span> <span class="hljs-keyword">in</span> request.FILES:<br>        avatar = request.FILES[<span class="hljs-string">&#x27;avatar&#x27;</span>]<br>    <br>    <span class="hljs-comment"># 安全功能</span><br>    <span class="hljs-keyword">if</span> request.is_secure():<br>        <span class="hljs-comment"># HTTPS处理</span><br>        <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
+
+<h3 id="2-API开发"><a href="#2-API开发" class="headerlink" title="2. API开发"></a>2. API开发</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">api_view</span>(<span class="hljs-params">request</span>):<br>    <span class="hljs-comment"># JSON数据处理</span><br>    <span class="hljs-keyword">if</span> request.content_type == <span class="hljs-string">&#x27;application/json&#x27;</span>:<br>        data = json.loads(request.body)<br>    <br>    <span class="hljs-comment"># 认证检查</span><br>    <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> request.user.is_authenticated:<br>        <span class="hljs-keyword">return</span> HttpResponseUnauthorized()<br>    <br>    <span class="hljs-comment"># 构建响应URL</span><br>    callback_url = request.build_absolute_uri(<span class="hljs-string">&#x27;/callback/&#x27;</span>)<br></code></pre></td></tr></table></figure>
+
+<h3 id="3-文件上传服务"><a href="#3-文件上传服务" class="headerlink" title="3. 文件上传服务"></a>3. 文件上传服务</h3><figure class="highlight python"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs python"><span class="hljs-keyword">def</span> <span class="hljs-title function_">upload_view</span>(<span class="hljs-params">request</span>):<br>    <span class="hljs-comment"># 自定义上传处理器</span><br>    request.upload_handlers = [CustomUploadHandler()]<br>    <br>    <span class="hljs-comment"># 处理多文件上传</span><br>    <span class="hljs-keyword">for</span> field_name, file_obj <span class="hljs-keyword">in</span> request.FILES.items():<br>        <span class="hljs-comment"># 处理文件</span><br>        <span class="hljs-keyword">pass</span><br></code></pre></td></tr></table></figure>
+
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>Django的HTTP请求处理架构体现了以下设计理念：</p>
+<h3 id="安全第一"><a href="#安全第一" class="headerlink" title="安全第一"></a>安全第一</h3><ul>
+<li>多层次的安全防护机制</li>
+<li>输入验证和输出编码</li>
+<li>攻击向量的全面防范</li>
+</ul>
+<h3 id="性能优化"><a href="#性能优化" class="headerlink" title="性能优化"></a>性能优化</h3><ul>
+<li>延迟加载和按需计算</li>
+<li>流式处理大数据</li>
+<li>内存使用的精细控制</li>
+</ul>
+<h3 id="扩展性强"><a href="#扩展性强" class="headerlink" title="扩展性强"></a>扩展性强</h3><ul>
+<li>中间件的动态扩展机制</li>
+<li>可插拔的处理器系统</li>
+<li>清晰的继承和重写接口</li>
+</ul>
+<h3 id="标准兼容"><a href="#标准兼容" class="headerlink" title="标准兼容"></a>标准兼容</h3><ul>
+<li>完整的HTTP协议支持</li>
+<li>WSGI标准的完美实现</li>
+<li>RFC规范的严格遵循</li>
+</ul>
+<p>通过HttpRequest基础类和WSGIRequest实现类的分层设计，Django提供了既抽象又实用的HTTP请求处理能力，为Web应用开发提供了强大而安全的基础设施。</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/Django/" class="print-no-link">#Django</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Django HTTP Request</div>
+      <div>https://luffy997.github.io/2025/07/07/Django-HTTP-Request/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>Luffy997</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2025年7月7日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-cc-by"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/2025/07/16/Django-LocaleMiddleware-%E4%B8%AD%E9%97%B4%E4%BB%B6/" title="Django LocaleMiddleware 中间件">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">Django LocaleMiddleware 中间件</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/2025/07/07/Django-HTTP-Response/" title="Django HTTP Response">
+                        <span class="hidden-mobile">Django HTTP Response</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/5.0.0/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
